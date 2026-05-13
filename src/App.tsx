@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { MAX_SCORE, Question, questions } from './questions';
-import trackerPreviewUrl from './assets/tracker-preview.svg?url';
-import portfolioPreviewUrl from './assets/portfolio-preview.svg?url';
+
+const trackerPreviewUrl = new URL('./assets/tracker-preview.svg', import.meta.url).href;
+const portfolioPreviewUrl = new URL('./assets/portfolio-preview.svg', import.meta.url).href;
 
 interface AnswerRecord {
   questionId: number;
@@ -53,6 +54,32 @@ function formatPhone(value: string): string {
   return result;
 }
 
+function looksLikeEmailStart(value: string): boolean {
+  const t = value.trim();
+  if (t.includes('@')) return true;
+  return /^[^\d+\s()][^\d]*$/.test(t);
+}
+
+function isValidContact(value: string): boolean {
+  const t = value.trim();
+  if (!t) return false;
+  if (t.includes('@')) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t);
+  }
+  const digits = t.replace(/\D/g, '');
+  return digits.length >= 11;
+}
+
+function normalizeContactInput(value: string): string {
+  if (!value.trim()) {
+    return '';
+  }
+  if (looksLikeEmailStart(value)) {
+    return value;
+  }
+  return formatPhone(value);
+}
+
 function useDebouncedCallback<T extends (...args: any[]) => void>(callback: T, delay: number) {
   const timeoutRef = useRef<number | undefined>(undefined);
 
@@ -92,7 +119,7 @@ const App: React.FC = () => {
   const [stageVisible, setStageVisible] = useState<boolean>(true);
   const [formBackStage, setFormBackStage] = useState<'result' | 'break'>('result');
   const [whyWorksReturnTarget, setWhyWorksReturnTarget] = useState<'form' | 'result'>('form');
-  const [whyWorksVariant, setWhyWorksVariant] = useState<'default' | 'safe' | 'realtor'>('default');
+  const [whyWorksVariant, setWhyWorksVariant] = useState<'safe' | 'realtor'>('safe');
   const [formData, setFormData] = useState<FormData>({ phone: '', city: '', type: '' });
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -111,16 +138,15 @@ const App: React.FC = () => {
     const byId = new Map<number, AnswerRecord>();
     answers.forEach((a) => byId.set(a.questionId, a));
 
-    const sumRange = (from: number, to: number) =>
-      Array.from({ length: to - from + 1 }, (_, i) => from + i).reduce(
-        (acc, id) => acc + (byId.get(id)?.score ?? 0),
-        0
-      );
+    const sumCategory = (cat: (typeof questions)[number]['category']) =>
+      questions
+        .filter((q) => q.category === cat)
+        .reduce((acc, q) => acc + (byId.get(q.id)?.score ?? 0), 0);
 
     return {
-      legal: sumRange(6, 11),
-      financial: sumRange(12, 17),
-      process: sumRange(1, 5) + sumRange(18, 27)
+      legal: sumCategory('legal'),
+      financial: sumCategory('financial'),
+      process: sumCategory('process')
     };
   }, [answers]);
 
@@ -167,9 +193,9 @@ const App: React.FC = () => {
 
     const nextStep = currentStep + 1;
 
-    if (question.id === 12 && !pauseShown) {
+    if (question.id === 7 && !pauseShown) {
       setPauseShown(true);
-      setBreakStepsPassed(12);
+      setBreakStepsPassed(7);
       setShowBreakScreen(true);
       setCurrentStep(nextStep);
       setStage('break');
@@ -194,7 +220,7 @@ const App: React.FC = () => {
     goToForm();
   };
 
-  const openWhyWorks = (returnTarget: 'form' | 'result', variant: 'default' | 'safe' | 'realtor') => {
+  const openWhyWorks = (returnTarget: 'form' | 'result', variant: 'safe' | 'realtor') => {
     setWhyWorksReturnTarget(returnTarget);
     setWhyWorksVariant(variant);
     setStage('why_works');
@@ -224,7 +250,7 @@ const App: React.FC = () => {
   const handleFormChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({
       ...prev,
-      [field]: field === 'phone' ? formatPhone(value) : value
+      [field]: field === 'phone' ? normalizeContactInput(value) : value
     }));
   };
 
@@ -261,8 +287,8 @@ const App: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.phone || !formData.city || !formData.type) {
-      setSubmitError('Пожалуйста, заполните все поля.');
+    if (!isValidContact(formData.phone) || !formData.city || !formData.type) {
+      setSubmitError('Укажите телефон или корректную почту и заполните остальные поля.');
       return;
     }
     if (submitStatus === 'loading') return;
@@ -290,9 +316,9 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white flex justify-center">
-      <div className="w-full max-w-screen-mobile px-4 py-6 flex flex-col gap-6">
+      <div className="w-full max-w-screen-mobile px-4 py-6 flex flex-col gap-6 min-h-screen">
         <div
-          className={`transition-all ease-in-out ${
+          className={`transition-all ease-in-out flex flex-1 flex-col min-h-0 ${
             stageVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
           }`}
           style={{ transitionDuration: `${STAGE_TRANSITION_MS}ms` }}
@@ -302,7 +328,7 @@ const App: React.FC = () => {
               <div className="flex flex-col gap-2">
                 <h1 className="text-2xl font-semibold text-black">Готовы к сделке с квартирой?</h1>
                 <p className="text-sm text-gray-700">
-                  Пройдите квиз из 27 шагов и увидите, где чаще всего появляются ошибки.
+                  Пройдите квиз из 14 шагов и увидите, где чаще всего появляются ошибки.
                 </p>
               </div>
               <button
@@ -443,7 +469,7 @@ const App: React.FC = () => {
                 Почему работа с нами — безопаснее?
               </button>
 
-              <WhyWorksShowcase showOpenLinks={false} />
+              <WhyWorksShowcase showOpenLinks={false} hideTrackerLeadLine />
 
               <button
                 onClick={goToFormFromResult}
@@ -455,42 +481,38 @@ const App: React.FC = () => {
           )}
 
           {renderedStage === 'why_works' && (
-            <section className="flex flex-col gap-4">
-              <button type="button" onClick={backFromWhyWorks} className={BACK_BUTTON_CLASS}>
-                Назад
-              </button>
+            <section className="flex flex-col gap-4 flex-1 min-h-[50vh]">
               <h2 className="text-lg font-semibold text-black">
                 {whyWorksVariant === 'safe' && 'Почему работа с нами безопаснее?'}
                 {whyWorksVariant === 'realtor' && 'Как улучшить взаимодействие с риелтором?'}
-                {whyWorksVariant === 'default' && 'Почему это работает?'}
               </h2>
               <p className="text-sm text-gray-700">
                 Прозрачные этапы, онлайн-статус и проверенный профиль специалиста — в одном месте.
               </p>
               <WhyWorksShowcase showOpenLinks />
+              <button type="button" onClick={backFromWhyWorks} className={`${BACK_BUTTON_CLASS} mt-auto shrink-0`}>
+                Назад
+              </button>
             </section>
           )}
 
           {renderedStage === 'form' && (
-            <>
-              <section ref={formRef} className="flex flex-col gap-4">
-                <button type="button" onClick={handleBackFromForm} className={BACK_BUTTON_CLASS}>
-                  Назад
-                </button>
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+            <section ref={formRef} className="flex flex-col gap-4 flex-1 min-h-0">
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
                   <h3 className="text-lg font-semibold text-black mb-2">Оставить заявку</h3>
                   <p className="text-sm text-gray-700 mb-4">
                     Оставьте контакты — специалист поможет разобрать риски и этапы сделки.
                   </p>
                   <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
                     <div className="flex flex-col gap-1">
-                      <label className="text-xs text-gray-600">Телефон</label>
+                      <label className="text-xs text-gray-600">Телефон или почта</label>
                       <input
-                        type="tel"
-                        inputMode="tel"
+                        type="text"
+                        inputMode="text"
+                        autoComplete="tel email"
                         value={formData.phone}
                         onChange={(e) => handleFormChange('phone', e.target.value)}
-                        placeholder="+7"
+                        placeholder="+7 или email@…"
                         className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
                       />
                     </div>
@@ -533,18 +555,8 @@ const App: React.FC = () => {
                     </button>
                   </form>
                 </div>
-              </section>
 
-              <section className="flex flex-col gap-2 pb-4">
-                {formBackStage !== 'break' && (
-                  <button
-                    type="button"
-                    onClick={() => openWhyWorks('form', 'default')}
-                    className={BACK_BUTTON_CLASS}
-                  >
-                    Почему это работает?
-                  </button>
-                )}
+              <div className="flex flex-col gap-2 mt-auto pb-4 shrink-0">
                 <button
                   type="button"
                   onClick={() => openWhyWorks('form', 'realtor')}
@@ -552,8 +564,11 @@ const App: React.FC = () => {
                 >
                   Как улучшить взаимодействие с риелтором?
                 </button>
-              </section>
-            </>
+                <button type="button" onClick={handleBackFromForm} className={BACK_BUTTON_CLASS}>
+                  Назад
+                </button>
+              </div>
+            </section>
           )}
         </div>
       </div>
@@ -591,7 +606,7 @@ const RealtorShareCta: React.FC = () => (
   </a>
 );
 
-const DemoImageSlider: React.FC = () => {
+const DemoImageSlider: React.FC<{ hideTrackerLeadLine?: boolean }> = ({ hideTrackerLeadLine }) => {
   const [slide, setSlide] = useState(0);
   const touchStartX = useRef<number | null>(null);
 
@@ -622,15 +637,19 @@ const DemoImageSlider: React.FC = () => {
           style={{ transform: `translateX(-${slide * 100}%)` }}
         >
           <div className="min-w-full shrink-0 px-4 pt-4 pb-3">
-            <p className="text-sm font-semibold text-black text-center mb-3">
-              Отслеживайте сделку в реальном времени!
-            </p>
+            {!hideTrackerLeadLine && (
+              <p className="text-sm font-semibold text-black text-center mb-3">
+                Отслеживайте сделку в реальном времени!
+              </p>
+            )}
             <img
               src={trackerPreviewUrl}
               alt="Пример трекера сделки"
-              className="w-full rounded-lg border border-gray-100 bg-white object-cover object-top shadow-sm"
+              className="w-full max-h-[min(52vh,420px)] rounded-lg border border-gray-100 bg-white object-contain object-top shadow-sm"
               loading="eager"
               decoding="async"
+              width={390}
+              height={520}
             />
           </div>
           <div className="min-w-full shrink-0 px-4 pt-4 pb-3">
@@ -640,9 +659,11 @@ const DemoImageSlider: React.FC = () => {
             <img
               src={portfolioPreviewUrl}
               alt="Пример портфолио риелтора"
-              className="w-full rounded-lg border border-gray-100 bg-white object-cover object-top shadow-sm"
+              className="w-full max-h-[min(52vh,420px)] rounded-lg border border-gray-100 bg-white object-contain object-top shadow-sm"
               loading="eager"
               decoding="async"
+              width={390}
+              height={520}
             />
           </div>
         </div>
@@ -687,11 +708,13 @@ const DemoImageSlider: React.FC = () => {
 interface WhyWorksShowcaseProps {
   /** Кнопки «Открыть трекер / портфолио» — только в потоке «Почему работа с нами безопаснее?» */
   showOpenLinks?: boolean;
+  /** Скрыть заголовок над превью трекера (экран результата после квиза) */
+  hideTrackerLeadLine?: boolean;
 }
 
-const WhyWorksShowcase: React.FC<WhyWorksShowcaseProps> = ({ showOpenLinks = true }) => (
+const WhyWorksShowcase: React.FC<WhyWorksShowcaseProps> = ({ showOpenLinks = true, hideTrackerLeadLine }) => (
   <div className="flex flex-col gap-4">
-    <DemoImageSlider />
+    <DemoImageSlider hideTrackerLeadLine={hideTrackerLeadLine} />
 
     {showOpenLinks && (
       <div className="flex flex-col gap-2">
