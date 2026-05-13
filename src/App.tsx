@@ -14,6 +14,7 @@ interface FormData {
 }
 
 type SubmitStatus = 'idle' | 'loading' | 'success' | 'error';
+type Stage = 'hero' | 'quiz' | 'break' | 'result' | 'bridge' | 'demo' | 'form';
 
 const TOTAL_STEPS = questions.length;
 
@@ -65,7 +66,7 @@ const App: React.FC = () => {
   const [breakStepsPassed, setBreakStepsPassed] = useState<number>(0);
   const [breakRiskScore, setBreakRiskScore] = useState<number>(0);
   const [showBreakScreen, setShowBreakScreen] = useState<boolean>(false);
-  const [showResult, setShowResult] = useState<boolean>(false);
+  const [stage, setStage] = useState<Stage>('hero');
   const [formData, setFormData] = useState<FormData>({ phone: '', city: '', type: '' });
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -97,12 +98,14 @@ const App: React.FC = () => {
 
   const handleStart = () => {
     setCurrentStep(1);
+    setStage('quiz');
   };
 
   const goToForm = () => {
-    if (formRef.current) {
-      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    setStage('form');
+    window.setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
   };
 
   const handleOptionSelect = (question: Question, optionIndex: number) => {
@@ -134,12 +137,13 @@ const App: React.FC = () => {
       setBreakStepsPassed(question.id);
       setBreakRiskScore(newRiskScore);
       setShowBreakScreen(true);
+      setStage('break');
       setCurrentStep(nextStep);
       return;
     }
 
     if (nextStep > TOTAL_STEPS) {
-      setShowResult(true);
+      setStage('result');
     } else {
       setCurrentStep(nextStep);
     }
@@ -147,11 +151,12 @@ const App: React.FC = () => {
 
   const handleContinueAfterBreak = () => {
     setShowBreakScreen(false);
+    setStage('quiz');
   };
 
   const handleGetHelpFromBreak = () => {
     setShowBreakScreen(false);
-    setShowResult(true);
+    setStage('form');
     goToForm();
   };
 
@@ -209,15 +214,15 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-white flex justify-center">
       <div className="w-full max-w-screen-mobile px-4 py-6 flex flex-col gap-6">
-        {!showResult && currentStep === 0 && (
+        {stage === 'hero' && currentStep === 0 && (
           <section className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <h1 className="text-2xl font-semibold text-black">
                 Готовы к сделке с квартирой?
               </h1>
               <p className="text-sm text-gray-700">
-                Пройдите короткий квиз из 27 шагов и узнайте, где вы рискуете деньгами и
-                безопасностью.
+                Пройдите квиз из 27 шагов и увидите, где чаще всего появляются ошибки и
+                риски.
               </p>
             </div>
             <button
@@ -226,17 +231,19 @@ const App: React.FC = () => {
             >
               Начать квиз
             </button>
-            <button
+            <a
               type="button"
-              onClick={goToForm}
-              className="text-xs text-gray-500 underline self-start"
+              href="https://sdelka-web.ru"
+              target="_blank"
+              rel="noreferrer"
+              className="text-xs text-gray-500 self-start"
             >
-              Я риелтор — хочу портфолио
-            </button>
+              Я риелтор — хочу такое портфолио
+            </a>
           </section>
         )}
 
-        {currentStep > 0 && !showResult && (
+        {stage === 'quiz' && currentStep > 0 && (
           <section className="flex flex-col gap-4">
             <div className="flex items-center justify-between text-xs text-gray-600">
               <span>Шаг {currentStep} из {TOTAL_STEPS}</span>
@@ -251,14 +258,15 @@ const App: React.FC = () => {
           </section>
         )}
 
-        {showBreakScreen && (
+        {stage === 'break' && showBreakScreen && (
           <section className="flex flex-col gap-4 bg-gray-50 rounded-xl p-4 border border-gray-100">
-            <h2 className="text-lg font-semibold text-black">Пауза перед важными шагами</h2>
+            <h2 className="text-lg font-semibold text-black">Небольшая пауза</h2>
             <p className="text-sm text-gray-700">
-              Вы прошли {breakStepsPassed} из {TOTAL_STEPS} шагов.
+              Вы прошли часть этапов. На этом уровне чаще всего возникают ошибки.
             </p>
             <p className="text-sm text-gray-700">
-              Рисков: <span className="font-semibold text-risk">{breakRiskScore.toFixed(1)}</span>.
+              Шагов пройдено: <span className="font-semibold text-black">{breakStepsPassed}</span>. Рисков:{' '}
+              <span className="font-semibold text-risk">{breakRiskScore.toFixed(1)}</span>.
             </p>
             <div className="flex flex-col gap-2 mt-2">
               <button
@@ -271,13 +279,13 @@ const App: React.FC = () => {
                 onClick={handleGetHelpFromBreak}
                 className="w-full py-3 rounded-xl border border-gray-300 text-gray-700 text-sm active:scale-[0.98] transition-transform"
               >
-                Получить помощь
+                Разобрать с экспертом
               </button>
             </div>
           </section>
         )}
 
-        {currentQuestion && !showBreakScreen && !showResult && (
+        {stage === 'quiz' && currentQuestion && !showBreakScreen && (
           <section className="flex flex-col gap-4">
             <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
               <p className="text-sm text-gray-500 mb-1">
@@ -306,13 +314,11 @@ const App: React.FC = () => {
           </section>
         )}
 
-        {showResult && (
+        {stage === 'result' && (
           <section className="flex flex-col gap-4">
             <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
               <h2 className="text-lg font-semibold text-black mb-2">Ваш результат</h2>
-              <p className="text-sm text-gray-700 mb-3">
-                По нашим вопросам ваша готовность к безопасной сделке:
-              </p>
+              <p className="text-sm text-gray-700 mb-3">Готовность к сделке:</p>
               <div className="flex items-baseline gap-2">
                 <span className="text-4xl font-semibold text-black">{readiness}%</span>
                 <span className="text-sm text-gray-600">готовности</span>
@@ -335,24 +341,90 @@ const App: React.FC = () => {
                 </div>
               </div>
               <p className="mt-4 text-xs text-gray-600">
-                Даже опытные люди допускают ошибки на этих этапах
+                Даже если вы понимаете процесс, контролировать сделку в одиночку сложно
               </p>
               <button
-                onClick={goToForm}
+                onClick={() => setStage('bridge')}
                 className="mt-4 w-full py-3 rounded-xl bg-accent text-white font-semibold text-base active:scale-[0.98] transition-transform"
               >
-                Получить риелтора
+                Посмотреть, как решают такие задачи
               </button>
             </div>
           </section>
         )}
 
-        <section ref={formRef} className="flex flex-col gap-4">
+        {stage === 'bridge' && (
+          <section className="flex flex-col gap-4">
+            <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+              <h2 className="text-lg font-semibold text-black">Как решают такие риски?</h2>
+              <p className="mt-2 text-sm text-gray-700">
+                Вместо того чтобы контролировать всё вручную, используют сопровождение сделки с прозрачными этапами:
+              </p>
+              <ul className="mt-3 text-sm text-gray-700 space-y-2">
+                <li>— все документы проверяются</li>
+                <li>— этапы фиксируются</li>
+                <li>— статус сделки виден онлайн</li>
+              </ul>
+              <button
+                onClick={() => setStage('demo')}
+                className="mt-4 w-full py-3 rounded-xl bg-accent text-white font-semibold text-base active:scale-[0.98] transition-transform"
+              >
+                Посмотреть пример
+              </button>
+            </div>
+          </section>
+        )}
+
+        {stage === 'demo' && (
+          <section className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 gap-3">
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <h3 className="text-base font-semibold text-black">Пример сделки</h3>
+                <p className="mt-1 text-sm text-gray-700">Все этапы и статус сделки видны онлайн</p>
+                <button
+                  type="button"
+                  onClick={() =>
+                    window.open('https://sdelka-web.ru/s/063b531e1f3f44419ed679c4b173c9fb', '_blank')
+                  }
+                  className="mt-3 w-full py-3 rounded-xl border border-gray-200 text-sm text-black active:scale-[0.98] transition-transform"
+                >
+                  Открыть трекер
+                </button>
+              </div>
+
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <h3 className="text-base font-semibold text-black">Профиль риелтора</h3>
+                <p className="mt-1 text-sm text-gray-700">Отзывы, сделки и прозрачная работа</p>
+                <button
+                  type="button"
+                  onClick={() => window.open('https://sdelka-web.ru/agent/1', '_blank')}
+                  className="mt-3 w-full py-3 rounded-xl border border-gray-200 text-sm text-black active:scale-[0.98] transition-transform"
+                >
+                  Посмотреть профиль
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+              <p className="text-sm text-gray-700">
+                Если хотите пройти сделку без лишнего стресса, можно разобрать вашу ситуацию со специалистом
+              </p>
+              <button
+                onClick={goToForm}
+                className="mt-3 w-full py-3 rounded-xl bg-accent text-white font-semibold text-base active:scale-[0.98] transition-transform"
+              >
+                Получить помощь по сделке
+              </button>
+            </div>
+          </section>
+        )}
+
+        {stage === 'form' && (
+          <section ref={formRef} className="flex flex-col gap-4">
           <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
             <h3 className="text-lg font-semibold text-black mb-2">Оставить заявку</h3>
             <p className="text-sm text-gray-700 mb-4">
-              Оставьте контакты, и риелтор поможет разобрать риски и собрать сделку под
-              ключ.
+              Оставьте контакты — специалист поможет разобрать риски и этапы сделки.
             </p>
             <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-1">
@@ -408,31 +480,17 @@ const App: React.FC = () => {
             </form>
           </div>
         </section>
+        )}
 
-        <section className="flex flex-col gap-2 pb-4">
-          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex flex-col gap-3">
-            <h3 className="text-sm font-semibold text-black">Доверие к эксперту</h3>
-            <button
-              type="button"
-              onClick={() => window.open('https://sdelka-web.ru/agent/1', '_blank')}
-              className="w-full py-3 rounded-xl border border-gray-200 text-sm text-black active:scale-[0.98] transition-transform"
-            >
-              Посмотреть портфолио риелтора
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                window.open(
-                  'https://sdelka-web.ru/s/063b531e1f3f44419ed679c4b173c9fb',
-                  '_blank'
-                )
-              }
-              className="w-full py-3 rounded-xl border border-gray-200 text-sm text-black active:scale-[0.98] transition-transform"
-            >
-              Посмотреть онлайн-трекер сделки
-            </button>
-          </div>
-        </section>
+        {stage === 'form' && (
+          <section className="flex flex-col gap-2 pb-4">
+            <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex flex-col gap-2">
+              <p className="text-sm font-semibold text-black">Почему это работает</p>
+              <p className="text-sm text-gray-700">пример реальной сделки</p>
+              <p className="text-sm text-gray-700">прозрачный процесс</p>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
