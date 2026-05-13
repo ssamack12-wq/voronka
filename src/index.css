@@ -12,3 +12,26 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+/* Слайдер квиза: фиксированная минимальная высота, чтобы Android Chrome не схлопывал <img> */
+.quiz-slider-viewport {
+  overflow-x: clip;
+}
+
+.quiz-image-container {
+  min-height: 220px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.quiz-image-container .quiz-image,
+img.quiz-image {
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
