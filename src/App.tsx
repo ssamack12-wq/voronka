@@ -1,8 +1,15 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { MAX_SCORE, Question, questions } from './questions';
 
-const trackerPreviewUrl = new URL('./assets/tracker-preview.svg', import.meta.url).href;
-const portfolioPreviewUrl = new URL('./assets/portfolio-preview.svg', import.meta.url).href;
+/** Файлы из `public/` — обычные URL, без data:-инлайна в бандле (лучше для CSP и хостингов). */
+function publicAssetUrl(fileName: string): string {
+  const base = import.meta.env.BASE_URL;
+  const prefix = base.endsWith('/') ? base : `${base}/`;
+  return `${prefix}${fileName}`;
+}
+
+const trackerPreviewUrl = publicAssetUrl('tracker-preview.svg');
+const portfolioPreviewUrl = publicAssetUrl('portfolio-preview.svg');
 
 interface AnswerRecord {
   questionId: number;
