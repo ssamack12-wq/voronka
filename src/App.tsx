@@ -18,6 +18,10 @@ type Stage = 'hero' | 'quiz' | 'break' | 'result' | 'why_works' | 'form';
 
 const TRACKER_URL = 'https://sdelka-web.ru/s/063b531e1f3f44419ed679c4b173c9fb';
 const PORTFOLIO_URL = 'https://sdelka-web.ru/agent/1';
+const SDELKA_PROJECT_URL = 'https://sdelka-web.ru';
+
+const TRACKER_PREVIEW_IMG = '/tracker-preview.svg';
+const PORTFOLIO_PREVIEW_IMG = '/portfolio-preview.svg';
 
 const TOTAL_STEPS = questions.length;
 const STAGE_TRANSITION_MS = 240;
@@ -86,6 +90,8 @@ const App: React.FC = () => {
   const [renderedStage, setRenderedStage] = useState<Stage>('hero');
   const [stageVisible, setStageVisible] = useState<boolean>(true);
   const [formBackStage, setFormBackStage] = useState<'result'>('result');
+  const [whyWorksReturnTarget, setWhyWorksReturnTarget] = useState<'form' | 'result'>('form');
+  const [whyWorksVariant, setWhyWorksVariant] = useState<'default' | 'safe' | 'realtor'>('default');
   const [formData, setFormData] = useState<FormData>({ phone: '', city: '', type: '' });
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -187,15 +193,31 @@ const App: React.FC = () => {
     goToForm();
   };
 
-  const openWhyWorksFromForm = () => {
+  const openWhyWorks = (returnTarget: 'form' | 'result', variant: 'default' | 'safe' | 'realtor') => {
+    setWhyWorksReturnTarget(returnTarget);
+    setWhyWorksVariant(variant);
     setStage('why_works');
   };
 
-  const backFromWhyWorksToForm = () => {
-    setStage('form');
-    window.setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 60);
+  const backFromWhyWorks = () => {
+    if (whyWorksReturnTarget === 'form') {
+      setStage('form');
+      window.setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+    } else {
+      setStage('result');
+    }
+  };
+
+  const restartQuiz = () => {
+    setAnswers([]);
+    setRiskScore(0);
+    setShowBreakScreen(false);
+    setPauseShown(false);
+    setBreakStepsPassed(0);
+    setCurrentStep(1);
+    setStage('quiz');
   };
 
   const handleFormChange = (field: keyof FormData, value: string) => {
@@ -378,23 +400,40 @@ const App: React.FC = () => {
                     Если у вас уже есть риелтор, отслеживайте его действия с помощью умного трекера сделки!
                   </p>
                 ) : (
-                  <>
-                    <div className="mt-4 space-y-2 text-sm">
-                      <p className="font-medium text-black">Обратите внимание на зоны риска:</p>
-                      <div className="flex flex-col gap-1">
-                        <CategoryBadge label="Юридические" level={getRiskLevelText(categoryScores.legal)} />
-                        <CategoryBadge label="Финансовые" level={getRiskLevelText(categoryScores.financial)} />
-                        <CategoryBadge label="Процесс" level={getRiskLevelText(categoryScores.process)} />
-                      </div>
+                  <div className="mt-4 space-y-2 text-sm">
+                    <p className="font-medium text-black">Обратите внимание на зоны риска:</p>
+                    <div className="flex flex-col gap-1">
+                      <CategoryBadge label="Юридические" level={getRiskLevelText(categoryScores.legal)} />
+                      <CategoryBadge label="Финансовые" level={getRiskLevelText(categoryScores.financial)} />
+                      <CategoryBadge label="Процесс" level={getRiskLevelText(categoryScores.process)} />
                     </div>
-                    <p className="mt-4 text-xs text-gray-600">
-                      Даже если вы понимаете процесс, контролировать сделку полностью самостоятельно сложно.
-                    </p>
-                  </>
+                  </div>
                 )}
               </div>
 
-              <WhyWorksShowcase title="Как это выглядит на практике" />
+              {!isPerfectScore && (
+                <p className="text-xs text-gray-600 leading-relaxed px-0.5">
+                  Даже если вы понимаете процесс, контролировать сделку полностью самостоятельно сложно.
+                </p>
+              )}
+
+              <button
+                type="button"
+                onClick={restartQuiz}
+                className="w-full py-3 rounded-xl border border-gray-300 text-sm text-gray-800 font-medium active:scale-[0.98] transition-transform"
+              >
+                Пройти тест ещё раз
+              </button>
+
+              <button
+                type="button"
+                onClick={() => openWhyWorks('result', 'safe')}
+                className="w-full py-3 rounded-xl border border-gray-300 text-sm text-gray-800 font-medium active:scale-[0.98] transition-transform"
+              >
+                Почему работа с нами — безопаснее?
+              </button>
+
+              <WhyWorksShowcase />
 
               <button
                 onClick={goToFormFromResult}
@@ -402,27 +441,19 @@ const App: React.FC = () => {
               >
                 Разобрать мою ситуацию
               </button>
-              <a
-                href={TRACKER_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="text-xs text-accent underline text-center font-medium"
-              >
-                Посмотреть полный пример сделки
-              </a>
             </section>
           )}
 
           {renderedStage === 'why_works' && (
             <section className="flex flex-col gap-4">
-              <button
-                type="button"
-                onClick={backFromWhyWorksToForm}
-                className="self-start text-xs text-gray-500"
-              >
+              <button type="button" onClick={backFromWhyWorks} className="self-start text-xs text-gray-500">
                 ← Назад
               </button>
-              <h2 className="text-lg font-semibold text-black">Почему это работает?</h2>
+              <h2 className="text-lg font-semibold text-black">
+                {whyWorksVariant === 'safe' && 'Почему работа с нами безопаснее?'}
+                {whyWorksVariant === 'realtor' && 'Как улучшить взаимодействие с риелтором?'}
+                {whyWorksVariant === 'default' && 'Почему это работает?'}
+              </h2>
               <p className="text-sm text-gray-700">
                 Прозрачные этапы, онлайн-статус и проверенный профиль специалиста — в одном месте.
               </p>
@@ -501,10 +532,17 @@ const App: React.FC = () => {
               <section className="flex flex-col gap-2 pb-4">
                 <button
                   type="button"
-                  onClick={openWhyWorksFromForm}
+                  onClick={() => openWhyWorks('form', 'default')}
                   className="w-full py-3 rounded-xl border border-gray-300 text-sm text-gray-700 font-medium active:scale-[0.98] transition-transform"
                 >
                   Почему это работает?
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openWhyWorks('form', 'realtor')}
+                  className="w-full py-3 rounded-xl border border-gray-300 text-sm text-gray-700 font-medium active:scale-[0.98] transition-transform"
+                >
+                  Как улучшить взаимодействие с риелтором?
                 </button>
               </section>
             </>
@@ -533,98 +571,133 @@ const CategoryBadge: React.FC<CategoryBadgeProps> = ({ label, level }) => {
   );
 };
 
-interface WhyWorksShowcaseProps {
-  title?: string;
-}
+const RealtorShareCta: React.FC = () => (
+  <a
+    href={SDELKA_PROJECT_URL}
+    target="_blank"
+    rel="noreferrer"
+    className="block w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-center text-xs text-gray-800 leading-snug active:scale-[0.99] transition-transform"
+  >
+    Уже работаете с риелтором? Улучшите опыт и поделитесь ссылкой!
+    <span className="mt-1 block text-accent font-semibold">sdelka-web.ru →</span>
+  </a>
+);
 
-const WhyWorksShowcase: React.FC<WhyWorksShowcaseProps> = ({ title }) => (
-  <div className="flex flex-col gap-4">
-    {title && <p className="text-sm font-semibold text-black">{title}</p>}
+const DemoImageSlider: React.FC = () => {
+  const [slide, setSlide] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+
+  const go = (dir: -1 | 1) => {
+    setSlide((s) => Math.max(0, Math.min(1, s + dir)));
+  };
+
+  return (
     <div className="rounded-xl overflow-hidden border border-gray-100 bg-slate-50 shadow-sm">
-      <div className="bg-white p-4 shadow-sm">
-        <p className="text-center text-xs text-gray-500">Сделка</p>
-        <p className="text-center text-lg font-semibold text-black mt-1">Селехино</p>
-        <p className="text-xs text-gray-500 mt-3">Что происходит сейчас</p>
-        <p className="text-sm font-semibold text-black mt-1">Внесён аванс, готовимся к сделке</p>
-        <p className="text-xs text-gray-400 mt-2">В этой стадии: 0 дней · Последнее обновление недавно</p>
-      </div>
-      <div className="p-4 bg-white mt-2 mx-2 mb-2 rounded-xl border border-gray-100">
-        <p className="text-sm font-semibold text-black mb-3">Прогресс</p>
-        <div className="flex flex-col gap-2">
-          <div className="rounded-xl bg-purple-50 px-3 py-2.5 flex justify-between items-center text-purple-700 text-sm font-medium">
-            Обсуждение
-            <span aria-hidden>✓</span>
+      <div
+        className="overflow-hidden touch-pan-y"
+        onTouchStart={(e) => {
+          touchStartX.current = e.touches[0]?.clientX ?? null;
+        }}
+        onTouchEnd={(e) => {
+          const start = touchStartX.current;
+          touchStartX.current = null;
+          const end = e.changedTouches[0]?.clientX;
+          if (start == null || end == null) return;
+          const dx = end - start;
+          // свайп вправо → следующий экран (портфолио)
+          if (dx > 48) go(1);
+          if (dx < -48) go(-1);
+        }}
+      >
+        <div
+          className="flex transition-transform duration-300 ease-in-out"
+          style={{ transform: `translateX(-${slide * 100}%)` }}
+        >
+          <div className="min-w-full shrink-0 px-4 pt-4 pb-3">
+            <p className="text-sm font-semibold text-black text-center mb-3">
+              Отслеживайте сделку в реальном времени!
+            </p>
+            <img
+              src={TRACKER_PREVIEW_IMG}
+              alt="Пример трекера сделки"
+              className="w-full rounded-lg border border-gray-100 bg-white object-cover object-top shadow-sm"
+              loading="lazy"
+            />
           </div>
-          <div className="rounded-xl bg-purple-50 px-3 py-2.5 flex justify-between items-center text-purple-700 text-sm font-medium">
-            Показы
-            <span aria-hidden>✓</span>
+          <div className="min-w-full shrink-0 px-4 pt-4 pb-3">
+            <p className="text-sm font-semibold text-black text-center mb-3 leading-snug px-1">
+              Изучите портфолио риелтора прежде чем начать работать с ним
+            </p>
+            <img
+              src={PORTFOLIO_PREVIEW_IMG}
+              alt="Пример портфолио риелтора"
+              className="w-full rounded-lg border border-gray-100 bg-white object-cover object-top shadow-sm"
+              loading="lazy"
+            />
           </div>
-          <div className="rounded-xl bg-teal-600 px-3 py-2.5 flex justify-between items-center text-white text-sm font-medium shadow-md shadow-teal-600/25">
-            Договорённость
-            <span aria-hidden>✓</span>
-          </div>
-          <div className="rounded-xl bg-gray-100 px-3 py-2.5 text-gray-500 text-sm">Сделка</div>
-          <div className="rounded-xl bg-gray-100 px-3 py-2.5 text-gray-500 text-sm">Завершение</div>
         </div>
       </div>
-      <div className="px-4 pb-4">
-        <div className="rounded-xl bg-gray-50 px-3 py-2 text-sm text-gray-700">Заметки: Ипотеку одобрили</div>
-      </div>
-      <div className="px-4 pb-4">
-        <a
-          href={TRACKER_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="block w-full py-3 rounded-xl bg-accent text-white text-center text-sm font-semibold"
+      <div className="flex items-center justify-between gap-2 px-4 pb-4 pt-1">
+        <button
+          type="button"
+          onClick={() => go(-1)}
+          disabled={slide === 0}
+          className="py-2 px-3 rounded-xl border border-gray-300 text-xs text-gray-700 disabled:opacity-40"
         >
-          Открыть умный трекер
-        </a>
+          Назад
+        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            aria-label="Слайд 1"
+            onClick={() => setSlide(0)}
+            className={`h-2 w-8 rounded-full transition-colors ${slide === 0 ? 'bg-accent' : 'bg-gray-200'}`}
+          />
+          <button
+            type="button"
+            aria-label="Слайд 2"
+            onClick={() => setSlide(1)}
+            className={`h-2 w-8 rounded-full transition-colors ${slide === 1 ? 'bg-accent' : 'bg-gray-200'}`}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={() => go(1)}
+          disabled={slide === 1}
+          className="py-2 px-3 rounded-xl border border-gray-300 text-xs text-gray-700 disabled:opacity-40"
+        >
+          Далее
+        </button>
       </div>
+      <p className="text-center text-xs text-gray-500 pb-3">Свайп вправо — портфолио риелтора</p>
+    </div>
+  );
+};
+
+const WhyWorksShowcase: React.FC = () => (
+  <div className="flex flex-col gap-4">
+    <DemoImageSlider />
+
+    <div className="flex flex-col gap-2">
+      <a
+        href={TRACKER_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="block w-full py-3 rounded-xl bg-accent text-white text-center text-sm font-semibold active:scale-[0.98] transition-transform"
+      >
+        Открыть умный трекер
+      </a>
+      <a
+        href={PORTFOLIO_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="block w-full py-3 rounded-xl border border-gray-200 text-center text-sm font-semibold text-black active:scale-[0.98] transition-transform"
+      >
+        Открыть онлайн-портфолио
+      </a>
     </div>
 
-    <div className="rounded-xl overflow-hidden border border-gray-100 bg-white shadow-sm">
-      <div className="bg-gradient-to-br from-sky-50 to-white p-4">
-        <div className="flex gap-3">
-          <div className="relative shrink-0">
-            <div className="h-14 w-14 rounded-full bg-gray-200 ring-2 ring-white shadow" />
-            <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full bg-emerald-500 ring-2 ring-white" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="font-semibold text-black">Виктор Степанов</p>
-            <p className="text-sm text-emerald-600 font-medium">Риелтор</p>
-            <p className="text-xs text-gray-600 mt-1">Помогу подобрать лучший вариант</p>
-            <div className="flex gap-4 mt-2 text-xs text-gray-500">
-              <span>Хабаровск</span>
-              <span>5 лет опыта</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-px bg-gray-100 border-t border-gray-100">
-        <div className="bg-white p-3 text-center text-xs">
-          <p className="text-lg font-semibold text-black">3</p>
-          <p className="text-gray-500 mt-1 leading-tight">сделки за 30 дней</p>
-        </div>
-        <div className="bg-white p-3 text-center text-xs">
-          <p className="text-lg font-semibold text-black">2</p>
-          <p className="text-gray-500 mt-1 leading-tight">подтверждения</p>
-        </div>
-        <div className="bg-white p-3 text-center text-xs">
-          <p className="text-sm font-semibold text-emerald-600">Активен</p>
-          <p className="text-gray-500 mt-1">статус</p>
-        </div>
-      </div>
-      <div className="p-4">
-        <a
-          href={PORTFOLIO_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="block w-full py-3 rounded-xl border border-gray-200 text-center text-sm font-semibold text-black"
-        >
-          Открыть онлайн-портфолио
-        </a>
-      </div>
-    </div>
+    <RealtorShareCta />
   </div>
 );
 
