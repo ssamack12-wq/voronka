@@ -14,7 +14,10 @@ interface FormData {
 }
 
 type SubmitStatus = 'idle' | 'loading' | 'success' | 'error';
-type Stage = 'hero' | 'quiz' | 'break' | 'result' | 'demo_bridge' | 'form';
+type Stage = 'hero' | 'quiz' | 'break' | 'result' | 'why_works' | 'form';
+
+const TRACKER_URL = 'https://sdelka-web.ru/s/063b531e1f3f44419ed679c4b173c9fb';
+const PORTFOLIO_URL = 'https://sdelka-web.ru/agent/1';
 
 const TOTAL_STEPS = questions.length;
 const STAGE_TRANSITION_MS = 240;
@@ -82,8 +85,7 @@ const App: React.FC = () => {
   const [stage, setStage] = useState<Stage>('hero');
   const [renderedStage, setRenderedStage] = useState<Stage>('hero');
   const [stageVisible, setStageVisible] = useState<boolean>(true);
-  const [cardIndex, setCardIndex] = useState<number>(0);
-  const [formBackStage, setFormBackStage] = useState<'result' | 'demo_bridge'>('demo_bridge');
+  const [formBackStage, setFormBackStage] = useState<'result'>('result');
   const [formData, setFormData] = useState<FormData>({ phone: '', city: '', type: '' });
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -185,6 +187,17 @@ const App: React.FC = () => {
     goToForm();
   };
 
+  const openWhyWorksFromForm = () => {
+    setStage('why_works');
+  };
+
+  const backFromWhyWorksToForm = () => {
+    setStage('form');
+    window.setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
+  };
+
   const handleFormChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -236,18 +249,12 @@ const App: React.FC = () => {
   const currentQuestion = currentStep > 0 ? questions[currentStep - 1] : null;
   const progress = currentStep === 0 ? 0 : (currentStep / TOTAL_STEPS) * 100;
 
-  const canGoPrev = cardIndex > 0;
-  const canGoNext = cardIndex < 2;
-
-  const handleOpenDemoBridge = () => {
-    setCardIndex(0);
-    setStage('demo_bridge');
-  };
-
-  const handleGoToFormFromDemoBridge = () => {
-    setFormBackStage('demo_bridge');
+  const goToFormFromResult = () => {
+    setFormBackStage('result');
     goToForm();
   };
+
+  const isPerfectScore = readiness === 100;
 
   return (
     <div className="min-h-screen bg-white flex justify-center">
@@ -358,101 +365,68 @@ const App: React.FC = () => {
             <section className="flex flex-col gap-4">
               <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
                 <h2 className="text-lg font-semibold text-black mb-2">Ваш результат</h2>
-                <p className="text-base font-semibold text-black">{readinessText}</p>
-                <div className="mt-4 space-y-2 text-sm">
-                  <p className="font-medium text-black">Категории рисков:</p>
-                  <div className="flex flex-col gap-1">
-                    <CategoryBadge label="Юридические" level={getRiskLevelText(categoryScores.legal)} />
-                    <CategoryBadge label="Финансовые" level={getRiskLevelText(categoryScores.financial)} />
-                    <CategoryBadge label="Процесс" level={getRiskLevelText(categoryScores.process)} />
-                  </div>
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-4xl font-semibold text-black">{readiness}%</span>
+                  <span className="text-sm text-gray-600">готовности к сделке</span>
                 </div>
-                <p className="mt-4 text-xs text-gray-600">
-                  Даже если вы понимаете процесс, контролировать сделку полностью самостоятельно сложно.
-                </p>
-                <button
-                  onClick={handleOpenDemoBridge}
-                  className="mt-4 w-full py-3 rounded-xl bg-accent text-white font-semibold text-base active:scale-[0.98] transition-transform"
-                >
-                  Посмотреть, как решают такие задачи
-                </button>
-              </div>
-            </section>
-          )}
-
-          {renderedStage === 'demo_bridge' && (
-            <section className="flex flex-col gap-4">
-              <h2 className="text-lg font-semibold text-black">{readinessText}</h2>
-              <p className="text-sm text-gray-700">
-                Даже если вы понимаете процесс, контролировать сделку полностью самостоятельно сложно.
-              </p>
-
-              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                <div className="overflow-hidden">
-                  <div
-                    className="flex transition-transform duration-300 ease-in-out"
-                    style={{ transform: `translateX(-${cardIndex * 100}%)` }}
-                  >
-                    <DemoCard
-                      title="Как выглядит сделка с контролем"
-                      points={['этапы сделки', 'статус онлайн', 'прозрачный процесс']}
-                    />
-                    <DemoCard
-                      title="Контроль каждого этапа"
-                      points={['документы', 'проверка', 'регистрация']}
-                    />
-                    <DemoCard
-                      title="Всегда видно, что происходит"
-                      points={['статус', 'прогресс', 'следующий шаг']}
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-4 flex items-center justify-between gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setCardIndex((prev) => Math.max(0, prev - 1))}
-                    disabled={!canGoPrev}
-                    className="py-2 px-3 rounded-xl border border-gray-300 text-xs text-gray-700 disabled:opacity-40"
-                  >
-                    Назад
-                  </button>
-                  <div className="flex items-center gap-1">
-                    {[0, 1, 2].map((index) => (
-                      <span
-                        key={index}
-                        className={`h-1.5 w-5 rounded-full ${index === cardIndex ? 'bg-accent' : 'bg-gray-200'}`}
-                      />
-                    ))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setCardIndex((prev) => Math.min(2, prev + 1))}
-                    disabled={!canGoNext}
-                    className="py-2 px-3 rounded-xl border border-gray-300 text-xs text-gray-700 disabled:opacity-40"
-                  >
-                    Далее
-                  </button>
-                </div>
+                {!isPerfectScore && (
+                  <p className="mt-3 text-base font-semibold text-black">{readinessText}</p>
+                )}
+                {isPerfectScore ? (
+                  <p className="mt-4 text-sm text-gray-800 leading-relaxed">
+                    Вы безупречны! Если требуется, мы подберём риелтора, вы сможете увидеть его онлайн-портфолио.
+                    Если у вас уже есть риелтор, отслеживайте его действия с помощью умного трекера сделки!
+                  </p>
+                ) : (
+                  <>
+                    <div className="mt-4 space-y-2 text-sm">
+                      <p className="font-medium text-black">Обратите внимание на зоны риска:</p>
+                      <div className="flex flex-col gap-1">
+                        <CategoryBadge label="Юридические" level={getRiskLevelText(categoryScores.legal)} />
+                        <CategoryBadge label="Финансовые" level={getRiskLevelText(categoryScores.financial)} />
+                        <CategoryBadge label="Процесс" level={getRiskLevelText(categoryScores.process)} />
+                      </div>
+                    </div>
+                    <p className="mt-4 text-xs text-gray-600">
+                      Даже если вы понимаете процесс, контролировать сделку полностью самостоятельно сложно.
+                    </p>
+                  </>
+                )}
               </div>
 
-              <p className="text-sm text-gray-700">
-                Такой формат помогает избежать ошибок и держать сделку под контролем.
-              </p>
+              <WhyWorksShowcase title="Как это выглядит на практике" />
+
               <button
-                onClick={handleGoToFormFromDemoBridge}
+                onClick={goToFormFromResult}
                 className="w-full py-3 rounded-xl bg-accent text-white font-semibold text-base active:scale-[0.98] transition-transform"
               >
                 Разобрать мою ситуацию
               </button>
               <a
-                href="https://sdelka-web.ru/s/063b531e1f3f44419ed679c4b173c9fb"
+                href={TRACKER_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs text-gray-500 underline text-center"
+                className="text-xs text-accent underline text-center font-medium"
               >
-                Посмотреть пример сделки
+                Посмотреть полный пример сделки
               </a>
+            </section>
+          )}
+
+          {renderedStage === 'why_works' && (
+            <section className="flex flex-col gap-4">
+              <button
+                type="button"
+                onClick={backFromWhyWorksToForm}
+                className="self-start text-xs text-gray-500"
+              >
+                ← Назад
+              </button>
+              <h2 className="text-lg font-semibold text-black">Почему это работает?</h2>
+              <p className="text-sm text-gray-700">
+                Прозрачные этапы, онлайн-статус и проверенный профиль специалиста — в одном месте.
+              </p>
+              <WhyWorksShowcase />
             </section>
           )}
 
@@ -525,11 +499,13 @@ const App: React.FC = () => {
               </section>
 
               <section className="flex flex-col gap-2 pb-4">
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex flex-col gap-2">
-                  <p className="text-sm font-semibold text-black">Почему это работает</p>
-                  <p className="text-sm text-gray-700">пример реальной сделки</p>
-                  <p className="text-sm text-gray-700">прозрачный процесс</p>
-                </div>
+                <button
+                  type="button"
+                  onClick={openWhyWorksFromForm}
+                  className="w-full py-3 rounded-xl border border-gray-300 text-sm text-gray-700 font-medium active:scale-[0.98] transition-transform"
+                >
+                  Почему это работает?
+                </button>
               </section>
             </>
           )}
@@ -557,19 +533,98 @@ const CategoryBadge: React.FC<CategoryBadgeProps> = ({ label, level }) => {
   );
 };
 
-interface DemoCardProps {
-  title: string;
-  points: string[];
+interface WhyWorksShowcaseProps {
+  title?: string;
 }
 
-const DemoCard: React.FC<DemoCardProps> = ({ title, points }) => (
-  <div className="min-w-full">
-    <h3 className="text-base font-semibold text-black">{title}</h3>
-    <ul className="mt-3 text-sm text-gray-700 space-y-2">
-      {points.map((point) => (
-        <li key={point}>— {point}</li>
-      ))}
-    </ul>
+const WhyWorksShowcase: React.FC<WhyWorksShowcaseProps> = ({ title }) => (
+  <div className="flex flex-col gap-4">
+    {title && <p className="text-sm font-semibold text-black">{title}</p>}
+    <div className="rounded-xl overflow-hidden border border-gray-100 bg-slate-50 shadow-sm">
+      <div className="bg-white p-4 shadow-sm">
+        <p className="text-center text-xs text-gray-500">Сделка</p>
+        <p className="text-center text-lg font-semibold text-black mt-1">Селехино</p>
+        <p className="text-xs text-gray-500 mt-3">Что происходит сейчас</p>
+        <p className="text-sm font-semibold text-black mt-1">Внесён аванс, готовимся к сделке</p>
+        <p className="text-xs text-gray-400 mt-2">В этой стадии: 0 дней · Последнее обновление недавно</p>
+      </div>
+      <div className="p-4 bg-white mt-2 mx-2 mb-2 rounded-xl border border-gray-100">
+        <p className="text-sm font-semibold text-black mb-3">Прогресс</p>
+        <div className="flex flex-col gap-2">
+          <div className="rounded-xl bg-purple-50 px-3 py-2.5 flex justify-between items-center text-purple-700 text-sm font-medium">
+            Обсуждение
+            <span aria-hidden>✓</span>
+          </div>
+          <div className="rounded-xl bg-purple-50 px-3 py-2.5 flex justify-between items-center text-purple-700 text-sm font-medium">
+            Показы
+            <span aria-hidden>✓</span>
+          </div>
+          <div className="rounded-xl bg-teal-600 px-3 py-2.5 flex justify-between items-center text-white text-sm font-medium shadow-md shadow-teal-600/25">
+            Договорённость
+            <span aria-hidden>✓</span>
+          </div>
+          <div className="rounded-xl bg-gray-100 px-3 py-2.5 text-gray-500 text-sm">Сделка</div>
+          <div className="rounded-xl bg-gray-100 px-3 py-2.5 text-gray-500 text-sm">Завершение</div>
+        </div>
+      </div>
+      <div className="px-4 pb-4">
+        <div className="rounded-xl bg-gray-50 px-3 py-2 text-sm text-gray-700">Заметки: Ипотеку одобрили</div>
+      </div>
+      <div className="px-4 pb-4">
+        <a
+          href={TRACKER_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="block w-full py-3 rounded-xl bg-accent text-white text-center text-sm font-semibold"
+        >
+          Открыть умный трекер
+        </a>
+      </div>
+    </div>
+
+    <div className="rounded-xl overflow-hidden border border-gray-100 bg-white shadow-sm">
+      <div className="bg-gradient-to-br from-sky-50 to-white p-4">
+        <div className="flex gap-3">
+          <div className="relative shrink-0">
+            <div className="h-14 w-14 rounded-full bg-gray-200 ring-2 ring-white shadow" />
+            <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full bg-emerald-500 ring-2 ring-white" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold text-black">Виктор Степанов</p>
+            <p className="text-sm text-emerald-600 font-medium">Риелтор</p>
+            <p className="text-xs text-gray-600 mt-1">Помогу подобрать лучший вариант</p>
+            <div className="flex gap-4 mt-2 text-xs text-gray-500">
+              <span>Хабаровск</span>
+              <span>5 лет опыта</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-3 gap-px bg-gray-100 border-t border-gray-100">
+        <div className="bg-white p-3 text-center text-xs">
+          <p className="text-lg font-semibold text-black">3</p>
+          <p className="text-gray-500 mt-1 leading-tight">сделки за 30 дней</p>
+        </div>
+        <div className="bg-white p-3 text-center text-xs">
+          <p className="text-lg font-semibold text-black">2</p>
+          <p className="text-gray-500 mt-1 leading-tight">подтверждения</p>
+        </div>
+        <div className="bg-white p-3 text-center text-xs">
+          <p className="text-sm font-semibold text-emerald-600">Активен</p>
+          <p className="text-gray-500 mt-1">статус</p>
+        </div>
+      </div>
+      <div className="p-4">
+        <a
+          href={PORTFOLIO_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="block w-full py-3 rounded-xl border border-gray-200 text-center text-sm font-semibold text-black"
+        >
+          Открыть онлайн-портфолио
+        </a>
+      </div>
+    </div>
   </div>
 );
 
