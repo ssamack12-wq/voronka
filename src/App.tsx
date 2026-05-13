@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { MAX_SCORE, Question, questions } from './questions';
+import trackerPreviewUrl from './assets/tracker-preview.svg?url';
+import portfolioPreviewUrl from './assets/portfolio-preview.svg?url';
 
 interface AnswerRecord {
   questionId: number;
@@ -20,10 +22,9 @@ const TRACKER_URL = 'https://sdelka-web.ru/s/063b531e1f3f44419ed679c4b173c9fb';
 const PORTFOLIO_URL = 'https://sdelka-web.ru/agent/1';
 const SDELKA_PROJECT_URL = 'https://sdelka-web.ru';
 
-const TRACKER_PREVIEW_IMG = '/tracker-preview.svg';
-const PORTFOLIO_PREVIEW_IMG = '/portfolio-preview.svg';
-
 const TOTAL_STEPS = questions.length;
+const BACK_BUTTON_CLASS =
+  'w-full py-3 rounded-xl border border-gray-300 text-sm text-gray-700 font-medium active:scale-[0.98] transition-transform';
 const STAGE_TRANSITION_MS = 240;
 
 function formatPhone(value: string): string {
@@ -89,7 +90,7 @@ const App: React.FC = () => {
   const [stage, setStage] = useState<Stage>('hero');
   const [renderedStage, setRenderedStage] = useState<Stage>('hero');
   const [stageVisible, setStageVisible] = useState<boolean>(true);
-  const [formBackStage, setFormBackStage] = useState<'result'>('result');
+  const [formBackStage, setFormBackStage] = useState<'result' | 'break'>('result');
   const [whyWorksReturnTarget, setWhyWorksReturnTarget] = useState<'form' | 'result'>('form');
   const [whyWorksVariant, setWhyWorksVariant] = useState<'default' | 'safe' | 'realtor'>('default');
   const [formData, setFormData] = useState<FormData>({ phone: '', city: '', type: '' });
@@ -189,7 +190,7 @@ const App: React.FC = () => {
 
   const handleGetHelpFromBreak = () => {
     setShowBreakScreen(false);
-    setFormBackStage('result');
+    setFormBackStage('break');
     goToForm();
   };
 
@@ -274,6 +275,15 @@ const App: React.FC = () => {
   const goToFormFromResult = () => {
     setFormBackStage('result');
     goToForm();
+  };
+
+  const handleBackFromForm = () => {
+    if (formBackStage === 'break') {
+      setShowBreakScreen(true);
+      setStage('break');
+    } else {
+      setStage('result');
+    }
   };
 
   const isPerfectScore = readiness === 100;
@@ -433,7 +443,7 @@ const App: React.FC = () => {
                 Почему работа с нами — безопаснее?
               </button>
 
-              <WhyWorksShowcase />
+              <WhyWorksShowcase showOpenLinks={false} />
 
               <button
                 onClick={goToFormFromResult}
@@ -446,8 +456,8 @@ const App: React.FC = () => {
 
           {renderedStage === 'why_works' && (
             <section className="flex flex-col gap-4">
-              <button type="button" onClick={backFromWhyWorks} className="self-start text-xs text-gray-500">
-                ← Назад
+              <button type="button" onClick={backFromWhyWorks} className={BACK_BUTTON_CLASS}>
+                Назад
               </button>
               <h2 className="text-lg font-semibold text-black">
                 {whyWorksVariant === 'safe' && 'Почему работа с нами безопаснее?'}
@@ -457,19 +467,15 @@ const App: React.FC = () => {
               <p className="text-sm text-gray-700">
                 Прозрачные этапы, онлайн-статус и проверенный профиль специалиста — в одном месте.
               </p>
-              <WhyWorksShowcase />
+              <WhyWorksShowcase showOpenLinks />
             </section>
           )}
 
           {renderedStage === 'form' && (
             <>
               <section ref={formRef} className="flex flex-col gap-4">
-                <button
-                  type="button"
-                  onClick={() => setStage(formBackStage)}
-                  className="self-start text-xs text-gray-500"
-                >
-                  ← Назад
+                <button type="button" onClick={handleBackFromForm} className={BACK_BUTTON_CLASS}>
+                  Назад
                 </button>
                 <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
                   <h3 className="text-lg font-semibold text-black mb-2">Оставить заявку</h3>
@@ -530,17 +536,19 @@ const App: React.FC = () => {
               </section>
 
               <section className="flex flex-col gap-2 pb-4">
-                <button
-                  type="button"
-                  onClick={() => openWhyWorks('form', 'default')}
-                  className="w-full py-3 rounded-xl border border-gray-300 text-sm text-gray-700 font-medium active:scale-[0.98] transition-transform"
-                >
-                  Почему это работает?
-                </button>
+                {formBackStage !== 'break' && (
+                  <button
+                    type="button"
+                    onClick={() => openWhyWorks('form', 'default')}
+                    className={BACK_BUTTON_CLASS}
+                  >
+                    Почему это работает?
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => openWhyWorks('form', 'realtor')}
-                  className="w-full py-3 rounded-xl border border-gray-300 text-sm text-gray-700 font-medium active:scale-[0.98] transition-transform"
+                  className={BACK_BUTTON_CLASS}
                 >
                   Как улучшить взаимодействие с риелтором?
                 </button>
@@ -618,10 +626,11 @@ const DemoImageSlider: React.FC = () => {
               Отслеживайте сделку в реальном времени!
             </p>
             <img
-              src={TRACKER_PREVIEW_IMG}
+              src={trackerPreviewUrl}
               alt="Пример трекера сделки"
               className="w-full rounded-lg border border-gray-100 bg-white object-cover object-top shadow-sm"
-              loading="lazy"
+              loading="eager"
+              decoding="async"
             />
           </div>
           <div className="min-w-full shrink-0 px-4 pt-4 pb-3">
@@ -629,10 +638,11 @@ const DemoImageSlider: React.FC = () => {
               Изучите портфолио риелтора прежде чем начать работать с ним
             </p>
             <img
-              src={PORTFOLIO_PREVIEW_IMG}
+              src={portfolioPreviewUrl}
               alt="Пример портфолио риелтора"
               className="w-full rounded-lg border border-gray-100 bg-white object-cover object-top shadow-sm"
-              loading="lazy"
+              loading="eager"
+              decoding="async"
             />
           </div>
         </div>
@@ -674,28 +684,35 @@ const DemoImageSlider: React.FC = () => {
   );
 };
 
-const WhyWorksShowcase: React.FC = () => (
+interface WhyWorksShowcaseProps {
+  /** Кнопки «Открыть трекер / портфолио» — только в потоке «Почему работа с нами безопаснее?» */
+  showOpenLinks?: boolean;
+}
+
+const WhyWorksShowcase: React.FC<WhyWorksShowcaseProps> = ({ showOpenLinks = true }) => (
   <div className="flex flex-col gap-4">
     <DemoImageSlider />
 
-    <div className="flex flex-col gap-2">
-      <a
-        href={TRACKER_URL}
-        target="_blank"
-        rel="noreferrer"
-        className="block w-full py-3 rounded-xl bg-accent text-white text-center text-sm font-semibold active:scale-[0.98] transition-transform"
-      >
-        Открыть умный трекер
-      </a>
-      <a
-        href={PORTFOLIO_URL}
-        target="_blank"
-        rel="noreferrer"
-        className="block w-full py-3 rounded-xl border border-gray-200 text-center text-sm font-semibold text-black active:scale-[0.98] transition-transform"
-      >
-        Открыть онлайн-портфолио
-      </a>
-    </div>
+    {showOpenLinks && (
+      <div className="flex flex-col gap-2">
+        <a
+          href={TRACKER_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="block w-full py-3 rounded-xl bg-accent text-white text-center text-sm font-semibold active:scale-[0.98] transition-transform"
+        >
+          Открыть умный трекер
+        </a>
+        <a
+          href={PORTFOLIO_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="block w-full py-3 rounded-xl border border-gray-200 text-center text-sm font-semibold text-black active:scale-[0.98] transition-transform"
+        >
+          Открыть онлайн-портфолио
+        </a>
+      </div>
+    )}
 
     <RealtorShareCta />
   </div>
