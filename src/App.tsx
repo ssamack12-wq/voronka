@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { MAX_SCORE, Question, questions } from './questions';
-import trackerPreviewUrl from './assets/tracker-preview.png?url';
-import portfolioPreviewUrl from './assets/portfolio-preview.png?url';
+import trackerPreviewUrl from './assets/tracker-preview.svg?url';
+import portfolioPreviewUrl from './assets/portfolio-preview.svg?url';
 
 interface AnswerRecord {
   questionId: number;

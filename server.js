@@ -39,8 +39,11 @@ app.post('/api/lead', async (req, res) => {
   }
 });
 
-// SPA fallback
+// SPA fallback: не отдавать index.html вместо отсутствующего файла (иначе <img src="*.svg"> ломается)
 app.get('*', (req, res) => {
+  if (/\.[a-z0-9]+$/i.test(req.path)) {
+    return res.status(404).end();
+  }
   res.sendFile(path.join(distDir, 'index.html'));
 });
 
