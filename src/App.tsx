@@ -10,8 +10,6 @@ function quizImageProps(alt: string) {
   return {
     alt,
     className: 'quiz-image',
-    width: 360,
-    height: 520,
     loading: 'eager' as const,
     decoding: 'async' as const,
     fetchPriority: 'high' as const,
@@ -336,7 +334,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white flex justify-center">
-      <div className="w-full max-w-screen-mobile px-4 py-6 flex flex-col gap-6 min-h-screen">
+      <div className="w-full max-w-screen-mobile px-4 py-3 sm:py-6 flex flex-col gap-4 sm:gap-6 min-h-screen">
         <div
           className={`transition-all ease-in-out flex flex-1 flex-col min-h-0 ${
             stageVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
@@ -501,15 +499,15 @@ const App: React.FC = () => {
           )}
 
           {renderedStage === 'why_works' && (
-            <section className="flex flex-col gap-4 flex-1 min-h-[50vh]">
-              <h2 className="text-lg font-semibold text-black">
+            <section className="quiz-why-works-screen flex flex-col gap-2 min-h-0 flex-1 overflow-hidden">
+              <h2 className="text-base sm:text-lg font-semibold text-black leading-snug shrink-0">
                 {whyWorksVariant === 'safe' && 'Почему работа с нами безопаснее?'}
                 {whyWorksVariant === 'realtor' && 'Как улучшить взаимодействие с риелтором?'}
               </h2>
-              <p className="text-sm text-gray-700">
+              <p className="text-xs sm:text-sm text-gray-700 leading-snug shrink-0 line-clamp-3">
                 Прозрачные этапы, онлайн-статус и проверенный профиль специалиста — в одном месте.
               </p>
-              <WhyWorksShowcase showOpenLinks />
+              <WhyWorksShowcase showOpenLinks compact />
               <button type="button" onClick={backFromWhyWorks} className={`${BACK_BUTTON_CLASS} mt-auto shrink-0`}>
                 Назад
               </button>
@@ -614,35 +612,44 @@ const CategoryBadge: React.FC<CategoryBadgeProps> = ({ label, level }) => {
   );
 };
 
-const RealtorShareCta: React.FC = () => (
+const RealtorShareCta: React.FC<{ compact?: boolean }> = ({ compact }) => (
   <a
     href={SDELKA_PROJECT_URL}
     target="_blank"
     rel="noreferrer"
-    className="block w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-center text-xs text-gray-800 leading-snug active:scale-[0.99] transition-transform"
+    className={`block w-full rounded-xl border border-gray-200 bg-gray-50 text-center text-gray-800 leading-snug active:scale-[0.99] transition-transform ${
+      compact ? 'px-3 py-2 text-[10px]' : 'px-4 py-3 text-xs'
+    }`}
   >
     Уже работаете с риелтором? Улучшите опыт и поделитесь ссылкой!
     <span className="mt-1 block text-accent font-semibold">sdelka-web.ru →</span>
   </a>
 );
 
-const DemoImageSlider: React.FC<{ hideTrackerLeadLine?: boolean; trackerOnly?: boolean }> = ({
+const DemoImageSlider: React.FC<{ hideTrackerLeadLine?: boolean; trackerOnly?: boolean; compact?: boolean }> = ({
   hideTrackerLeadLine,
-  trackerOnly
+  trackerOnly,
+  compact
 }) => {
   const [slide, setSlide] = useState(0);
   const touchStartX = useRef<number | null>(null);
 
   const maxSlide = trackerOnly ? 0 : 1;
+  const trackWidthPct = trackerOnly ? 100 : 200;
+  const translatePct = trackerOnly ? 0 : slide * 50;
 
   const go = (dir: -1 | 1) => {
     setSlide((s) => Math.max(0, Math.min(maxSlide, s + dir)));
   };
 
   return (
-    <div className="quiz-slider-root rounded-xl border border-gray-100 bg-slate-50 shadow-sm overflow-hidden">
+    <div
+      className={`quiz-slider-root rounded-xl border border-gray-100 bg-slate-50 shadow-sm overflow-hidden flex flex-col min-h-0 min-w-0 max-w-full ${
+        compact ? 'quiz-slider-root--compact' : ''
+      }`}
+    >
       <div
-        className="quiz-slider-viewport min-h-[260px] touch-pan-y"
+        className="quiz-slider-viewport touch-pan-y min-h-0 min-w-0 flex-1 flex flex-col"
         onTouchStart={(e) => {
           touchStartX.current = e.touches[0]?.clientX ?? null;
         }}
@@ -653,18 +660,24 @@ const DemoImageSlider: React.FC<{ hideTrackerLeadLine?: boolean; trackerOnly?: b
           const end = e.changedTouches[0]?.clientX;
           if (start == null || end == null) return;
           const dx = end - start;
-          // свайп вправо → следующий экран (портфолио)
           if (dx > 48) go(1);
           if (dx < -48) go(-1);
         }}
       >
         <div
-          className="flex min-h-[240px] transition-transform duration-300 ease-in-out"
-          style={{ transform: `translateX(-${slide * 100}%)` }}
+          className="flex min-h-0 min-w-0 max-w-full transition-transform duration-300 ease-in-out"
+          style={{
+            width: `${trackWidthPct}%`,
+            transform: `translateX(-${translatePct}%)`
+          }}
         >
-          <div className="min-w-full shrink-0 flex flex-col box-border px-4 pt-4 pb-3">
+          <div
+            className={`shrink-0 box-border px-3 pt-2 pb-2 sm:px-4 sm:pt-4 sm:pb-3 flex flex-col min-h-0 min-w-0 ${
+              trackerOnly ? 'w-full' : 'w-1/2'
+            }`}
+          >
             {!hideTrackerLeadLine && (
-              <p className="text-sm font-semibold text-black text-center mb-3">
+              <p className="text-xs sm:text-sm font-semibold text-black text-center mb-2 shrink-0 leading-tight">
                 Отслеживайте сделку в реальном времени!
               </p>
             )}
@@ -673,8 +686,8 @@ const DemoImageSlider: React.FC<{ hideTrackerLeadLine?: boolean; trackerOnly?: b
             </div>
           </div>
           {!trackerOnly && (
-            <div className="min-w-full shrink-0 flex flex-col box-border px-4 pt-4 pb-3">
-              <p className="text-sm font-semibold text-black text-center mb-3 leading-snug px-1">
+            <div className="w-1/2 shrink-0 min-w-0 flex flex-col box-border px-3 pt-2 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
+              <p className="text-xs sm:text-sm font-semibold text-black text-center mb-2 leading-tight shrink-0 px-0.5">
                 Изучите портфолио риелтора прежде чем начать работать с ним
               </p>
               <div className="quiz-image-container">
@@ -686,7 +699,7 @@ const DemoImageSlider: React.FC<{ hideTrackerLeadLine?: boolean; trackerOnly?: b
       </div>
       {!trackerOnly && (
         <>
-          <div className="flex items-center justify-between gap-2 px-4 pb-4 pt-1">
+          <div className="flex items-center justify-between gap-2 px-3 pb-2 pt-1 sm:px-4 sm:pb-4 shrink-0">
             <button
               type="button"
               onClick={() => go(-1)}
@@ -718,7 +731,7 @@ const DemoImageSlider: React.FC<{ hideTrackerLeadLine?: boolean; trackerOnly?: b
               Далее
             </button>
           </div>
-          <p className="text-center text-xs text-gray-500 pb-3">Свайп вправо — портфолио риелтора</p>
+          <p className="text-center text-[10px] sm:text-xs text-gray-500 pb-2 shrink-0">Свайп вправо — портфолио риелтора</p>
         </>
       )}
     </div>
@@ -732,23 +745,30 @@ interface WhyWorksShowcaseProps {
   hideTrackerLeadLine?: boolean;
   /** Только превью трекера: без слайда «Изучите портфолио…» (после квиза на экране результата) */
   trackerOnly?: boolean;
+  /** Ужать отступы и высоты, чтобы экран «почему» помещался в один viewport */
+  compact?: boolean;
 }
 
 const WhyWorksShowcase: React.FC<WhyWorksShowcaseProps> = ({
   showOpenLinks = true,
   hideTrackerLeadLine,
-  trackerOnly
+  trackerOnly,
+  compact
 }) => (
-  <div className="flex flex-col gap-4">
-    <DemoImageSlider hideTrackerLeadLine={hideTrackerLeadLine} trackerOnly={trackerOnly} />
+  <div className={`flex flex-col min-h-0 min-w-0 ${compact ? 'gap-2 flex-1' : 'gap-4'}`}>
+    <div className={compact ? 'min-h-0 flex-1 flex flex-col' : ''}>
+      <DemoImageSlider hideTrackerLeadLine={hideTrackerLeadLine} trackerOnly={trackerOnly} compact={compact} />
+    </div>
 
     {showOpenLinks && (
-      <div className="flex flex-col gap-2">
+      <div className={`flex flex-col shrink-0 ${compact ? 'gap-1.5' : 'gap-2'}`}>
         <a
           href={TRACKER_URL}
           target="_blank"
           rel="noreferrer"
-          className="block w-full py-3 rounded-xl bg-accent text-white text-center text-sm font-semibold active:scale-[0.98] transition-transform"
+          className={`block w-full rounded-xl bg-accent text-white text-center font-semibold active:scale-[0.98] transition-transform ${
+            compact ? 'py-2 text-xs' : 'py-3 text-sm'
+          }`}
         >
           Открыть умный трекер
         </a>
@@ -756,14 +776,18 @@ const WhyWorksShowcase: React.FC<WhyWorksShowcaseProps> = ({
           href={PORTFOLIO_URL}
           target="_blank"
           rel="noreferrer"
-          className="block w-full py-3 rounded-xl border border-gray-200 text-center text-sm font-semibold text-black active:scale-[0.98] transition-transform"
+          className={`block w-full rounded-xl border border-gray-200 text-center font-semibold text-black active:scale-[0.98] transition-transform ${
+            compact ? 'py-2 text-xs' : 'py-3 text-sm'
+          }`}
         >
           Открыть онлайн-портфолио
         </a>
       </div>
     )}
 
-    <RealtorShareCta />
+    <div className={compact ? 'shrink-0' : ''}>
+      <RealtorShareCta compact={compact} />
+    </div>
   </div>
 );
 
