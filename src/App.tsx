@@ -648,10 +648,9 @@ const DemoImageSlider: React.FC<{ compact?: boolean }> = ({ compact }) => {
   const touchStartX = useRef<number | null>(null);
 
   const slideCount = DEMO_SLIDES.length;
-  const maxIndex = slideCount - 1;
 
   const go = (dir: -1 | 1) => {
-    setSlide((s) => Math.max(0, Math.min(maxIndex, s + dir)));
+    setSlide((s) => Math.max(0, Math.min(slideCount - 1, s + dir)));
   };
 
   return (
@@ -703,36 +702,7 @@ const DemoImageSlider: React.FC<{ compact?: boolean }> = ({ compact }) => {
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-between gap-1.5 px-2 pb-1.5 pt-0.5 sm:px-2.5 shrink-0">
-        <button
-          type="button"
-          onClick={() => go(-1)}
-          disabled={slide === 0}
-          className="rounded-xl border border-gray-300 py-1.5 px-2.5 text-[11px] text-gray-700 disabled:opacity-40 sm:text-xs"
-        >
-          Назад
-        </button>
-        <div className="flex items-center gap-1.5">
-          {DEMO_SLIDES.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Слайд ${i + 1}`}
-              onClick={() => setSlide(i)}
-              className={`h-2 w-2 rounded-full transition-colors ${slide === i ? 'bg-accent scale-110' : 'bg-gray-300'}`}
-            />
-          ))}
-        </div>
-        <button
-          type="button"
-          onClick={() => go(1)}
-          disabled={slide === maxIndex}
-          className="rounded-xl border border-gray-300 py-1.5 px-2.5 text-[11px] text-gray-700 disabled:opacity-40 sm:text-xs"
-        >
-          Далее
-        </button>
-      </div>
-      <p className="pb-1.5 text-center text-[10px] text-gray-500 shrink-0 sm:text-[11px]">Свайп влево — следующий слайд</p>
+      <p className="pb-1.5 pt-0.5 text-center text-[10px] text-gray-500 shrink-0 sm:text-[11px]">Свайп влево или вправо</p>
     </div>
   );
 };
