@@ -3,8 +3,27 @@ import { MAX_SCORE, Question, questions } from './questions';
 import { publicImageUrl } from './publicImageUrl';
 
 const QUIZ_TRACKER_IMAGE = publicImageUrl('tracker-preview.png');
-const QUIZ_PORTFOLIO_IMAGE = publicImageUrl('portfolio-preview.png');
+const QUIZ_PORTFOLIO_PART1_IMAGE = publicImageUrl('portfolio-preview-part1.png');
+const QUIZ_PORTFOLIO_PART2_IMAGE = publicImageUrl('portfolio-preview-part2.png');
 const QUIZ_IMAGE_FALLBACK = publicImageUrl('fallback.svg');
+
+const DEMO_SLIDES = [
+  {
+    title: 'Отслеживайте сделку в реальном времени!',
+    image: QUIZ_TRACKER_IMAGE,
+    alt: 'Пример трекера сделки'
+  },
+  {
+    title: 'Профиль и статистика — до начала работы с риелтором',
+    image: QUIZ_PORTFOLIO_PART1_IMAGE,
+    alt: 'Портфолио риелтора: профиль и показатели'
+  },
+  {
+    title: 'Сделки в работе и подтверждённая история',
+    image: QUIZ_PORTFOLIO_PART2_IMAGE,
+    alt: 'Портфолио риелтора: сделки и статистика'
+  }
+] as const;
 
 function quizImageProps(alt: string) {
   return {
@@ -497,12 +516,12 @@ const App: React.FC = () => {
           )}
 
           {renderedStage === 'why_works' && (
-            <section className="quiz-why-works-screen flex flex-col gap-2 min-h-0 flex-1 overflow-hidden">
+            <section className="quiz-why-works-screen flex flex-col gap-1.5 min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
               <h2 className="text-base sm:text-lg font-semibold text-black leading-snug shrink-0">
                 {whyWorksVariant === 'safe' && 'Почему работа с нами безопаснее?'}
                 {whyWorksVariant === 'realtor' && 'Как улучшить взаимодействие с риелтором?'}
               </h2>
-              <p className="text-xs sm:text-sm text-gray-700 leading-snug shrink-0 line-clamp-3">
+              <p className="text-xs sm:text-sm text-gray-700 leading-snug shrink-0">
                 Прозрачные этапы, онлайн-статус и проверенный профиль специалиста — в одном месте.
               </p>
               <WhyWorksShowcase showOpenLinks compact />
@@ -628,19 +647,26 @@ const DemoImageSlider: React.FC<{ compact?: boolean }> = ({ compact }) => {
   const [slide, setSlide] = useState(0);
   const touchStartX = useRef<number | null>(null);
 
-  const maxSlide = 1;
+  const slideCount = DEMO_SLIDES.length;
+  const maxIndex = slideCount - 1;
+
   const go = (dir: -1 | 1) => {
-    setSlide((s) => Math.max(0, Math.min(maxSlide, s + dir)));
+    setSlide((s) => Math.max(0, Math.min(maxIndex, s + dir)));
   };
 
   return (
     <div
-      className={`quiz-slider-root rounded-xl border border-gray-100 bg-slate-50 shadow-sm overflow-hidden flex flex-col min-h-0 min-w-0 max-w-full ${
+      className={`quiz-slider-root rounded-2xl border border-gray-200 bg-slate-100/90 shadow-sm overflow-hidden flex flex-col min-h-0 min-w-0 max-w-full ${
         compact ? 'quiz-slider-root--compact' : ''
       }`}
     >
+      <div className="flex justify-center pt-2 pb-1 shrink-0">
+        <span className="rounded-full bg-white/90 px-3 py-0.5 text-[11px] font-semibold text-accent shadow-sm ring-1 ring-gray-200/80">
+          {slide + 1} из {slideCount}
+        </span>
+      </div>
       <div
-        className="quiz-slider-viewport touch-pan-y min-h-0 min-w-0 flex-1 flex flex-col"
+        className="quiz-slider-viewport touch-pan-y min-h-0 min-w-0 flex-1 flex flex-col px-1.5 sm:px-2"
         onTouchStart={(e) => {
           touchStartX.current = e.touches[0]?.clientX ?? null;
         }}
@@ -657,61 +683,56 @@ const DemoImageSlider: React.FC<{ compact?: boolean }> = ({ compact }) => {
         <div
           className="quiz-slider-track flex flex-1 min-h-0 min-w-0 items-stretch transition-transform duration-300 ease-in-out"
           style={{
-            width: '200%',
-            transform: `translateX(-${slide * 50}%)`
+            width: `${slideCount * 100}%`,
+            transform: `translateX(-${(slide * 100) / slideCount}%)`
           }}
         >
-          <div className="w-1/2 shrink-0 box-border px-3 pt-2 pb-2 sm:px-4 sm:pt-4 sm:pb-3 flex flex-col min-h-0 min-w-0 self-stretch">
-            <p className="text-xs sm:text-sm font-semibold text-black text-center mb-2 shrink-0 leading-tight">
-              Отслеживайте сделку в реальном времени!
-            </p>
-            <div className="quiz-image-container">
-              <img src={QUIZ_TRACKER_IMAGE} {...quizImageProps('Пример трекера сделки')} />
+          {DEMO_SLIDES.map((item) => (
+            <div
+              key={item.title}
+              className="shrink-0 box-border flex min-h-0 min-w-0 flex-col self-stretch pt-0.5 pb-1"
+              style={{ width: `${100 / slideCount}%` }}
+            >
+              <p className="mb-1.5 shrink-0 px-1 text-center text-[11px] font-semibold leading-tight text-black sm:text-xs">
+                {item.title}
+              </p>
+              <div className="quiz-image-container">
+                <img src={item.image} {...quizImageProps(item.alt)} />
+              </div>
             </div>
-          </div>
-          <div className="w-1/2 shrink-0 min-h-0 min-w-0 flex flex-col box-border px-3 pt-2 pb-2 sm:px-4 sm:pt-4 sm:pb-3 self-stretch">
-            <p className="text-xs sm:text-sm font-semibold text-black text-center mb-2 leading-tight shrink-0 px-0.5">
-              Изучите портфолио риелтора прежде чем начать работать с ним
-            </p>
-            <div className="quiz-image-container">
-              <img src={QUIZ_PORTFOLIO_IMAGE} {...quizImageProps('Пример портфолио риелтора')} />
-            </div>
-          </div>
+          ))}
         </div>
       </div>
-      <div className="flex items-center justify-between gap-2 px-3 pb-2 pt-1 sm:px-4 sm:pb-4 shrink-0">
+      <div className="flex items-center justify-between gap-1.5 px-2 pb-1.5 pt-0.5 sm:px-2.5 shrink-0">
         <button
           type="button"
           onClick={() => go(-1)}
           disabled={slide === 0}
-          className="py-2 px-3 rounded-xl border border-gray-300 text-xs text-gray-700 disabled:opacity-40"
+          className="rounded-xl border border-gray-300 py-1.5 px-2.5 text-[11px] text-gray-700 disabled:opacity-40 sm:text-xs"
         >
           Назад
         </button>
         <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            aria-label="Слайд 1"
-            onClick={() => setSlide(0)}
-            className={`h-2 w-8 rounded-full transition-colors ${slide === 0 ? 'bg-accent' : 'bg-gray-200'}`}
-          />
-          <button
-            type="button"
-            aria-label="Слайд 2"
-            onClick={() => setSlide(1)}
-            className={`h-2 w-8 rounded-full transition-colors ${slide === 1 ? 'bg-accent' : 'bg-gray-200'}`}
-          />
+          {DEMO_SLIDES.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`Слайд ${i + 1}`}
+              onClick={() => setSlide(i)}
+              className={`h-2 w-2 rounded-full transition-colors ${slide === i ? 'bg-accent scale-110' : 'bg-gray-300'}`}
+            />
+          ))}
         </div>
         <button
           type="button"
           onClick={() => go(1)}
-          disabled={slide === 1}
-          className="py-2 px-3 rounded-xl border border-gray-300 text-xs text-gray-700 disabled:opacity-40"
+          disabled={slide === maxIndex}
+          className="rounded-xl border border-gray-300 py-1.5 px-2.5 text-[11px] text-gray-700 disabled:opacity-40 sm:text-xs"
         >
           Далее
         </button>
       </div>
-      <p className="text-center text-[10px] sm:text-xs text-gray-500 pb-2 shrink-0">Свайп влево — портфолио риелтора</p>
+      <p className="pb-1.5 text-center text-[10px] text-gray-500 shrink-0 sm:text-[11px]">Свайп влево — следующий слайд</p>
     </div>
   );
 };
@@ -727,13 +748,13 @@ const WhyWorksShowcase: React.FC<WhyWorksShowcaseProps> = ({
   showOpenLinks = true,
   compact
 }) => (
-  <div className={`flex flex-col min-h-0 min-w-0 ${compact ? 'gap-2 flex-1' : 'gap-4'}`}>
-    <div className={compact ? 'min-h-0 flex-1 flex flex-col' : ''}>
+  <div className={`flex flex-col min-h-0 min-w-0 ${compact ? 'gap-1 flex-1' : 'gap-4'}`}>
+    <div className={compact ? '-mx-4 flex min-h-0 flex-1 flex-col px-1 sm:-mx-4 sm:px-2' : ''}>
       <DemoImageSlider compact={compact} />
     </div>
 
     {showOpenLinks && (
-      <div className={`flex flex-col shrink-0 ${compact ? 'gap-1.5' : 'gap-2'}`}>
+      <div className={`flex flex-col shrink-0 ${compact ? 'gap-1 mt-0.5' : 'gap-2'}`}>
         <a
           href={TRACKER_URL}
           target="_blank"
