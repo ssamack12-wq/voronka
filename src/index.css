@@ -32,8 +32,8 @@ body {
 
 .quiz-slider-root.quiz-slider-root--compact {
   flex: 1 1 auto;
-  min-height: min(58svh, 520px);
-  max-height: min(68svh, 640px);
+  min-height: min(64svh, 580px);
+  max-height: min(74svh, 700px);
 }
 
 @media (min-width: 640px) {
@@ -42,8 +42,8 @@ body {
   }
 
   .quiz-slider-root.quiz-slider-root--compact {
-    min-height: min(62svh, 560px);
-    max-height: min(72svh, 680px);
+    min-height: min(68svh, 620px);
+    max-height: min(78svh, 760px);
   }
 }
 
