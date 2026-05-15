@@ -487,8 +487,6 @@ const App: React.FC = () => {
                 Почему работа с нами — безопаснее?
               </button>
 
-              <WhyWorksShowcase showOpenLinks={false} hideTrackerLeadLine trackerOnly />
-
               <button
                 onClick={goToFormFromResult}
                 className="w-full py-3 rounded-xl bg-accent text-white font-semibold text-base active:scale-[0.98] transition-transform"
@@ -626,18 +624,11 @@ const RealtorShareCta: React.FC<{ compact?: boolean }> = ({ compact }) => (
   </a>
 );
 
-const DemoImageSlider: React.FC<{ hideTrackerLeadLine?: boolean; trackerOnly?: boolean; compact?: boolean }> = ({
-  hideTrackerLeadLine,
-  trackerOnly,
-  compact
-}) => {
+const DemoImageSlider: React.FC<{ compact?: boolean }> = ({ compact }) => {
   const [slide, setSlide] = useState(0);
   const touchStartX = useRef<number | null>(null);
 
-  const maxSlide = trackerOnly ? 0 : 1;
-  const trackWidthPct = trackerOnly ? 100 : 200;
-  const translatePct = trackerOnly ? 0 : slide * 50;
-
+  const maxSlide = 1;
   const go = (dir: -1 | 1) => {
     setSlide((s) => Math.max(0, Math.min(maxSlide, s + dir)));
   };
@@ -654,86 +645,73 @@ const DemoImageSlider: React.FC<{ hideTrackerLeadLine?: boolean; trackerOnly?: b
           touchStartX.current = e.touches[0]?.clientX ?? null;
         }}
         onTouchEnd={(e) => {
-          if (trackerOnly) return;
           const start = touchStartX.current;
           touchStartX.current = null;
           const end = e.changedTouches[0]?.clientX;
           if (start == null || end == null) return;
           const dx = end - start;
-          if (dx > 48) go(1);
-          if (dx < -48) go(-1);
+          if (dx < -48) go(1);
+          if (dx > 48) go(-1);
         }}
       >
         <div
-          className="flex min-h-0 min-w-0 max-w-full transition-transform duration-300 ease-in-out"
+          className="quiz-slider-track flex min-h-0 min-w-0 transition-transform duration-300 ease-in-out"
           style={{
-            width: `${trackWidthPct}%`,
-            transform: `translateX(-${translatePct}%)`
+            width: '200%',
+            transform: `translateX(-${slide * 50}%)`
           }}
         >
-          <div
-            className={`shrink-0 box-border px-3 pt-2 pb-2 sm:px-4 sm:pt-4 sm:pb-3 flex flex-col min-h-0 min-w-0 ${
-              trackerOnly ? 'w-full' : 'w-1/2'
-            }`}
-          >
-            {!hideTrackerLeadLine && (
-              <p className="text-xs sm:text-sm font-semibold text-black text-center mb-2 shrink-0 leading-tight">
-                Отслеживайте сделку в реальном времени!
-              </p>
-            )}
+          <div className="w-1/2 shrink-0 box-border px-3 pt-2 pb-2 sm:px-4 sm:pt-4 sm:pb-3 flex flex-col min-h-0 min-w-0">
+            <p className="text-xs sm:text-sm font-semibold text-black text-center mb-2 shrink-0 leading-tight">
+              Отслеживайте сделку в реальном времени!
+            </p>
             <div className="quiz-image-container">
               <img src={QUIZ_TRACKER_IMAGE} {...quizImageProps('Пример трекера сделки')} />
             </div>
           </div>
-          {!trackerOnly && (
-            <div className="w-1/2 shrink-0 min-w-0 flex flex-col box-border px-3 pt-2 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
-              <p className="text-xs sm:text-sm font-semibold text-black text-center mb-2 leading-tight shrink-0 px-0.5">
-                Изучите портфолио риелтора прежде чем начать работать с ним
-              </p>
-              <div className="quiz-image-container">
-                <img src={QUIZ_PORTFOLIO_IMAGE} {...quizImageProps('Пример портфолио риелтора')} />
-              </div>
+          <div className="w-1/2 shrink-0 min-w-0 flex flex-col box-border px-3 pt-2 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
+            <p className="text-xs sm:text-sm font-semibold text-black text-center mb-2 leading-tight shrink-0 px-0.5">
+              Изучите портфолио риелтора прежде чем начать работать с ним
+            </p>
+            <div className="quiz-image-container">
+              <img src={QUIZ_PORTFOLIO_IMAGE} {...quizImageProps('Пример портфолио риелтора')} />
             </div>
-          )}
+          </div>
         </div>
       </div>
-      {!trackerOnly && (
-        <>
-          <div className="flex items-center justify-between gap-2 px-3 pb-2 pt-1 sm:px-4 sm:pb-4 shrink-0">
-            <button
-              type="button"
-              onClick={() => go(-1)}
-              disabled={slide === 0}
-              className="py-2 px-3 rounded-xl border border-gray-300 text-xs text-gray-700 disabled:opacity-40"
-            >
-              Назад
-            </button>
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                aria-label="Слайд 1"
-                onClick={() => setSlide(0)}
-                className={`h-2 w-8 rounded-full transition-colors ${slide === 0 ? 'bg-accent' : 'bg-gray-200'}`}
-              />
-              <button
-                type="button"
-                aria-label="Слайд 2"
-                onClick={() => setSlide(1)}
-                className={`h-2 w-8 rounded-full transition-colors ${slide === 1 ? 'bg-accent' : 'bg-gray-200'}`}
-              />
-            </div>
-            <button
-              type="button"
-              onClick={() => go(1)}
-              disabled={slide === 1}
-              className="py-2 px-3 rounded-xl border border-gray-300 text-xs text-gray-700 disabled:opacity-40"
-            >
-              Далее
-            </button>
-          </div>
-          <p className="text-center text-[10px] sm:text-xs text-gray-500 pb-2 shrink-0">Свайп вправо — портфолио риелтора</p>
-        </>
-      )}
+      <div className="flex items-center justify-between gap-2 px-3 pb-2 pt-1 sm:px-4 sm:pb-4 shrink-0">
+        <button
+          type="button"
+          onClick={() => go(-1)}
+          disabled={slide === 0}
+          className="py-2 px-3 rounded-xl border border-gray-300 text-xs text-gray-700 disabled:opacity-40"
+        >
+          Назад
+        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            aria-label="Слайд 1"
+            onClick={() => setSlide(0)}
+            className={`h-2 w-8 rounded-full transition-colors ${slide === 0 ? 'bg-accent' : 'bg-gray-200'}`}
+          />
+          <button
+            type="button"
+            aria-label="Слайд 2"
+            onClick={() => setSlide(1)}
+            className={`h-2 w-8 rounded-full transition-colors ${slide === 1 ? 'bg-accent' : 'bg-gray-200'}`}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={() => go(1)}
+          disabled={slide === 1}
+          className="py-2 px-3 rounded-xl border border-gray-300 text-xs text-gray-700 disabled:opacity-40"
+        >
+          Далее
+        </button>
+      </div>
+      <p className="text-center text-[10px] sm:text-xs text-gray-500 pb-2 shrink-0">Свайп влево — портфолио риелтора</p>
     </div>
   );
 };
@@ -741,23 +719,17 @@ const DemoImageSlider: React.FC<{ hideTrackerLeadLine?: boolean; trackerOnly?: b
 interface WhyWorksShowcaseProps {
   /** Кнопки «Открыть трекер / портфолио» — только в потоке «Почему работа с нами безопаснее?» */
   showOpenLinks?: boolean;
-  /** Скрыть заголовок над превью трекера (экран результата после квиза) */
-  hideTrackerLeadLine?: boolean;
-  /** Только превью трекера: без слайда «Изучите портфолио…» (после квиза на экране результата) */
-  trackerOnly?: boolean;
   /** Ужать отступы и высоты, чтобы экран «почему» помещался в один viewport */
   compact?: boolean;
 }
 
 const WhyWorksShowcase: React.FC<WhyWorksShowcaseProps> = ({
   showOpenLinks = true,
-  hideTrackerLeadLine,
-  trackerOnly,
   compact
 }) => (
   <div className={`flex flex-col min-h-0 min-w-0 ${compact ? 'gap-2 flex-1' : 'gap-4'}`}>
     <div className={compact ? 'min-h-0 flex-1 flex flex-col' : ''}>
-      <DemoImageSlider hideTrackerLeadLine={hideTrackerLeadLine} trackerOnly={trackerOnly} compact={compact} />
+      <DemoImageSlider compact={compact} />
     </div>
 
     {showOpenLinks && (

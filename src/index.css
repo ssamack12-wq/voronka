@@ -17,9 +17,14 @@ body {
   max-height: calc(100svh - 1.75rem);
 }
 
-/* Карусель: трек фиксированной ширины относительно вьюпорта, иначе flex раздувается по intrinsic-картинке */
+/* Карусель: вьюпорт задаёт ширину; трек 200% — без max-width на треке, иначе оба слайда видны сразу */
 .quiz-slider-viewport {
   overflow-x: clip;
+  width: 100%;
+}
+
+.quiz-slider-track {
+  flex-shrink: 0;
 }
 
 .quiz-slider-root {
