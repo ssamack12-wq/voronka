@@ -1,9 +1,28 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { MAX_SCORE, Question, questions } from './questions';
-import { SafeImage, publicImageUrl } from './SafeImage';
+import { publicImageUrl } from './publicImageUrl';
 
-const QUIZ_TRACKER_IMAGE = publicImageUrl('tracker-preview.svg');
-const QUIZ_PORTFOLIO_IMAGE = publicImageUrl('portfolio-preview.svg');
+const QUIZ_TRACKER_IMAGE = publicImageUrl('tracker-preview.png');
+const QUIZ_PORTFOLIO_IMAGE = publicImageUrl('portfolio-preview.png');
+const QUIZ_IMAGE_FALLBACK = publicImageUrl('fallback.svg');
+
+function quizImageProps(alt: string) {
+  return {
+    alt,
+    className: 'quiz-image',
+    width: 360,
+    height: 520,
+    loading: 'eager' as const,
+    decoding: 'async' as const,
+    fetchPriority: 'high' as const,
+    onError: (e: React.SyntheticEvent<HTMLImageElement>) => {
+      const el = e.currentTarget;
+      if (el.dataset.fallback === '1') return;
+      el.dataset.fallback = '1';
+      el.src = QUIZ_IMAGE_FALLBACK;
+    }
+  };
+}
 
 interface AnswerRecord {
   questionId: number;
@@ -650,13 +669,7 @@ const DemoImageSlider: React.FC<{ hideTrackerLeadLine?: boolean; trackerOnly?: b
               </p>
             )}
             <div className="quiz-image-container">
-              <SafeImage
-                src={QUIZ_TRACKER_IMAGE}
-                alt="Пример трекера сделки"
-                className="quiz-image"
-                width={360}
-                height={520}
-              />
+              <img src={QUIZ_TRACKER_IMAGE} {...quizImageProps('Пример трекера сделки')} />
             </div>
           </div>
           {!trackerOnly && (
@@ -665,13 +678,7 @@ const DemoImageSlider: React.FC<{ hideTrackerLeadLine?: boolean; trackerOnly?: b
                 Изучите портфолио риелтора прежде чем начать работать с ним
               </p>
               <div className="quiz-image-container">
-                <SafeImage
-                  src={QUIZ_PORTFOLIO_IMAGE}
-                  alt="Пример портфолио риелтора"
-                  className="quiz-image"
-                  width={360}
-                  height={520}
-                />
+                <img src={QUIZ_PORTFOLIO_IMAGE} {...quizImageProps('Пример портфолио риелтора')} />
               </div>
             </div>
           )}
