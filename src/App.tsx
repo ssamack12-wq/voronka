@@ -655,13 +655,13 @@ const DemoImageSlider: React.FC<{ compact?: boolean }> = ({ compact }) => {
         }}
       >
         <div
-          className="quiz-slider-track flex min-h-0 min-w-0 transition-transform duration-300 ease-in-out"
+          className="quiz-slider-track flex flex-1 min-h-0 min-w-0 items-stretch transition-transform duration-300 ease-in-out"
           style={{
             width: '200%',
             transform: `translateX(-${slide * 50}%)`
           }}
         >
-          <div className="w-1/2 shrink-0 box-border px-3 pt-2 pb-2 sm:px-4 sm:pt-4 sm:pb-3 flex flex-col min-h-0 min-w-0">
+          <div className="w-1/2 shrink-0 box-border px-3 pt-2 pb-2 sm:px-4 sm:pt-4 sm:pb-3 flex flex-col min-h-0 min-w-0 self-stretch">
             <p className="text-xs sm:text-sm font-semibold text-black text-center mb-2 shrink-0 leading-tight">
               Отслеживайте сделку в реальном времени!
             </p>
@@ -669,7 +669,7 @@ const DemoImageSlider: React.FC<{ compact?: boolean }> = ({ compact }) => {
               <img src={QUIZ_TRACKER_IMAGE} {...quizImageProps('Пример трекера сделки')} />
             </div>
           </div>
-          <div className="w-1/2 shrink-0 min-w-0 flex flex-col box-border px-3 pt-2 pb-2 sm:px-4 sm:pt-4 sm:pb-3">
+          <div className="w-1/2 shrink-0 min-h-0 min-w-0 flex flex-col box-border px-3 pt-2 pb-2 sm:px-4 sm:pt-4 sm:pb-3 self-stretch">
             <p className="text-xs sm:text-sm font-semibold text-black text-center mb-2 leading-tight shrink-0 px-0.5">
               Изучите портфолио риелтора прежде чем начать работать с ним
             </p>
