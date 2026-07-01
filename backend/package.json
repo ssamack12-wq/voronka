@@ -1,0 +1,19 @@
+{
+  "name": "transaction-navigator-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "db:migrate": "node db/migrate.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.21.0",
+    "resend": "^4.8.0",
+    "uuid": "^14.0.0"
+  }
+}

@@ -1,0 +1,34 @@
+# Статический SPA (vite + serve). Без backend/ — см. RAILWAY-SPLIT.md
+FROM public.ecr.aws/docker/library/node:20-alpine AS build
+WORKDIR /app
+
+# Railway часто выставляет NODE_ENV=production на build — без devDeps нет vite/tsc
+ENV NODE_ENV=development
+ENV NPM_CONFIG_PRODUCTION=false
+
+COPY package.json package-lock.json* ./
+RUN npm ci --include=dev || npm install --include=dev
+
+COPY . .
+ARG VITE_API_URL=""
+ARG VITE_SITE_URL=""
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_SITE_URL=$VITE_SITE_URL
+
+RUN npm run build \
+  && rm -f dist/serve.json public/serve.json \
+  && test -f dist/index.html \
+  && ls dist/assets/
+
+FROM public.ecr.aws/docker/library/node:20-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY --from=build /app/dist ./dist
+COPY scripts/prestart.js scripts/production-server.js ./scripts/
+COPY package.runtime.json package.json
+RUN npm install --omit=dev \
+  && test -f scripts/production-server.js
+
+EXPOSE 3000
+CMD ["sh", "-c", "rm -f dist/serve.json && exec npm start"]

@@ -1,0 +1,11 @@
+{
+  "name": "transaction-navigator-web-runtime",
+  "private": true,
+  "scripts": {
+    "start": "node scripts/prestart.js && node scripts/production-server.js"
+  },
+  "dependencies": {
+    "serve": "^14.2.4",
+    "serve-handler": "^6.1.6"
+  }
+}
