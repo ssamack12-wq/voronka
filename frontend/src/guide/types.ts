@@ -1,8 +1,15 @@
+export interface GuideSubsection {
+  title: string;
+  paragraphs?: string[];
+  list?: string[];
+}
+
 export interface GuideSection {
   id: string;
   title: string;
-  paragraphs: string[];
+  paragraphs?: string[];
   list?: string[];
+  subsections?: GuideSubsection[];
 }
 
 export interface GuideFaqItem {
@@ -24,8 +31,10 @@ export interface GuideMeta {
 }
 
 export interface GuideArticle extends GuideMeta {
-  lead: string;
+  lead: string[];
+  audience: string[];
   sections: GuideSection[];
   faq: GuideFaqItem[];
+  nextSteps: string[];
   allGuides: GuideMeta[];
 }

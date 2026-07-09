@@ -14,23 +14,38 @@ const siteUrl = (process.env.VITE_SITE_URL || process.env.SITE_URL || 'https://s
   .replace(/\/$/, '');
 
 const guideSlugs = [
+  'kak-kupit-kvartiru-bez-oshibok',
+  'kak-proverit-prodavca-kvartiry',
+  'chto-proveryat-pered-pokupkoy-kvartiry',
   'dokumenty-dlya-pokupki-kvartiry',
-  'proverka-kvartiry-pered-pokupkoy',
   'pokupka-kvartiry-poshagovo',
-  'prodazha-kvartiry-poshagovo',
-  'kak-kupit-kvartiru-bez-rieltora',
+  'proverka-kvartiry-pered-pokupkoy',
+  'kak-proverit-kvartiru-pered-pokupkoy',
+  'kak-oformit-dogovor-kupli-prodazhi',
+  'bezopasnye-raschety-pri-pokupke-kvartiry',
+  'pokupka-kvartiry-v-ipoteku-poshagovo',
   'kak-bezopasno-kupit-kvartiru',
-  'pokupka-kvartiry-v-ipoteku-poshagovo'
+  'chto-delat-posle-pokupki-kvartiry',
+  'registraciya-prava-sobstvennosti',
+  'elektronnaya-registraciya-sdelki',
+  'zadatok-ili-avans',
+  'pokupka-kvartiry-s-materinskim-kapitalom',
+  'alternativnaya-sdelka-s-nedvizhimostyu',
+  'pokupka-kvartiry-po-doverennosti',
+  'kak-proverit-obremeneniya-na-kvartiru',
+  'kak-proverit-bankrotstvo-prodavca',
+  'prodazha-kvartiry-poshagovo',
+  'kak-kupit-kvartiru-bez-rieltora'
 ];
 
 const pages = [
   { path: '/', changefreq: 'weekly', priority: '1.0' },
   { path: '/quiz', changefreq: 'monthly', priority: '0.8' },
   { path: '/guide', changefreq: 'weekly', priority: '0.9' },
-  ...guideSlugs.map((slug) => ({
+  ...guideSlugs.map((slug, i) => ({
     path: `/guide/${slug}`,
     changefreq: 'monthly',
-    priority: '0.85'
+    priority: slug === 'kak-kupit-kvartiru-bez-oshibok' ? '0.95' : i < 5 ? '0.9' : '0.85'
   }))
 ];
 

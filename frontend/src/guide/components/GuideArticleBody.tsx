@@ -9,8 +9,13 @@ interface GuideArticleBodyProps {
 
 export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) => {
   const toc = useMemo(
-    () => article.sections.map((s) => ({ id: s.id, title: s.title })),
-    [article.sections]
+    () => [
+      { id: 'audience', title: 'Кому подойдёт это руководство' },
+      ...article.sections.map((s) => ({ id: s.id, title: s.title })),
+      ...(article.nextSteps.length > 0 ? [{ id: 'next-steps', title: 'Что делать дальше' }] : []),
+      ...(article.faq.length > 0 ? [{ id: 'faq', title: 'Частые вопросы' }] : [])
+    ],
+    [article.sections, article.nextSteps.length, article.faq.length]
   );
 
   return (
@@ -20,7 +25,11 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
         <h1 className="text-2xl sm:text-3xl font-semibold text-graphite leading-tight tracking-tight">
           {article.title}
         </h1>
-        <p className="text-sm text-graphite-muted mt-3 leading-relaxed">{article.lead}</p>
+        <div className="text-sm text-graphite-muted mt-3 leading-relaxed space-y-3">
+          {article.lead.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </div>
       </header>
 
       <nav
@@ -28,7 +37,7 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
         className="mb-8 p-4 sm:p-5 rounded-2xl bg-surface border border-gray-100"
       >
         <p className="text-xs font-semibold text-graphite-muted uppercase tracking-wide mb-3">
-          Содержание
+          Содержание страницы
         </p>
         <ol className="space-y-2">
           {toc.map((item, i) => (
@@ -45,12 +54,28 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
         </ol>
       </nav>
 
+      {article.audience.length > 0 && (
+        <section id="audience" className="mb-8 scroll-mt-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-graphite mb-4">
+            Кому подойдёт это руководство
+          </h2>
+          <ul className="space-y-2 pl-1">
+            {article.audience.map((item, i) => (
+              <li key={i} className="flex gap-2 text-sm sm:text-base text-graphite leading-relaxed">
+                <span className="text-accent shrink-0 mt-1">✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {article.sections.map((section, index) => (
         <React.Fragment key={section.id}>
           <section id={section.id} className="mb-8 scroll-mt-6">
             <h2 className="text-lg sm:text-xl font-semibold text-graphite mb-4">{section.title}</h2>
             <div className="space-y-4 text-sm sm:text-base text-graphite leading-relaxed">
-              {section.paragraphs.map((p, pi) => (
+              {section.paragraphs?.map((p, pi) => (
                 <p key={pi}>{p}</p>
               ))}
               {section.list && (
@@ -63,11 +88,45 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
                   ))}
                 </ul>
               )}
+              {section.subsections?.map((sub) => (
+                <div key={sub.title} className="mt-6">
+                  <h3 className="text-base sm:text-lg font-semibold text-graphite mb-3">{sub.title}</h3>
+                  <div className="space-y-3">
+                    {sub.paragraphs?.map((p, pi) => (
+                      <p key={pi}>{p}</p>
+                    ))}
+                    {sub.list && (
+                      <ul className="space-y-2 pl-1">
+                        {sub.list.map((item, li) => (
+                          <li key={li} className="flex gap-2">
+                            <span className="text-accent shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
           {(index + 1) % 2 === 0 && index < article.sections.length - 1 && <ConversionBlock />}
         </React.Fragment>
       ))}
+
+      {article.nextSteps.length > 0 && (
+        <section id="next-steps" className="mb-8 scroll-mt-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-graphite mb-4">Что делать дальше</h2>
+          <ol className="space-y-2 pl-1">
+            {article.nextSteps.map((step, i) => (
+              <li key={i} className="flex gap-3 text-sm sm:text-base text-graphite leading-relaxed">
+                <span className="text-accent font-semibold shrink-0">{i + 1}.</span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
 
       <aside className="my-10 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-accent-soft/80 to-white border border-accent/20 shadow-card">
         <h2 className="text-lg sm:text-xl font-semibold text-graphite mb-2">{article.ctaTitle}</h2>
@@ -81,7 +140,7 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
       </aside>
 
       {article.faq.length > 0 && (
-        <section className="mb-8">
+        <section id="faq" className="mb-8 scroll-mt-6">
           <h2 className="text-lg sm:text-xl font-semibold text-graphite mb-4">Частые вопросы</h2>
           <div className="space-y-4">
             {article.faq.map((item) => (
@@ -101,7 +160,7 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
       )}
 
       <section className="mb-4">
-        <h2 className="text-base font-semibold text-graphite mb-3">Читайте также</h2>
+        <h2 className="text-base font-semibold text-graphite mb-3">Полезные руководства</h2>
         <ul className="space-y-2">
           {article.relatedSlugs.map((slug) => {
             const related = article.allGuides.find((g) => g.slug === slug);
@@ -114,16 +173,6 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
               </li>
             );
           })}
-          <li>
-            <Link to="/app/onboarding" className="text-sm text-accent font-medium hover:underline">
-              Пройти квиз и определить сценарий сделки
-            </Link>
-          </li>
-          <li>
-            <Link to="/" className="text-sm text-accent font-medium hover:underline">
-              Главная страница
-            </Link>
-          </li>
         </ul>
       </section>
     </article>
