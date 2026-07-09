@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import type { GuideArticle } from '../types';
-import { ConversionBlock } from './ConversionBlock';
 
 interface GuideArticleBodyProps {
   article: GuideArticle;
@@ -70,48 +69,45 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
         </section>
       )}
 
-      {article.sections.map((section, index) => (
-        <React.Fragment key={section.id}>
-          <section id={section.id} className="mb-8 scroll-mt-6">
-            <h2 className="text-lg sm:text-xl font-semibold text-graphite mb-4">{section.title}</h2>
-            <div className="space-y-4 text-sm sm:text-base text-graphite leading-relaxed">
-              {section.paragraphs?.map((p, pi) => (
-                <p key={pi}>{p}</p>
-              ))}
-              {section.list && (
-                <ul className="space-y-2 pl-1">
-                  {section.list.map((item, li) => (
-                    <li key={li} className="flex gap-2">
-                      <span className="text-accent shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
-                      <span>{item}</span>
-                    </li>
+      {article.sections.map((section) => (
+        <section key={section.id} id={section.id} className="mb-8 scroll-mt-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-graphite mb-4">{section.title}</h2>
+          <div className="space-y-4 text-sm sm:text-base text-graphite leading-relaxed">
+            {section.paragraphs?.map((p, pi) => (
+              <p key={pi}>{p}</p>
+            ))}
+            {section.list && (
+              <ul className="space-y-2 pl-1">
+                {section.list.map((item, li) => (
+                  <li key={li} className="flex gap-2">
+                    <span className="text-accent shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {section.subsections?.map((sub) => (
+              <div key={sub.title} className="mt-6">
+                <h3 className="text-base sm:text-lg font-semibold text-graphite mb-3">{sub.title}</h3>
+                <div className="space-y-3">
+                  {sub.paragraphs?.map((p, pi) => (
+                    <p key={pi}>{p}</p>
                   ))}
-                </ul>
-              )}
-              {section.subsections?.map((sub) => (
-                <div key={sub.title} className="mt-6">
-                  <h3 className="text-base sm:text-lg font-semibold text-graphite mb-3">{sub.title}</h3>
-                  <div className="space-y-3">
-                    {sub.paragraphs?.map((p, pi) => (
-                      <p key={pi}>{p}</p>
-                    ))}
-                    {sub.list && (
-                      <ul className="space-y-2 pl-1">
-                        {sub.list.map((item, li) => (
-                          <li key={li} className="flex gap-2">
-                            <span className="text-accent shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+                  {sub.list && (
+                    <ul className="space-y-2 pl-1">
+                      {sub.list.map((item, li) => (
+                        <li key={li} className="flex gap-2">
+                          <span className="text-accent shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-              ))}
-            </div>
-          </section>
-          {(index + 1) % 2 === 0 && index < article.sections.length - 1 && <ConversionBlock />}
-        </React.Fragment>
+              </div>
+            ))}
+          </div>
+        </section>
       ))}
 
       {article.nextSteps.length > 0 && (
@@ -127,17 +123,6 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
           </ol>
         </section>
       )}
-
-      <aside className="my-10 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-accent-soft/80 to-white border border-accent/20 shadow-card">
-        <h2 className="text-lg sm:text-xl font-semibold text-graphite mb-2">{article.ctaTitle}</h2>
-        <p className="text-sm text-graphite-muted mb-5 leading-relaxed">{article.ctaText}</p>
-        <Link
-          to="/app/onboarding"
-          className="inline-flex items-center justify-center px-6 py-3.5 rounded-2xl bg-accent text-white text-sm font-semibold shadow-soft hover:opacity-95 transition-opacity"
-        >
-          {article.ctaButton}
-        </Link>
-      </aside>
 
       {article.faq.length > 0 && (
         <section id="faq" className="mb-8 scroll-mt-6">
