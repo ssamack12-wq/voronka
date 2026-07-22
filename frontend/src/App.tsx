@@ -9,6 +9,7 @@ import { LandingPage } from './pages/LandingPage';
 import { QuizApp } from './quiz/QuizApp';
 import { GuideHubPage } from './guide/pages/GuideHubPage';
 import { GuideArticlePage } from './guide/pages/GuideArticlePage';
+import { CookieBanner } from './components/CookieBanner';
 
 const STAGE_TRANSITION_MS = 240;
 
@@ -49,6 +50,7 @@ const App: React.FC = () => (
   <BrowserRouter>
     <MetrikaPageView />
     <AuthController />
+    <CookieBanner />
     <Routes>
       <Route path="/auth/verify" element={<AuthVerifyPage />} />
       <Route
