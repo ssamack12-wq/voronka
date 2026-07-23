@@ -13,13 +13,19 @@ import { CookieBanner } from './components/CookieBanner';
 
 const STAGE_TRANSITION_MS = 240;
 
-const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+const AppShell: React.FC<{ children: React.ReactNode; wide?: boolean }> = ({
+  children,
+  wide = false
+}) => (
   <div className="min-h-screen bg-white flex justify-center w-full">
-    <PageTransition>{children}</PageTransition>
+    <PageTransition wide={wide}>{children}</PageTransition>
   </div>
 );
 
-const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const PageTransition: React.FC<{ children: React.ReactNode; wide?: boolean }> = ({
+  children,
+  wide = false
+}) => {
   const location = useLocation();
   const [visible, setVisible] = useState(true);
   const isInitial = useRef(true);
@@ -36,7 +42,7 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   return (
     <div
-      className={`w-full max-w-screen-mobile px-4 py-3 sm:py-6 flex flex-col min-h-screen transition-all ease-in-out ${
+      className={`w-full ${wide ? 'max-w-6xl' : 'max-w-screen-mobile'} px-4 sm:px-6 lg:px-8 py-3 sm:py-6 flex flex-col min-h-screen transition-all ease-in-out ${
         visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
       }`}
       style={{ transitionDuration: `${STAGE_TRANSITION_MS}ms` }}
@@ -63,7 +69,7 @@ const App: React.FC = () => (
           </ProtectedRoute>
         }
       />
-      <Route path="/" element={<AppShell><LandingPage /></AppShell>} />
+      <Route path="/" element={<AppShell wide><LandingPage /></AppShell>} />
       <Route path="/guide" element={<GuideHubPage />} />
       <Route path="/guide/:slug" element={<GuideArticlePage />} />
       <Route
