@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, ArrowRight } from 'lucide-react';
+import { AlertTriangle, ArrowRight, FileText } from 'lucide-react';
 import {
   calculateDealProgress,
   getCurrentStepIndex,
@@ -18,17 +18,11 @@ import {
   PageShell,
   PrimaryButton,
   ProgressBar,
-  RiskCard,
   SecondaryButton,
   SectionTitle,
   StepRow
 } from '../components/ui';
-import { canAccessFullRiskEngine, resolveEffectivePlan } from '../engine/planAccess';
-import { AppLogo } from '../../components/AppLogo';
 import { LoginButton } from '../../components/LoginButton';
-import { GuestBanner } from '../components/GuestBanner';
-import { quizRiskLevelLabel } from '../engine/quizRiskScore';
-import { useAuthStore } from '../../auth/store';
 import { saveDealScroll, readDealScroll } from '../hooks/navigationPersistence';
 import { useScrollRestore } from '../hooks/useScrollRestore';
 import { useNavigator } from '../store/NavigatorContext';
@@ -49,18 +43,16 @@ const PHASE_LABELS: Record<string, string> = {
 };
 
 export const DealDashboard: React.FC = () => {
-  const { user } = useAuthStore();
   const { deal, progress, openStep, resetDeal, deleteActiveDeal, setDrawerOpen, completeDeal, openLeadModal } =
     useNavigator();
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   const scrollRef = useScrollRestore(saveDealScroll, readDealScroll, 'restoreScrollY');
-  const plan = resolveEffectivePlan(user, progress);
 
   if (!deal || !progress) {
     return (
       <PageShell>
         <EmptyState
-          icon={<AppLogo className="w-12 h-12" />}
+          icon={<FileText className="w-6 h-6" />}
           title="Сделка ещё не начата"
           description="Ответьте на несколько вопросов — мы определим сценарий и построим план сделки."
           action={
@@ -84,7 +76,6 @@ export const DealDashboard: React.FC = () => {
   return (
     <PageShell className="pb-2 flex-1 min-h-0" noPadding>
       <Header
-        logo
         showMenu
         onMenu={() => setDrawerOpen(true)}
         title="Моя сделка"
@@ -119,20 +110,6 @@ export const DealDashboard: React.FC = () => {
           </div>
           <ProgressBar value={percent} />
         </div>
-
-        <RiskCard
-          level={deal.aggregateRisk}
-          factorCount={
-            canAccessFullRiskEngine(plan)
-              ? deal.riskFactors.length
-              : Math.min(deal.riskFactors.length, 2)
-          }
-        />
-        {!canAccessFullRiskEngine(plan) && deal.riskFactors.length > 0 && (
-          <p className="text-xs text-graphite-muted -mt-3">
-            Полный разбор рисков — в тарифе «Безопасный». Сейчас: {quizRiskLevelLabel(deal.quizRiskLevel)}.
-          </p>
-        )}
 
         <Card className="overflow-hidden">
           <CardHeader>

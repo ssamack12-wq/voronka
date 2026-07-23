@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, Home } from 'lucide-react';
-import { AppLogo } from '../../components/AppLogo';
 import { LoginButton } from '../../components/LoginButton';
 
 interface BreadcrumbItem {
@@ -25,10 +24,10 @@ export const GuideLayout: React.FC<GuideLayoutProps> = ({ children, breadcrumbs,
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-base font-medium text-graphite hover:text-accent transition-colors"
+            className="text-base font-medium text-graphite hover:text-accent transition-colors"
           >
-            <AppLogo className="w-8 h-8" />
             <span className="hidden sm:inline">Навигатор сделки</span>
+            <span className="sm:hidden">Навигатор</span>
           </button>
           <LoginButton redirectPath="/app/onboarding" showProfileWhenAuthed className="!text-base" />
         </header>

@@ -35,7 +35,7 @@ export const CalendarScreen: React.FC = () => {
 
   return (
     <PageShell noPadding className="overflow-y-auto">
-      <Header logo showMenu onMenu={() => setDrawerOpen(true)} title="Календарь" />
+      <Header showMenu onMenu={() => setDrawerOpen(true)} title="Календарь" />
       <div className="page-content pb-4">
         {!deal || !progress ? (
           <EmptyState
@@ -163,7 +163,7 @@ export const CalendarScreen: React.FC = () => {
                           </SecondaryButton>
                           <PrimaryButton
                             onClick={() => completeStep(entry.stepId)}
-                            className="!min-h-[40px] !text-desc"
+                            className="!min-h-[40px] !text-white"
                           >
                             Отметить выполненным
                           </PrimaryButton>

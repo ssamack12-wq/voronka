@@ -19,7 +19,6 @@ export const ScenarioSelection: React.FC = () => {
   return (
     <PageShell className="pb-4" noPadding>
       <Header
-        logo
         showMenu
         onMenu={() => setDrawerOpen(true)}
         onBack={() => navigate('/')}

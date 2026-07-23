@@ -1,16 +1,11 @@
-import { BookOpen, Clock, Flag, HelpCircle } from 'lucide-react';
-import React, { useCallback, useState } from 'react';
+import { BookOpen, Clock, Flag } from 'lucide-react';
+import React, { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../auth/store';
 import { canCompleteStep, checklistProgress, subtaskProgress } from '../engine/buildDeal';
 import { getTutorial } from '../data/tutorials';
-import {
-  canAccessEmergencyScenarios,
-  resolveEffectivePlan
-} from '../engine/planAccess';
-import { canGuestMarkSteps, canGuestUseEmergency } from '../engine/guestAccess';
+import { canGuestMarkSteps } from '../engine/guestAccess';
 import { riskColorClasses, riskLabel } from '../engine/riskScoring';
-import { EmergencyScenariosPanel } from '../components/EmergencyScenariosPanel';
 import { OppositePartyCard } from '../components/OppositePartyCard';
 import { Header } from '../components/Header';
 import {
@@ -26,14 +21,11 @@ import {
 import { readStepScroll, saveStepScroll } from '../hooks/navigationPersistence';
 import { useScrollRestore } from '../hooks/useScrollRestore';
 import { useNavigator } from '../store/NavigatorContext';
-import { SafeFeaturePaywall } from './SafeFeaturePaywall';
 
 export const StepDetail: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuthStore();
-  const [emergencyOpen, setEmergencyOpen] = useState(false);
-  const [safePaywallOpen, setSafePaywallOpen] = useState(false);
   const {
     deal,
     progress,
@@ -79,17 +71,6 @@ export const StepDetail: React.FC = () => {
       : 0;
   const favoriteId = `step:${step.id}`;
   const returnScrollY = (location.state as { returnScrollY?: number } | null)?.returnScrollY ?? 0;
-  const plan = resolveEffectivePlan(user, progress);
-  const canEmergency = canAccessEmergencyScenarios(plan);
-
-  const handleEmergencyClick = () => {
-    if (!canGuestUseEmergency(user)) {
-      void useAuthStore.getState().requestAccess(`/app/deal/step/${step.id}`);
-      return;
-    }
-    if (canEmergency) setEmergencyOpen(true);
-    else setSafePaywallOpen(true);
-  };
 
   return (
     <div className="flex flex-col flex-1 min-h-0">
@@ -222,22 +203,6 @@ export const StepDetail: React.FC = () => {
           category={deal.scenario.category}
         />
 
-        <button
-          type="button"
-          onClick={handleEmergencyClick}
-          className="mt-4 card-premium-interactive w-full text-left min-w-0"
-        >
-          <div className="feature-row__content text-safe">
-            <p className="text-body font-medium text-graphite flex items-center gap-2 text-safe">
-              <HelpCircle className="w-4 h-4 text-accent shrink-0" />
-              Что делать если…
-            </p>
-            <p className="text-small text-graphite-muted mt-1 text-safe">
-              Экстренные сценарии и пошаговые действия
-            </p>
-          </div>
-        </button>
-
         <div className="mt-6 space-y-3">
           <GhostButton onClick={openLeadModal}>Нужна помощь специалиста?</GhostButton>
           <PrimaryButton
@@ -254,9 +219,6 @@ export const StepDetail: React.FC = () => {
           </PrimaryButton>
         </div>
       </PageShell>
-
-      <EmergencyScenariosPanel open={emergencyOpen} onClose={() => setEmergencyOpen(false)} />
-      <SafeFeaturePaywall open={safePaywallOpen} onClose={() => setSafePaywallOpen(false)} />
     </div>
   );
 };

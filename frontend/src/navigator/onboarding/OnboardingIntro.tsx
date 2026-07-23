@@ -30,7 +30,6 @@ export const OnboardingIntro: React.FC = () => {
   return (
     <PageShell className="flex-1 justify-between pb-6 bg-surface" noPadding>
       <Header
-        logo
         title="Навигатор сделки"
         rightSlot={<LoginButton redirectPath="/app/onboarding" />}
       />

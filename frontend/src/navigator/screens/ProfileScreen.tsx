@@ -118,7 +118,7 @@ export const ProfileScreen: React.FC = () => {
 
   return (
     <PageShell noPadding className="overflow-y-auto overflow-x-hidden pb-4 min-w-0">
-      <Header logo showMenu onMenu={() => setDrawerOpen(true)} title="Профиль" />
+      <Header showMenu onMenu={() => setDrawerOpen(true)} title="Профиль" />
       <div className="page-content space-y-4 pb-4">
         <Card className={effectivePlan !== 'base' ? 'bg-accent-soft' : ''}>
           <FeatureRow

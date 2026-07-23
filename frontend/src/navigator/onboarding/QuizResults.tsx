@@ -64,7 +64,7 @@ export const QuizResults: React.FC = () => {
 
   return (
     <PageShell className="pb-6 overflow-y-auto" noPadding>
-      <Header logo onBack={() => navigate('/app/onboarding/quiz')} title="Результат" />
+      <Header onBack={() => navigate('/app/onboarding/quiz')} title="Результат" />
       <div className="page-content space-y-5 pb-4 min-w-0 max-w-full">
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="min-w-0">
           <p className="badge-eyebrow mb-2">Сценарий определён</p>

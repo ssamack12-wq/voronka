@@ -9,7 +9,7 @@ export const MyDealsScreen: React.FC = () => {
 
   return (
     <PageShell className="pb-4 overflow-y-auto" noPadding>
-      <Header logo showMenu onMenu={() => setDrawerOpen(true)} title="Мои сделки" />
+      <Header showMenu onMenu={() => setDrawerOpen(true)} title="Мои сделки" />
       <div className="page-content space-y-4 pb-4">
         <PrimaryButton onClick={() => resetDeal()} className="!py-3">
           <Plus className="inline w-4 h-4 mr-1 -mt-0.5" />

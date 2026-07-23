@@ -25,7 +25,7 @@ export const DocumentsScreen: React.FC = () => {
 
   return (
     <PageShell noPadding className="overflow-y-auto">
-      <Header logo showMenu onMenu={() => setDrawerOpen(true)} title="Документы" />
+      <Header showMenu onMenu={() => setDrawerOpen(true)} title="Документы" />
       <div className="page-content pb-4">
         {!deal ? (
           <EmptyState

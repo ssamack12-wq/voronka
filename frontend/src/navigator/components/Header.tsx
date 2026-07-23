@@ -1,6 +1,5 @@
 import { ArrowLeft, Bookmark, Menu } from 'lucide-react';
 import React from 'react';
-import { AppLogo } from '../../components/AppLogo';
 
 interface HeaderProps {
   title?: string;
@@ -11,7 +10,6 @@ interface HeaderProps {
   showBookmark?: boolean;
   bookmarked?: boolean;
   onBookmark?: () => void;
-  logo?: boolean;
   rightSlot?: React.ReactNode;
 }
 
@@ -24,7 +22,6 @@ export const Header: React.FC<HeaderProps> = ({
   showBookmark,
   bookmarked,
   onBookmark,
-  logo,
   rightSlot
 }) => (
   <header className="flex items-center justify-between py-5 page-content shrink-0 min-w-0 max-w-full">
@@ -38,8 +35,6 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <ArrowLeft className="w-5 h-5 text-graphite" />
         </button>
-      ) : logo ? (
-        <AppLogo />
       ) : (
         <div className="w-9" />
       )}
