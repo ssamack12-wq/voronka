@@ -1,4 +1,4 @@
-import { ChevronRight, Crown, Home, Link2, LogIn, Shield } from 'lucide-react';
+import { Bookmark, ChevronRight, Crown, Home, Link2, LogIn, Shield } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchAdminAccess, fetchPendingPayment, waitForPaymentActivation } from '../../auth/api';
@@ -7,6 +7,7 @@ import { SUBSCRIPTION_PLANS, planIdFromTier } from '../data/subscriptionPlans';
 import { Header } from '../components/Header';
 import {
   Card,
+  FeatureRow,
   GhostButton,
   PageShell,
   PrimaryButton,
@@ -118,21 +119,23 @@ export const ProfileScreen: React.FC = () => {
   return (
     <PageShell noPadding className="overflow-y-auto overflow-x-hidden pb-4 min-w-0">
       <Header logo showMenu onMenu={() => setDrawerOpen(true)} title="Профиль" />
-      <div className="px-4 space-y-4 min-w-0 max-w-full">
-        <Card className={`p-4 ${effectivePlan !== 'base' ? 'bg-accent-soft' : ''}`}>
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-12 h-12 rounded-card bg-white shadow-soft flex items-center justify-center shrink-0">
-              <span className="text-xl text-graphite-muted">👤</span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="font-medium text-graphite truncate">{user?.email ?? 'Гость'}</p>
-              <p className="text-xs text-graphite-muted">
+      <div className="page-content space-y-4 pb-4">
+        <Card className={effectivePlan !== 'base' ? 'bg-accent-soft' : ''}>
+          <FeatureRow
+            icon={
+              <div className="w-12 h-12 rounded-card bg-white shadow-soft flex items-center justify-center">
+                <span className="text-xl text-graphite-muted">👤</span>
+              </div>
+            }
+            title={<span className="font-medium text-graphite text-safe">{user?.email ?? 'Гость'}</span>}
+            description={
+              <span className="text-small">
                 Тариф: {planLabel(effectivePlan)}
                 {user && ` · ${premiumStatusLabel(subscriptionStatus)}`}
-              </p>
-            </div>
-            {effectivePlan !== 'base' && <Crown className="w-5 h-5 text-accent shrink-0" />}
-          </div>
+              </span>
+            }
+            trailing={effectivePlan !== 'base' ? <Crown className="w-5 h-5 text-accent" /> : undefined}
+          />
         </Card>
 
         {showAdminLink && (
@@ -152,24 +155,28 @@ export const ProfileScreen: React.FC = () => {
               key={id}
               type="button"
               onClick={() => navigate(`/app/subscription/${id}`)}
-              className={`card-premium-interactive w-full text-left !py-4 min-w-0 ${
+              className={`card-premium-interactive w-full text-left min-w-0 ${
                 active ? 'bg-accent-soft/35' : ''
               }`}
             >
-              <div className="flex items-center gap-3 min-w-0">
-                <PlanTierIcon planId={id} className="w-6 h-6 text-accent shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="font-medium text-sm text-graphite">{plan.name}</p>
+              <FeatureRow
+                icon={<PlanTierIcon planId={id} className="w-6 h-6 text-accent" />}
+                title={
+                  <span className="flex flex-wrap items-center gap-2 min-w-0">
+                    <span className="font-medium text-body text-graphite text-safe">{plan.name}</span>
                     {active && (
-                      <span className="text-[10px] font-medium text-accent uppercase">Активен</span>
+                      <span className="text-[10px] font-medium text-accent uppercase shrink-0">Активен</span>
                     )}
-                  </div>
-                  <p className="text-xs text-graphite-muted mt-0.5 truncate">{plan.tagline}</p>
-                  <p className="text-xs font-medium text-graphite mt-1">{plan.priceLabel}</p>
-                </div>
-                <ChevronRight className="w-5 h-5 text-graphite-muted shrink-0" />
-              </div>
+                  </span>
+                }
+                description={
+                  <>
+                    <span className="block text-safe">{plan.tagline}</span>
+                    <span className="block font-medium text-graphite mt-1">{plan.priceLabel}</span>
+                  </>
+                }
+                trailing={<ChevronRight className="w-5 h-5 text-graphite-muted" />}
+              />
             </button>
           );
         })}
@@ -178,30 +185,30 @@ export const ProfileScreen: React.FC = () => {
         {favoriteRows.length > 0 ? (
           <div className="space-y-2">
             {favoriteRows.map((row) => (
-              <Card key={row.id} className="p-3.5">
-                <div className="flex items-center gap-3 min-w-0">
-                  <button
-                    type="button"
-                    onClick={row.onOpen}
-                    className="flex-1 text-left min-w-0"
-                  >
-                    <p className="text-sm font-medium text-graphite truncate">{row.title}</p>
-                    <p className="text-xs text-graphite-muted truncate mt-0.5">{row.subtitle}</p>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => toggleFavorite(row.id)}
-                    className="text-xs font-medium text-risk px-2 py-1 rounded-lg hover:bg-red-50"
-                  >
-                    Убрать
-                  </button>
-                </div>
+              <Card key={row.id} onClick={row.onOpen}>
+                <FeatureRow
+                  icon={<Bookmark className="w-5 h-5 text-accent" />}
+                  title={row.title}
+                  description={row.subtitle}
+                  trailing={
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(row.id);
+                      }}
+                      className="text-xs font-medium text-risk px-2 py-1 rounded-lg hover:bg-red-50 shrink-0"
+                    >
+                      Убрать
+                    </button>
+                  }
+                />
               </Card>
             ))}
           </div>
         ) : (
-          <Card className="p-4">
-            <p className="text-sm text-graphite-muted">
+          <Card>
+            <p className="text-body text-graphite-muted text-safe">
               Пока пусто. Сохраняйте этапы и пункты чек-листа кнопкой закладки.
             </p>
           </Card>
@@ -243,8 +250,8 @@ export const ProfileScreen: React.FC = () => {
           <div className="space-y-2">
             <GhostButton onClick={resetDeal}>Начать новую сделку</GhostButton>
             {confirmDelete ? (
-              <Card className="p-4 bg-red-50/50">
-                <p className="text-sm text-graphite mb-3">
+              <Card tone="danger">
+                <p className="text-body text-graphite mb-4 text-safe leading-relaxed">
                   Удалить текущую сделку «{progress.displayTitle ?? 'Сделка'}»?
                 </p>
                 <div className="flex gap-2">
@@ -294,14 +301,12 @@ const PlaceholderRow: React.FC<{
   desc: string;
   action?: React.ReactNode;
 }> = ({ icon: Icon, title, desc, action }) => (
-  <Card className="p-4 min-w-0 overflow-hidden">
-    <div className="flex gap-3 min-w-0">
-      <Icon className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-      <div className="flex-1 min-w-0">
-        <p className="font-medium text-graphite text-sm">{title}</p>
-        <p className="text-xs text-graphite-muted mt-1">{desc}</p>
-        {action}
-      </div>
-    </div>
+  <Card className="min-w-0">
+    <FeatureRow
+      icon={<Icon className="w-5 h-5 text-accent mt-0.5" />}
+      title={<span className="font-medium text-body text-graphite">{title}</span>}
+      description={<span className="text-small">{desc}</span>}
+    />
+    {action && <div className="mt-3">{action}</div>}
   </Card>
 );

@@ -11,17 +11,21 @@ export const ReasonsSection: React.FC = () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
       {REASONS.map((reason, i) => (
         <FadeIn key={reason} delay={i * 60}>
-          <div className={`flex items-start gap-4 ${CARD_CLASS}`}>
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-accent-soft">
-              <Check className="h-4 w-4 text-accent" strokeWidth={2.5} />
-            </span>
-            <p className="text-base font-medium text-graphite leading-relaxed pt-0.5">{reason}</p>
+          <div className={CARD_CLASS}>
+            <div className="feature-row">
+              <span className="feature-row__icon flex h-7 w-7 items-center justify-center rounded-lg bg-accent-soft">
+                <Check className="h-4 w-4 text-accent" strokeWidth={2.5} />
+              </span>
+              <p className="feature-row__content text-body font-medium text-graphite leading-relaxed text-safe">
+                {reason}
+              </p>
+            </div>
           </div>
         </FadeIn>
       ))}
       <FadeIn delay={300} className="sm:col-span-2">
-        <div className="rounded-card bg-accent-soft/40 p-6 text-center shadow-soft">
-          <p className="text-base font-medium text-graphite leading-relaxed">
+        <div className="card-premium bg-accent-soft/40 text-center">
+          <p className="text-body font-medium text-graphite leading-relaxed text-safe">
             Это не статья — это живой навигатор, который ведёт вас шаг за шагом
           </p>
         </div>

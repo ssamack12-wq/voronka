@@ -88,16 +88,16 @@ const HintSheet: React.FC<{ hint: string; open: boolean; onClose: () => void }> 
           transition={{ type: 'spring', damping: 28, stiffness: 320 }}
         >
           <div
-            className="modal-sheet-bottom px-5 pt-5 pb-8 w-full pointer-events-auto"
+            className="modal-sheet-bottom w-full pointer-events-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-3 mb-3">
-              <p className="text-base font-medium text-graphite">Пояснение</p>
+            <div className="flex items-start justify-between gap-3 mb-3 min-w-0">
+              <p className="text-body font-medium text-graphite text-safe">Пояснение</p>
               <button type="button" onClick={onClose} className="close-btn shrink-0" aria-label="Закрыть">
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-desc text-graphite-muted leading-relaxed whitespace-pre-line">{hint}</p>
+            <p className="text-desc text-graphite-muted leading-relaxed whitespace-pre-line text-safe">{hint}</p>
             <button
               type="button"
               onClick={onClose}
@@ -174,7 +174,7 @@ export const DealQuiz: React.FC = () => {
 
   return (
     <div className="flex flex-col flex-1 min-h-0 bg-surface">
-      <div className="px-4 pt-4 pb-3 shrink-0">
+      <div className="page-content pt-4 pb-3 shrink-0">
         <div className="flex items-center justify-between text-desc text-graphite-muted mb-3">
           <button type="button" onClick={handleBack} className="font-medium text-graphite">
             ← Назад
@@ -200,12 +200,12 @@ export const DealQuiz: React.FC = () => {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -24 }}
           transition={{ duration: 0.22 }}
-          className="flex-1 flex flex-col px-4 py-6 min-h-0"
+          className="flex-1 flex flex-col page-content py-6 min-h-0"
         >
           <div className="flex-1 flex flex-col justify-center max-w-lg mx-auto w-full">
             <p className="badge-eyebrow mb-4">Ваш ответ</p>
-            <div className="flex items-start gap-3 mb-3">
-              <h2 className="text-section-title text-graphite leading-snug flex-1 !text-[1.375rem] sm:!text-[1.625rem]">
+            <div className="flex items-start gap-3 mb-3 min-w-0">
+              <h2 className="text-h2 text-graphite leading-snug flex-1 min-w-0 text-safe">
                 {current.question}
               </h2>
               <button
@@ -218,7 +218,7 @@ export const DealQuiz: React.FC = () => {
               </button>
             </div>
             {current.subtitle && (
-              <p className="text-base text-graphite-muted leading-relaxed mb-8">{current.subtitle}</p>
+              <p className="text-body text-graphite-muted leading-relaxed mb-8 text-safe">{current.subtitle}</p>
             )}
             {!current.subtitle && <div className="mb-8" />}
             <div className="flex flex-col gap-3">

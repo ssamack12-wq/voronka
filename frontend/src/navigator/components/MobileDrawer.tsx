@@ -88,10 +88,10 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', damping: 32, stiffness: 320 }}
           >
-            <div className="drawer-header">
-              <div>
-                <p className="font-semibold text-graphite">Навигатор сделки</p>
-                <p className="text-desc text-graphite-muted truncate max-w-[200px]">
+            <div className="drawer-header min-w-0">
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold text-graphite text-safe">Навигатор сделки</p>
+                <p className="text-desc text-graphite-muted text-safe break-all">
                   {user?.email ?? 'Гость — вход необязателен'}
                 </p>
               </div>
@@ -111,7 +111,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
                   className="nav-item nav-item--accent mb-2"
                 >
                   <LogIn className="w-5 h-5 shrink-0" />
-                  Войти
+                  <span className="nav-item__label">Войти</span>
                 </button>
               )}
 
@@ -123,7 +123,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
                   className="nav-item"
                 >
                   <Icon className="w-5 h-5 text-accent shrink-0" />
-                  {label}
+                  <span className="nav-item__label">{label}</span>
                 </button>
               ))}
 
@@ -137,9 +137,9 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
                   className="nav-item"
                 >
                   <Icon className="w-5 h-5 text-accent shrink-0" />
-                  {label}
+                  <span className="nav-item__label">{label}</span>
                   {!user && needsAuth && (
-                    <span className="ml-auto text-[10px] text-graphite-muted">вход</span>
+                    <span className="ml-auto text-[10px] text-graphite-muted shrink-0">вход</span>
                   )}
                 </button>
               ))}
@@ -152,9 +152,9 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
                   className="nav-item"
                 >
                   <Icon className="w-5 h-5 text-accent shrink-0" />
-                  {label}
+                  <span className="nav-item__label">{label}</span>
                   {label.startsWith('Тариф') && plan !== 'base' && (
-                    <span className="ml-auto text-[10px] font-medium text-accent uppercase">
+                    <span className="ml-auto text-[10px] font-medium text-accent uppercase shrink-0">
                       {planLabel(plan)}
                     </span>
                   )}
@@ -187,7 +187,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
                   className="nav-item nav-item--danger"
                 >
                   <LogOut className="w-5 h-5 shrink-0" />
-                  Выйти
+                  <span className="nav-item__label">Выйти</span>
                 </button>
               )}
             </div>

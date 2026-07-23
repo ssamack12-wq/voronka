@@ -212,12 +212,14 @@ export const PaymentReturnScreen: React.FC = () => {
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.12 }}
-                className="mt-5 w-full card-premium bg-gradient-to-r from-accent-soft/80 to-white px-4 py-3 flex items-center gap-3 text-left"
+                className="mt-5 w-full card-premium bg-gradient-to-r from-accent-soft/80 to-white text-left"
               >
-                <Sparkles className="w-5 h-5 text-accent shrink-0" />
-                <p className="text-xs text-graphite leading-snug">
+                <div className="feature-row">
+                  <Sparkles className="w-5 h-5 text-accent feature-row__icon" />
+                  <p className="feature-row__content text-small text-graphite leading-snug text-safe">
                   Подписка действует 30 дней. Управление тарифом — в разделе «Профиль».
-                </p>
+                  </p>
+                </div>
               </motion.div>
             )}
 

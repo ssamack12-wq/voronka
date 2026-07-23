@@ -16,13 +16,13 @@ export const GuestBanner: React.FC<GuestBannerProps> = ({
   if (user) return null;
 
   return (
-    <Card className="p-5 bg-accent-soft/40 mb-4">
-      <p className="text-base text-graphite leading-relaxed">{message}</p>
-      <div className="flex flex-col sm:flex-row gap-3 mt-4">
-        <PrimaryButton className="!min-h-[44px] text-sm" onClick={() => openAuthModal('/app/deal')}>
+    <Card tone="accent" className="mb-4">
+      <p className="text-body text-graphite leading-relaxed text-safe">{message}</p>
+      <div className="flex flex-col sm:flex-row gap-3 mt-4 min-w-0">
+        <PrimaryButton className="!min-h-[44px] text-sm flex-1 min-w-0" onClick={() => openAuthModal('/app/deal')}>
           Войти и сохранить прогресс
         </PrimaryButton>
-        <SecondaryButton className="!min-h-[44px] text-sm" onClick={() => navigate('/app/onboarding')}>
+        <SecondaryButton className="!min-h-[44px] text-sm flex-1 min-w-0" onClick={() => navigate('/app/onboarding')}>
           Новый квиз
         </SecondaryButton>
       </div>

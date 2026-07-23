@@ -30,22 +30,27 @@ module.exports = {
         ]
       },
       borderRadius: {
-        card: '20px',
+        card: 'var(--radius-card)',
+        'card-lg': '28px',
         btn: '14px',
         xl: '12px'
       },
       fontSize: {
-        hero: ['clamp(2.25rem,4.5vw,3.5rem)', { lineHeight: '1.05', fontWeight: '700' }],
-        'section-title': ['clamp(1.75rem,3vw,2.25rem)', { lineHeight: '1.15', fontWeight: '600' }],
+        hero: ['clamp(2rem,4vw,3rem)', { lineHeight: '1.1', fontWeight: '700' }],
+        h2: ['1.5rem', { lineHeight: '1.2', fontWeight: '700' }],
+        'section-title': ['1.5rem', { lineHeight: '1.2', fontWeight: '700' }],
         subtitle: ['clamp(1.125rem,2vw,1.375rem)', { lineHeight: '1.5', fontWeight: '400' }],
-        desc: ['0.9375rem', { lineHeight: '1.6', fontWeight: '400' }]
+        desc: ['0.875rem', { lineHeight: '1.4', fontWeight: '400' }]
       },
       maxWidth: {
         'screen-mobile': '480px',
         guide: '800px'
       },
       spacing: {
-        'btn-h': '52px'
+        'btn-h': '52px',
+        card: '20px',
+        'card-md': '28px',
+        'card-lg': '32px'
       }
     }
   },

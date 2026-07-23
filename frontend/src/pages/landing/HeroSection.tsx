@@ -14,10 +14,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStart, onPreview }) 
     <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 xl:gap-20 items-center">
       <div className="flex flex-col gap-6 sm:gap-7 text-center lg:text-left order-1">
         <p className="badge-eyebrow self-center lg:self-start">Навигатор сделки</p>
-        <h1 className="text-hero text-graphite">
+        <h1 className="text-hero text-graphite text-safe">
           Проведите сделку с&nbsp;недвижимостью безопасно
         </h1>
-        <p className="text-subtitle-lg max-w-xl mx-auto lg:mx-0">
+        <p className="text-subtitle-lg max-w-xl mx-auto lg:mx-0 text-safe">
           Пошаговый план сделки, проверка рисков и документы — всё в одном месте.
         </p>
         <div className="flex flex-col sm:flex-row items-center lg:items-start gap-3 pt-2">
@@ -44,7 +44,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStart, onPreview }) 
           <p className="text-2xl sm:text-3xl lg:text-4xl font-medium text-accent tracking-tight">
             {value}
           </p>
-          <p className="text-desc text-graphite-muted mt-2 leading-relaxed">{label}</p>
+          <p className="text-desc text-graphite-muted mt-2 leading-relaxed text-safe">{label}</p>
         </motion.div>
       ))}
     </div>

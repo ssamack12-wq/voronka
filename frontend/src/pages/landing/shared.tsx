@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const CARD_CLASS = 'card-premium-interactive';
+export const CARD_CLASS = 'card-premium-interactive min-w-0 max-w-full';
 
 export const PrimaryCta: React.FC<{
   onClick: () => void;
@@ -35,10 +35,10 @@ export const SectionHeading: React.FC<{
   title: string;
   subtitle?: string;
 }> = ({ eyebrow, title, subtitle }) => (
-  <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+  <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14 min-w-0">
     {eyebrow && <p className="badge-eyebrow mb-4">{eyebrow}</p>}
-    <h2 className="text-section-title text-graphite">{title}</h2>
-    {subtitle && <p className="text-subtitle-lg mt-4 max-w-xl mx-auto">{subtitle}</p>}
+    <h2 className="text-section-title text-graphite text-safe">{title}</h2>
+    {subtitle && <p className="text-subtitle-lg mt-4 max-w-xl mx-auto text-safe">{subtitle}</p>}
   </div>
 );
 

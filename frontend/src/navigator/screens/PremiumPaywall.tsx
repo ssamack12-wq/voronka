@@ -37,7 +37,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ open, tutorialId
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
           >
-            <div className="modal-sheet-bottom px-5 pt-5 pb-8 max-h-[90vh] overflow-y-auto relative">
+            <div className="modal-sheet-bottom max-h-[90vh] overflow-y-auto overflow-x-hidden relative min-w-0 max-w-full">
               <button type="button" onClick={onClose} className="close-btn absolute top-4 right-4" aria-label="Закрыть">
                 <X className="w-5 h-5" />
               </button>

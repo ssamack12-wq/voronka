@@ -9,6 +9,7 @@ import { Header } from '../components/Header';
 import {
   Card,
   DangerButton,
+  FeatureRow,
   GhostButton,
   PageShell,
   PrimaryButton,
@@ -116,17 +117,17 @@ export const AdminScreen: React.FC = () => {
   return (
     <PageShell noPadding className="overflow-y-auto overflow-x-hidden pb-6 min-w-0 max-w-full">
       <Header title="Админ-панель" />
-      <div className="px-4 space-y-4 min-w-0 max-w-full">
-        <Card className="p-4 bg-accent-soft/30 border-accent/15 min-w-0">
-          <div className="flex gap-3 min-w-0">
-            <Shield className="w-5 h-5 text-accent shrink-0" />
-            <div className="min-w-0">
-              <p className="font-semibold text-sm text-graphite">Управление подписками</p>
-              <p className="text-xs text-graphite-muted mt-1">
+      <div className="page-content space-y-4 pb-6">
+        <Card tone="accent" className="min-w-0">
+          <FeatureRow
+            icon={<Shield className="w-5 h-5 text-accent mt-0.5" />}
+            title={<span className="font-semibold text-body text-graphite text-safe">Управление подписками</span>}
+            description={
+              <span className="text-small text-safe">
                 Поиск по email или ID. Подписка меняется здесь или после оплаты в ЮKassa.
-              </p>
-            </div>
-          </div>
+              </span>
+            }
+          />
         </Card>
 
         <form
@@ -164,10 +165,10 @@ export const AdminScreen: React.FC = () => {
         ) : (
           <div className="space-y-3 min-w-0">
             {users.map((u) => (
-              <Card key={u.id} className="p-4 space-y-3 min-w-0 overflow-hidden">
-                <div className="min-w-0">
-                  <p className="font-medium text-sm text-graphite break-words">{u.email}</p>
-                  <p className="text-[11px] text-graphite-muted mt-0.5 font-mono break-all overflow-hidden">
+              <Card key={u.id} className="space-y-3 min-w-0">
+                <div className="min-w-0 text-safe">
+                  <p className="font-medium text-body text-graphite">{u.email}</p>
+                  <p className="text-small text-graphite-muted mt-0.5 font-mono break-all">
                     {u.id}
                   </p>
                   <p className="text-xs text-accent mt-1">

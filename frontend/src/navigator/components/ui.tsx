@@ -25,29 +25,207 @@ export const PageShell = React.forwardRef<
   <motion.div
     ref={ref}
     {...fadeIn}
-    className={`flex flex-col flex-1 min-h-0 ${noPadding ? '' : 'px-4'} ${className}`}
+    className={`flex flex-col flex-1 min-h-0 min-w-0 max-w-full w-full ${noPadding ? '' : 'page-content'} ${className}`}
   >
     {children}
   </motion.div>
 ));
 PageShell.displayName = 'PageShell';
 
-export const Card: React.FC<{
+export const PageContent: React.FC<{
   children: React.ReactNode;
   className?: string;
-  onClick?: () => void;
-  padding?: boolean;
-}> = ({ children, className = '', onClick, padding = false }) => (
+  gap?: 'default' | 'sm';
+}> = ({ children, className = '', gap = 'default' }) => (
   <div
-    role={onClick ? 'button' : undefined}
-    tabIndex={onClick ? 0 : undefined}
-    onClick={onClick}
-    onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
-    className={`${onClick ? 'card-premium-interactive cursor-pointer active:scale-[0.99]' : 'card-premium'} ${padding ? '' : '!p-0'} ${className}`}
+    className={`page-content page-stack ${gap === 'sm' ? 'page-stack--sm' : ''} ${className}`}
   >
     {children}
   </div>
 );
+
+export const Card: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+  /** @deprecated Use size="flush" instead */
+  flush?: boolean;
+  /** default: token padding (20/28/32px). compact: dense padding. flush: no padding */
+  size?: 'default' | 'compact' | 'flush';
+  tone?: 'default' | 'warning' | 'success' | 'danger' | 'accent';
+}> = ({ children, className = '', onClick, flush = false, size, tone = 'default' }) => {
+  const resolvedSize = size ?? (flush ? 'flush' : 'default');
+  const toneClass =
+    tone === 'warning'
+      ? 'card-premium--warning'
+      : tone === 'success'
+        ? 'card-premium--success'
+        : tone === 'danger'
+          ? 'card-premium--danger'
+          : tone === 'accent'
+            ? 'card-premium--accent'
+            : '';
+  const sizeClass =
+    resolvedSize === 'flush'
+      ? '!p-0'
+      : resolvedSize === 'compact'
+        ? 'card-premium--dense'
+        : '';
+
+  return (
+    <div
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onClick={onClick}
+      onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
+      className={`${onClick ? 'card-premium-interactive cursor-pointer active:scale-[0.99]' : 'card-premium'} ${toneClass} ${sizeClass} min-w-0 max-w-full ${className}`}
+    >
+      {children}
+    </div>
+  );
+};
+
+export const CardHeader: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className = ''
+}) => <div className={`card-header min-w-0 max-w-full ${className}`}>{children}</div>;
+
+export const CardContent: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className = ''
+}) => <div className={`card-content text-safe ${className}`}>{children}</div>;
+
+export const CardFooter: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className = ''
+}) => <div className={`card-footer min-w-0 max-w-full ${className}`}>{children}</div>;
+
+export const ListRow: React.FC<{
+  icon: React.ReactNode;
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  trailing?: React.ReactNode;
+  className?: string;
+  as?: 'div' | 'li';
+}> = ({ icon, title, description, trailing, className = '', as: Tag = 'div' }) => (
+  <Tag className={`list-row ${className}`}>
+    <div className="list-row__icon">{icon}</div>
+    <div className="list-row__content text-safe">
+      <div className="feature-row__title text-safe">{title}</div>
+      {description != null && (
+        <div className="feature-row__description text-safe">{description}</div>
+      )}
+    </div>
+    {trailing && <div className="feature-row__trailing">{trailing}</div>}
+  </Tag>
+);
+
+export const CheckedListRow: React.FC<{
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  checked?: boolean;
+  className?: string;
+  as?: 'div' | 'li';
+}> = ({ title, description, checked = true, className = '', as: Tag = 'li' }) => (
+  <Tag className={`list-row list-row--nested ${className}`}>
+    <div className="list-row__icon">
+      <CheckIcon checked={checked} className="mt-0.5" />
+    </div>
+    <div className="list-row__content text-safe">
+      <div className="feature-row__title text-safe">{title}</div>
+      {description != null && (
+        <div className="feature-row__description text-safe">{description}</div>
+      )}
+    </div>
+  </Tag>
+);
+
+export const StatFeatureRow: React.FC<{
+  icon?: React.ReactNode;
+  text: React.ReactNode;
+  checked?: boolean;
+  locked?: boolean;
+  className?: string;
+  as?: 'div' | 'li';
+}> = ({ icon, text, checked = true, locked, className = '', as: Tag = 'li' }) => (
+  <Tag className={`feature-row ${locked ? 'opacity-70' : ''} ${className}`}>
+    <div className="feature-row__icon">
+      {locked ? (
+        <Lock className="w-4 h-4 text-graphite-muted mt-0.5" aria-hidden />
+      ) : icon ? (
+        icon
+      ) : (
+        <CheckIcon checked={checked} />
+      )}
+    </div>
+    <div className="feature-row__content text-safe">
+      <div className="feature-row__title text-safe">{text}</div>
+    </div>
+  </Tag>
+);
+
+export const FeatureRow: React.FC<{
+  icon: React.ReactNode;
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  trailing?: React.ReactNode;
+  className?: string;
+  as?: 'div' | 'li';
+}> = ({ icon, title, description, trailing, className = '', as: Tag = 'div' }) => (
+  <Tag className={`feature-row ${className}`}>
+    <div className="feature-row__icon">{icon}</div>
+    <div className="feature-row__content text-safe">
+      <div className="feature-row__title text-safe">{title}</div>
+      {description != null && (
+        <div className="feature-row__description text-safe">{description}</div>
+      )}
+    </div>
+    {trailing && <div className="feature-row__trailing">{trailing}</div>}
+  </Tag>
+);
+
+export const ChecklistRow: React.FC<{
+  icon?: React.ReactNode;
+  checked?: boolean;
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  trailing?: React.ReactNode;
+  className?: string;
+  compact?: boolean;
+  /** card: standalone card (default). inline: row inside a parent card/list */
+  variant?: 'card' | 'inline';
+  as?: 'div' | 'li';
+}> = ({
+  icon,
+  checked = true,
+  title,
+  description,
+  trailing,
+  className = '',
+  compact = false,
+  variant = 'card',
+  as: Tag = 'div'
+}) => {
+  const rowClass =
+    variant === 'inline'
+      ? 'checklist-row'
+      : `checklist-card feature-row ${compact ? 'checklist-card--compact' : ''}`;
+
+  return (
+    <Tag className={`${rowClass} ${className}`}>
+      <div className="feature-row__icon">
+        {icon ?? <CheckIcon checked={checked} className="mt-0.5" />}
+      </div>
+      <div className="feature-row__content text-safe">
+        <div className="feature-row__title text-safe">{title}</div>
+        {description != null && (
+          <div className="feature-row__description text-safe">{description}</div>
+        )}
+      </div>
+      {trailing && <div className="feature-row__trailing">{trailing}</div>}
+    </Tag>
+  );
+};
 
 export const PrimaryButton: React.FC<{
   children: React.ReactNode;
@@ -60,7 +238,7 @@ export const PrimaryButton: React.FC<{
     type={type}
     onClick={onClick}
     disabled={disabled}
-    className={`btn-primary w-full ${className}`}
+    className={`btn-primary w-full text-safe ${className}`}
   >
     {children}
   </button>
@@ -74,7 +252,7 @@ export const SecondaryButton: React.FC<{
   <button
     type="button"
     onClick={onClick}
-    className={`btn-secondary w-full ${className}`}
+    className={`btn-secondary w-full text-safe ${className}`}
   >
     {children}
   </button>
@@ -88,7 +266,7 @@ export const GhostButton: React.FC<{
   <button
     type="button"
     onClick={onClick}
-    className={`btn-ghost w-full ${className}`}
+    className={`btn-ghost w-full text-safe ${className}`}
   >
     {children}
   </button>
@@ -105,8 +283,8 @@ export const DangerButton: React.FC<{
     onClick={onClick}
     className={
       outline
-        ? `btn-secondary w-full !text-risk !border-red-100 hover:!bg-red-50/50 ${className}`
-        : `btn-danger w-full ${className}`
+        ? `btn-secondary w-full !text-risk !border-red-100 hover:!bg-red-50/50 text-safe ${className}`
+        : `btn-danger w-full text-safe ${className}`
     }
   >
     {children}
@@ -121,7 +299,7 @@ export const TextButton: React.FC<{
   <button
     type="button"
     onClick={onClick}
-    className={`btn-ghost w-full ${className}`}
+    className={`btn-ghost w-full text-safe ${className}`}
   >
     {children}
   </button>
@@ -136,7 +314,7 @@ export const Chip: React.FC<{
   <button
     type={type}
     onClick={onClick}
-    className={`chip ${selected ? 'chip--active' : ''}`}
+    className={`chip text-safe ${selected ? 'chip--active' : ''}`}
   >
     {children}
   </button>
@@ -239,18 +417,26 @@ export const RiskCard: React.FC<{
 }> = ({ level, factorCount, onClick }) => {
   const c = riskColorClasses(level);
   return (
-    <Card onClick={onClick} className={`p-6 flex items-center gap-4 ${c.bg}`}>
-      <div className={`w-11 h-11 rounded-btn flex items-center justify-center ${c.bg}`}>
-        <span className="text-lg">🛡</span>
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-desc text-graphite-muted">Уровень риска</p>
-        <p className={`font-semibold text-base ${c.text}`}>{riskLabel(level)}</p>
-        {factorCount > 0 && (
-          <p className="text-desc text-graphite-muted mt-1">{factorCount} фактора риска</p>
-        )}
-      </div>
-      <ChevronRight className="w-5 h-5 text-graphite-muted shrink-0" />
+    <Card onClick={onClick} className={c.bg}>
+      <FeatureRow
+        icon={
+          <IconBox size="md" className={c.bg}>
+            <span className="text-lg">🛡</span>
+          </IconBox>
+        }
+        title={
+          <>
+            <span className="text-desc text-graphite-muted block">Уровень риска</span>
+            <span className={`font-semibold text-body ${c.text}`}>{riskLabel(level)}</span>
+          </>
+        }
+        description={
+          factorCount > 0 ? (
+            <span className="text-desc text-graphite-muted">{factorCount} фактора риска</span>
+          ) : undefined
+        }
+        trailing={<ChevronRight className="w-5 h-5 text-graphite-muted" />}
+      />
     </Card>
   );
 };
@@ -277,12 +463,78 @@ export const LockedBadge: React.FC = () => (
   </span>
 );
 
-export const SectionTitle: React.FC<{ children: React.ReactNode; sub?: string }> = ({ children, sub }) => (
-  <div className="mb-5">
-    <h2 className="text-lg font-medium text-graphite tracking-tight leading-snug">{children}</h2>
-    {sub && <p className="text-desc text-graphite-muted mt-2 leading-relaxed">{sub}</p>}
+export const PageTitle: React.FC<{
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  className?: string;
+}> = ({ eyebrow, title, description, className = '' }) => (
+  <div className={`min-w-0 max-w-full ${className}`}>
+    {eyebrow && <p className="text-desc text-graphite-muted mb-1 text-safe">{eyebrow}</p>}
+    <h2 className="text-h2 text-graphite text-safe">{title}</h2>
+    {description && (
+      <p className="text-desc text-graphite-muted mt-2 text-safe leading-relaxed">{description}</p>
+    )}
   </div>
 );
+
+export const SectionTitle: React.FC<{
+  children: React.ReactNode;
+  sub?: string;
+  className?: string;
+}> = ({ children, sub, className = '' }) => (
+  <div className={`min-w-0 max-w-full ${className}`}>
+    <h2 className="text-h2 text-graphite text-safe">{children}</h2>
+    {sub && <p className="text-desc text-graphite-muted mt-1 text-safe leading-relaxed">{sub}</p>}
+  </div>
+);
+
+export const IconBox: React.FC<{
+  children: React.ReactNode;
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+}> = ({ children, size = 'md', className = '' }) => (
+  <div className={`icon-box icon-box--${size} ${className}`}>{children}</div>
+);
+
+export const StepRow: React.FC<{
+  status: 'done' | 'current' | 'pending';
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+}> = ({ status, title, description, onClick, className = '' }) => {
+  const Tag = onClick ? 'button' : 'div';
+  return (
+    <Tag
+      type={onClick ? 'button' : undefined}
+      onClick={onClick}
+      className={`step-card feature-row w-full text-left items-start ${
+        status === 'current' ? 'step-card--current' : ''
+      } ${onClick ? 'cursor-pointer' : ''} ${className}`}
+    >
+      <div className="feature-row__icon">
+        <StepStatusIcon status={status} />
+      </div>
+      <div className="feature-row__content text-safe">
+        <div
+          className={`feature-row__title text-safe ${
+            status === 'current'
+              ? 'text-accent'
+              : status === 'done'
+                ? 'text-graphite-muted line-through'
+                : ''
+          }`}
+        >
+          {title}
+        </div>
+        {description != null && (
+          <div className="feature-row__description text-safe">{description}</div>
+        )}
+      </div>
+    </Tag>
+  );
+};
 
 export const EmptyState: React.FC<{
   icon: React.ReactNode;
@@ -290,12 +542,12 @@ export const EmptyState: React.FC<{
   description: string;
   action?: React.ReactNode;
 }> = ({ icon, title, description, action }) => (
-  <div className="flex flex-col items-center text-center py-12 px-6">
+  <div className="flex flex-col items-center text-center py-12 card-inner">
     <div className="w-14 h-14 rounded-card bg-accent-soft flex items-center justify-center text-accent mb-5">
       {icon}
     </div>
-    <h3 className="text-lg font-medium text-graphite mb-2">{title}</h3>
-    <p className="text-desc text-graphite-muted leading-relaxed max-w-xs">{description}</p>
+    <h3 className="text-h2 text-graphite mb-2 text-safe">{title}</h3>
+    <p className="text-desc text-graphite-muted max-w-xs text-safe">{description}</p>
     {action && <div className="mt-6 w-full max-w-xs">{action}</div>}
   </div>
 );
@@ -303,7 +555,7 @@ export const EmptyState: React.FC<{
 export const AiPlaceholder: React.FC<{ term?: string }> = ({ term }) => (
   <button
     type="button"
-    className="w-full mt-3 py-3 px-4 rounded-btn border border-dashed border-black/[0.08] text-left text-desc text-graphite-muted hover:border-accent/30 hover:bg-accent-soft/40 transition-colors"
+    className="w-full mt-3 py-3 px-4 rounded-btn border border-dashed border-black/[0.08] text-left text-desc text-graphite-muted hover:border-accent/30 hover:bg-accent-soft/40 transition-colors text-safe"
   >
     {term ? (
       <>

@@ -47,27 +47,29 @@ export const SubscriptionPlanScreen: React.FC = () => {
   return (
     <PageShell noPadding className="overflow-y-auto overflow-x-hidden pb-8 min-w-0">
       <Header title={plan.name} onBack={() => navigate('/app/profile')} />
-      <div className="px-4 space-y-5 min-w-0 max-w-full">
+      <div className="page-content space-y-5 pb-4">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`rounded-card bg-gradient-to-br p-5 shadow-soft ${plan.accent}`}
+          className={`card-premium bg-gradient-to-br ${plan.accent}`}
         >
-          <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-card bg-white/90 flex items-center justify-center shadow-soft shrink-0">
-              <PlanTierIcon planId={plan.id} className="w-7 h-7 text-accent" />
+          <div className="feature-row">
+            <div className="feature-row__icon">
+              <div className="w-14 h-14 rounded-card bg-white/90 flex items-center justify-center shadow-soft">
+                <PlanTierIcon planId={plan.id} className="w-7 h-7 text-accent" />
+              </div>
             </div>
-            <div className="min-w-0 flex-1">
+            <div className="feature-row__content text-safe">
               <p className="badge-eyebrow mb-1">Тариф</p>
-              <h1 className="text-2xl font-medium text-graphite mt-0.5">{plan.name}</h1>
-              <p className="text-sm text-graphite-muted mt-1">{plan.tagline}</p>
+              <h1 className="text-h2 text-graphite mt-0.5 text-safe">{plan.name}</h1>
+              <p className="text-small text-graphite-muted mt-1 text-safe">{plan.tagline}</p>
             </div>
           </div>
-          <div className="mt-5 flex items-end justify-between gap-3">
-            <div>
-              <p className="text-3xl font-medium text-graphite tracking-tight">{plan.priceLabel}</p>
+          <div className="mt-5 flex items-end justify-between gap-3 min-w-0">
+            <div className="min-w-0">
+              <p className="text-h2 text-graphite tracking-tight text-safe">{plan.priceLabel}</p>
               {plan.priceNote && (
-                <p className="text-xs text-graphite-muted mt-1">{plan.priceNote}</p>
+                <p className="text-small text-graphite-muted mt-1 text-safe">{plan.priceNote}</p>
               )}
             </div>
             {isActive && (
@@ -79,21 +81,21 @@ export const SubscriptionPlanScreen: React.FC = () => {
         </motion.div>
 
         {plan.highlights.map((h) => (
-          <Card key={h} className="p-4 bg-accent-soft/25">
-            <div className="flex gap-2">
-              <Sparkles className="w-5 h-5 text-accent shrink-0" />
-              <p className="text-sm text-graphite leading-relaxed">{h}</p>
+          <Card key={h} className="bg-accent-soft/25">
+            <div className="feature-row">
+              <Sparkles className="w-5 h-5 text-accent shrink-0 feature-row__icon" />
+              <p className="feature-row__content text-body text-graphite leading-relaxed text-safe">{h}</p>
             </div>
           </Card>
         ))}
 
         <div>
-          <h2 className="text-sm font-medium text-graphite mb-3">Что входит</h2>
-          <ul className="space-y-2.5">
+          <h2 className="text-body font-medium text-graphite mb-3 text-safe">Что входит</h2>
+          <ul className="card-list">
             {plan.features.map((f) => (
-              <li key={f} className="checklist-card flex items-start gap-3 !py-3">
-                <Check className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-                <span className="text-sm text-graphite leading-snug">{f}</span>
+              <li key={f} className="checklist-card feature-row checklist-card--compact">
+                <Check className="w-5 h-5 text-accent shrink-0 feature-row__icon mt-0.5" />
+                <span className="feature-row__content text-body text-graphite leading-snug text-safe">{f}</span>
               </li>
             ))}
           </ul>
@@ -148,14 +150,16 @@ export const SubscriptionPlanScreen: React.FC = () => {
                   key={id}
                   type="button"
                   onClick={() => navigate(`/app/subscription/${id}`)}
-                  className="card-premium-interactive w-full flex items-center gap-3 !py-4 text-left active:scale-[0.99]"
+                  className="card-premium-interactive w-full text-left active:scale-[0.99] min-w-0"
                 >
-                  <PlanTierIcon planId={other.id} className="w-5 h-5 text-accent shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-graphite">{other.name}</p>
-                    <p className="text-xs text-graphite-muted truncate">{other.tagline}</p>
+                  <div className="feature-row">
+                    <PlanTierIcon planId={other.id} className="w-5 h-5 text-accent feature-row__icon" />
+                    <div className="feature-row__content text-safe">
+                      <p className="feature-row__title font-semibold">{other.name}</p>
+                      <p className="feature-row__description">{other.tagline}</p>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-graphite-muted feature-row__trailing" />
                   </div>
-                  <ChevronRight className="w-5 h-5 text-graphite-muted shrink-0" />
                 </button>
               );
             })}

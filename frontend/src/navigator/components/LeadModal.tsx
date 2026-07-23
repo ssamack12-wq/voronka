@@ -125,20 +125,20 @@ export const LeadModal: React.FC<LeadModalProps> = ({ open, onClose }) => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="lead-modal-title"
-            className="fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-[70] max-w-lg mx-auto modal-sheet max-h-[min(90vh,640px)] flex flex-col overflow-hidden md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-h-[85vh]"
+            className="fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-[70] max-w-lg mx-auto modal-sheet max-h-[min(90vh,640px)] flex flex-col overflow-hidden min-w-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-h-[85vh]"
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
           >
-            <div className="flex items-center justify-between p-5 shrink-0">
-              <h2 id="lead-modal-title" className="text-lg font-semibold text-graphite">
+            <div className="modal-header shrink-0">
+              <h2 id="lead-modal-title" className="text-h2 text-graphite text-safe leading-snug min-w-0 flex-1">
                 {sent ? 'Заявка отправлена' : 'Получить помощь специалиста'}
               </h2>
               <ModalCloseButton onClick={handleClose} />
             </div>
 
-            <div className="flex-1 overflow-y-auto px-5 pb-5">
+            <div className="modal-body flex-1 min-h-0">
               {sent ? (
                 <motion.div
                   className="flex flex-col items-center text-center py-8"

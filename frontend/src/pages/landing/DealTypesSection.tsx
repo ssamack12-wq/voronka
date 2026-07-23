@@ -17,7 +17,7 @@ export const DealTypesSection: React.FC = () => (
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-accent-soft flex items-center justify-center mx-auto mb-4 group-hover:bg-accent/10 transition-colors">
               <Icon className="w-5 h-5 text-accent" />
             </div>
-            <p className="text-desc sm:text-base font-medium text-graphite leading-relaxed">{title}</p>
+            <p className="text-body font-medium text-graphite leading-relaxed text-safe">{title}</p>
           </div>
         </FadeIn>
       ))}

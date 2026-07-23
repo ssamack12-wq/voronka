@@ -5,7 +5,7 @@ import { buildDealTimeline, getTodaySummary } from '../data/timeline';
 import { Header } from '../components/Header';
 import { canAccessDealCalendar, resolveEffectivePlan } from '../engine/planAccess';
 import { canGuestUseCalendar } from '../engine/guestAccess';
-import { Card, EmptyState, PageShell, PrimaryButton, SecondaryButton, SectionTitle } from '../components/ui';
+import { Card, CardContent, CardHeader, EmptyState, FeatureRow, PageShell, PrimaryButton, SecondaryButton, SectionTitle } from '../components/ui';
 import { useNavigator } from '../store/NavigatorContext';
 import { SafeFeaturePaywall } from './SafeFeaturePaywall';
 
@@ -36,7 +36,7 @@ export const CalendarScreen: React.FC = () => {
   return (
     <PageShell noPadding className="overflow-y-auto">
       <Header logo showMenu onMenu={() => setDrawerOpen(true)} title="Календарь" />
-      <div className="px-4 pb-4">
+      <div className="page-content pb-4">
         {!deal || !progress ? (
           <EmptyState
             icon={<Calendar className="w-6 h-6" />}
@@ -54,31 +54,33 @@ export const CalendarScreen: React.FC = () => {
           />
         ) : (
           <>
-            <Card className="p-4 mb-5 bg-gradient-to-br from-accent-soft/50 to-white border-accent/10">
-              <p className="text-xs font-medium text-graphite-muted uppercase tracking-wide">
-                {summary.todayLabel}
-              </p>
-              {summary.current ? (
-                <>
-                  <p className="text-lg font-semibold text-graphite mt-1 leading-snug">
-                    {summary.current.title}
-                  </p>
-                  <p className="text-xs text-graphite-muted mt-1">
-                    Срок: {summary.current.dueLabel} · {summary.current.estimatedDuration}
-                  </p>
-                </>
-              ) : (
-                <p className="text-sm text-graphite mt-1">Все шаги выполнены</p>
-              )}
-              {summary.next && (
-                <div className="mt-3 pt-3 border-t border-accent/10">
-                  <p className="text-[11px] text-graphite-muted uppercase">Следующий шаг</p>
-                  <p className="text-sm font-medium text-graphite mt-0.5">{summary.next.title}</p>
-                  <p className="text-xs text-graphite-muted">
-                    День {summary.next.dayNumber} · {summary.next.dueLabel}
-                  </p>
-                </div>
-              )}
+            <Card className="mb-5 bg-gradient-to-br from-accent-soft/50 to-white border border-accent/10">
+              <CardHeader>
+                <p className="badge-eyebrow !text-graphite-muted !bg-surface">
+                  {summary.todayLabel}
+                </p>
+              </CardHeader>
+              <CardContent>
+                {summary.current ? (
+                  <>
+                    <p className="text-h2 text-graphite leading-snug text-safe">{summary.current.title}</p>
+                    <p className="text-small text-graphite-muted mt-1 text-safe">
+                      Срок: {summary.current.dueLabel} · {summary.current.estimatedDuration}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-body text-graphite text-safe">Все шаги выполнены</p>
+                )}
+                {summary.next && (
+                  <div className="mt-3 pt-3 border-t border-accent/10">
+                    <p className="text-[11px] text-graphite-muted uppercase text-safe">Следующий шаг</p>
+                    <p className="text-body font-medium text-graphite mt-0.5 text-safe">{summary.next.title}</p>
+                    <p className="text-small text-graphite-muted text-safe">
+                      День {summary.next.dayNumber} · {summary.next.dueLabel}
+                    </p>
+                  </div>
+                )}
+              </CardContent>
             </Card>
 
             <SectionTitle sub="Автоматически построено по вашему сценарию">
@@ -96,7 +98,7 @@ export const CalendarScreen: React.FC = () => {
                     : 'Не выполнено';
 
                 return (
-                  <div key={entry.stepId} className="flex gap-3 pb-4">
+                  <div key={entry.stepId} className="flex gap-3 pb-4 min-w-0 max-w-full">
                     <div className="flex flex-col items-center shrink-0">
                       {entry.isDone ? (
                         <div className="w-7 h-7 rounded-full bg-green-500 flex items-center justify-center">
@@ -117,33 +119,31 @@ export const CalendarScreen: React.FC = () => {
                     </div>
 
                     <Card
-                      className={`flex-1 p-4 rounded-[20px] shadow-soft ${
+                      className={`flex-1 min-w-0 ${
                         entry.isDone ? 'border-green-100 bg-green-50/40' : ''
                       }`}
                     >
-                      <p className="text-[11px] font-medium text-graphite-muted">
+                      <p className="text-small font-medium text-graphite-muted text-safe">
                         День {entry.dayNumber}
                       </p>
                       <p
-                        className={`text-sm font-semibold mt-0.5 leading-snug ${
+                        className={`text-body font-semibold mt-0.5 leading-snug text-safe ${
                           entry.isDone ? 'text-green-800' : 'text-graphite'
                         }`}
                       >
                         {entry.title}
                       </p>
-                      <dl className="mt-3 space-y-1.5 text-xs">
-                        <div className="flex justify-between gap-2">
-                          <dt className="text-graphite-muted">Длительность</dt>
-                          <dd className="text-graphite font-medium text-right">
-                            {entry.estimatedDuration}
-                          </dd>
+                      <dl className="mt-3 space-y-1.5 text-small">
+                        <div className="dl-row">
+                          <dt>Длительность</dt>
+                          <dd className="text-graphite font-medium">{entry.estimatedDuration}</dd>
                         </div>
-                        <div className="flex justify-between gap-2">
-                          <dt className="text-graphite-muted">Срок</dt>
+                        <div className="dl-row">
+                          <dt>Срок</dt>
                           <dd className="text-graphite font-medium">{entry.dueLabel}</dd>
                         </div>
-                        <div className="flex justify-between gap-2">
-                          <dt className="text-graphite-muted">Статус</dt>
+                        <div className="dl-row">
+                          <dt>Статус</dt>
                           <dd
                             className={`font-medium ${
                               entry.isDone ? 'text-green-700' : 'text-graphite'

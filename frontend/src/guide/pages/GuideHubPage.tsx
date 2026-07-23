@@ -23,10 +23,10 @@ export const GuideHubPage: React.FC = () => {
         }}
       />
 
-      <header className="mb-8">
+      <header className="mb-8 min-w-0">
         <p className="badge-eyebrow mb-3">База знаний</p>
-        <h1 className="text-section-title text-graphite">Руководства по сделкам с недвижимостью</h1>
-        <p className="text-base text-graphite-muted mt-4 leading-relaxed max-w-prose">
+        <h1 className="text-h1 text-graphite text-safe">Руководства по сделкам с недвижимостью</h1>
+        <p className="text-body text-graphite-muted mt-4 leading-relaxed max-w-prose text-safe">
           Пошаговые инструкции для покупки и продажи квартиры. После каждого гида — персональный план
           сделки по вашей ситуации.
         </p>
@@ -37,22 +37,20 @@ export const GuideHubPage: React.FC = () => {
           <Link
             key={guide.slug}
             to={`/guide/${guide.slug}`}
-            className="group block card-premium-interactive"
+            className="group block card-premium-interactive min-w-0"
           >
-            <div className="flex gap-4">
-              <div className="w-11 h-11 rounded-xl bg-accent-soft flex items-center justify-center shrink-0">
+            <div className="feature-row">
+              <div className="feature-row__icon w-11 h-11 rounded-xl bg-accent-soft flex items-center justify-center shrink-0">
                 <BookOpen className="w-5 h-5 text-accent" />
               </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-base sm:text-lg font-medium text-graphite group-hover:text-accent transition-colors leading-snug">
+              <div className="feature-row__content text-safe">
+                <h2 className="feature-row__title font-semibold group-hover:text-accent transition-colors leading-snug">
                   {guide.title}
                 </h2>
-                <p className="text-sm text-graphite-muted mt-2 leading-relaxed line-clamp-2">
-                  {guide.shortDescription}
-                </p>
-                <span className="inline-flex items-center gap-1 text-sm font-medium text-accent mt-3">
+                <p className="feature-row__description text-safe">{guide.shortDescription}</p>
+                <span className="inline-flex items-center gap-1 text-small font-medium text-accent mt-3">
                   Читать
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform shrink-0" />
                 </span>
               </div>
             </div>
@@ -60,9 +58,9 @@ export const GuideHubPage: React.FC = () => {
         ))}
       </div>
 
-      <aside className="mt-12 card-premium bg-accent-soft/40">
-        <h2 className="text-lg font-medium text-graphite mb-2">Нужен персональный план?</h2>
-        <p className="text-base text-graphite-muted mb-5 leading-relaxed">
+      <aside className="mt-12 card-premium bg-accent-soft/40 min-w-0">
+        <h2 className="text-h2 text-graphite mb-2 text-safe">Нужен персональный план?</h2>
+        <p className="text-body text-graphite-muted mb-5 leading-relaxed text-safe">
           Пройдите квиз за 2 минуты — определим сценарий сделки и построим roadmap с документами и
           проверками.
         </p>

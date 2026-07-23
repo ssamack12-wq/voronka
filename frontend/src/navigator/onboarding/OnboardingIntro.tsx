@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LoginButton } from '../../components/LoginButton';
 import { Header } from '../components/Header';
-import { PageShell, PrimaryButton, SecondaryButton } from '../components/ui';
+import { ChecklistRow, PageShell, PrimaryButton, SecondaryButton } from '../components/ui';
 
 const FEATURES = [
   {
@@ -34,7 +34,7 @@ export const OnboardingIntro: React.FC = () => {
         title="Навигатор сделки"
         rightSlot={<LoginButton redirectPath="/app/onboarding" />}
       />
-      <div className="px-4 flex flex-col flex-1 justify-center gap-10 py-8">
+      <div className="page-content flex flex-col flex-1 justify-center gap-10 py-8">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -42,10 +42,10 @@ export const OnboardingIntro: React.FC = () => {
           className="text-center"
         >
           <p className="badge-eyebrow mb-5">Навигатор сделки</p>
-          <h1 className="text-hero text-graphite max-w-md mx-auto">
+          <h1 className="text-hero text-graphite max-w-md mx-auto text-safe">
             Проведите сделку с&nbsp;недвижимостью безопасно
           </h1>
-          <p className="text-subtitle-lg mt-5 max-w-sm mx-auto">
+          <p className="text-subtitle-lg mt-5 max-w-sm mx-auto text-safe">
             Пошаговый план сделки, проверка рисков и документы — всё в одном месте.
           </p>
         </motion.div>
@@ -62,23 +62,8 @@ export const OnboardingIntro: React.FC = () => {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + i * 0.08, duration: 0.4 }}
-              className="checklist-card flex gap-4"
             >
-              <span className="check-icon check-icon--done shrink-0 mt-0.5" aria-hidden>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path
-                    d="M2 6L5 9L10 3"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-              <div>
-                <p className="font-medium text-base text-graphite leading-snug">{feature.title}</p>
-                <p className="text-desc text-graphite-muted mt-1.5 leading-relaxed">{feature.desc}</p>
-              </div>
+              <ChecklistRow title={feature.title} description={feature.desc} />
             </motion.div>
           ))}
         </motion.div>

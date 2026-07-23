@@ -18,7 +18,7 @@ export const HowItWorksSection: React.FC = () => (
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-card bg-accent text-white text-lg font-semibold mb-5 shadow-soft">
                   {step.num}
                 </div>
-                <p className="text-base font-medium text-graphite leading-relaxed px-1">
+                <p className="text-body font-medium text-graphite leading-relaxed text-safe px-1">
                   {step.title}
                 </p>
               </div>
@@ -40,7 +40,7 @@ export const HowItWorksSection: React.FC = () => (
                 <div className="inline-flex items-center justify-center w-11 h-11 rounded-card bg-accent text-white text-base font-semibold mb-4 shadow-soft">
                   {step.num}
                 </div>
-                <p className="text-base font-medium text-graphite leading-relaxed">{step.title}</p>
+                <p className="text-body font-medium text-graphite leading-relaxed text-safe">{step.title}</p>
               </div>
             </FadeIn>
             {i < STEPS.length - 1 && (

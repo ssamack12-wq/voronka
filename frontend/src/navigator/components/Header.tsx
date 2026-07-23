@@ -1,5 +1,6 @@
 import { ArrowLeft, Bookmark, Menu } from 'lucide-react';
 import React from 'react';
+import { AppLogo } from '../../components/AppLogo';
 
 interface HeaderProps {
   title?: string;
@@ -26,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
   logo,
   rightSlot
 }) => (
-  <header className="flex items-center justify-between py-5 px-4 shrink-0">
+  <header className="flex items-center justify-between py-5 page-content shrink-0 min-w-0 max-w-full">
     <div className="flex items-center gap-3 min-w-0 flex-1">
       {onBack ? (
         <button
@@ -38,15 +39,15 @@ export const Header: React.FC<HeaderProps> = ({
           <ArrowLeft className="w-5 h-5 text-graphite" />
         </button>
       ) : logo ? (
-        <div className="w-9 h-9 rounded-btn bg-accent-soft flex items-center justify-center shrink-0">
-          <span className="text-accent text-lg">⌂</span>
-        </div>
+        <AppLogo />
       ) : (
         <div className="w-9" />
       )}
-      <div className="min-w-0">
-        {subtitle && <p className="text-desc text-graphite-muted truncate">{subtitle}</p>}
-        {title && <h1 className="text-base font-semibold text-graphite truncate">{title}</h1>}
+      <div className="min-w-0 flex-1 max-w-full">
+        {subtitle && <p className="text-desc text-graphite-muted text-safe">{subtitle}</p>}
+        {title && (
+          <h1 className="text-body font-semibold text-graphite text-safe leading-snug break-words">{title}</h1>
+        )}
       </div>
     </div>
     <div className="flex items-center gap-1 shrink-0">

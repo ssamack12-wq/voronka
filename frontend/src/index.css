@@ -4,6 +4,152 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  div {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  section,
+  article,
+  main,
+  aside,
+  nav,
+  header,
+  footer,
+  form,
+  fieldset {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  [class*='flex'],
+  [class*='grid'] {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  img,
+  video,
+  svg,
+  picture {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Flex/grid children: allow text to shrink and wrap instead of overflowing */
+  [class*='flex'] > *,
+  [class*='grid'] > * {
+    min-width: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  li,
+  span,
+  a,
+  label,
+  summary,
+  button,
+  td,
+  th,
+  dt,
+  dd {
+    overflow-wrap: break-word;
+    word-break: normal;
+    max-width: 100%;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    min-width: 0;
+  }
+
+  h1 {
+    font-size: var(--text-h1);
+    line-height: var(--text-h1-lh);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.02em;
+  }
+
+  h2 {
+    font-size: var(--text-h2);
+    line-height: var(--text-h2-lh);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.01em;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    max-width: 100%;
+  }
+
+  section,
+  article,
+  main,
+  aside,
+  nav,
+  header,
+  footer {
+    max-width: 100%;
+  }
+
+  pre,
+  code {
+    overflow-wrap: break-word;
+    word-break: normal;
+    max-width: 100%;
+  }
+
+  table {
+    width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+  }
+
+  ol,
+  ul {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  ol li,
+  ul li {
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+}
+
 html,
 body,
 #root {
@@ -11,11 +157,12 @@ body,
 }
 
 body {
-  font-family: 'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    sans-serif;
-  font-weight: 400;
-  color: #111827;
-  background-color: #f8fafc;
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--text-body-lh);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text);
+  background-color: var(--color-surface);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;

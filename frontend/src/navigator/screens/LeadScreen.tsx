@@ -62,8 +62,8 @@ export const LeadScreen: React.FC = () => {
     <div className="flex flex-col flex-1 min-h-0">
       <Header title="Помощь специалиста" onBack={goBack} />
       <PageShell className="flex-1 overflow-y-auto pb-8">
-        <Card className="p-5 mb-5">
-          <p className="text-base text-graphite leading-relaxed">
+        <Card className="mb-5">
+          <p className="text-body text-graphite leading-relaxed text-safe">
             Юрист или риелтор поможет проверить объект, подготовить документы, провести расчёты и
             сопроводить сделку.
           </p>

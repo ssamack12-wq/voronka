@@ -60,9 +60,9 @@ export const TutorialDrawer: React.FC<TutorialDrawerProps> = ({
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           >
-            <div className="drawer-header shrink-0">
-              <div className="pr-4 min-w-0">
-                <h2 className="text-lg font-semibold text-graphite truncate">{tutorial.title}</h2>
+            <div className="drawer-header shrink-0 min-w-0">
+              <div className="pr-4 min-w-0 flex-1">
+                <h2 className="text-h2 text-graphite text-safe leading-snug">{tutorial.title}</h2>
                 {subtasks.length > 0 && (
                   <p className="text-xs text-graphite-muted mt-0.5">
                     {allDone || stepCompleted ? (
@@ -82,7 +82,7 @@ export const TutorialDrawer: React.FC<TutorialDrawerProps> = ({
             </div>
 
             {subtasks.length > 0 && (
-              <div className="px-4 pt-3 shrink-0">
+              <div className="panel-inner-x pt-3 shrink-0">
                 <div className="flex justify-between text-xs text-graphite-muted mb-1">
                   <span>{pct}%</span>
                   <span>
@@ -100,9 +100,9 @@ export const TutorialDrawer: React.FC<TutorialDrawerProps> = ({
               </div>
             )}
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 scroll-area drawer-body space-y-4 !pt-0">
               <section className="banner-info">
-                <p className="text-base text-graphite leading-relaxed">{tutorial.summary}</p>
+                <p className="text-body text-graphite leading-relaxed text-safe">{tutorial.summary}</p>
               </section>
 
               {subtasks.length > 0 ? (
@@ -140,7 +140,7 @@ export const TutorialDrawer: React.FC<TutorialDrawerProps> = ({
                       href={link.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center gap-2 text-base text-accent font-medium py-2 rounded-btn hover:bg-accent-soft/60 px-2 -mx-2 transition-colors"
+                      className="flex items-center gap-2 text-body text-accent font-medium py-2 rounded-btn hover:bg-accent-soft/60 px-2 -mx-2 transition-colors text-safe"
                     >
                       {link.label}
                       <ExternalLink className="w-4 h-4" />
@@ -158,7 +158,7 @@ export const TutorialDrawer: React.FC<TutorialDrawerProps> = ({
               </section>
             </div>
 
-            <div className="p-4 border-t border-black/[0.06] shrink-0">
+            <div className="drawer-footer">
               <SecondaryButton onClick={openLeadModal}>Нужна помощь специалиста</SecondaryButton>
             </div>
           </motion.aside>
@@ -175,21 +175,21 @@ function LegacyTutorialContent({
 }) {
   return (
     <>
-      <section>
-        <h3 className="text-xs font-semibold text-graphite-muted uppercase mb-1">Что это</h3>
-        <p className="text-sm text-graphite leading-relaxed">{tutorial.whatIsIt}</p>
+      <section className="min-w-0">
+        <h3 className="text-small font-semibold text-graphite-muted uppercase mb-1">Что это</h3>
+        <p className="text-body text-graphite leading-relaxed text-safe">{tutorial.whatIsIt}</p>
       </section>
-      <section>
-        <h3 className="text-xs font-semibold text-graphite-muted uppercase mb-3">Пошаговая инструкция</h3>
+      <section className="min-w-0">
+        <h3 className="text-small font-semibold text-graphite-muted uppercase mb-3">Пошаговая инструкция</h3>
         <div className="space-y-4">
           {tutorial.steps.map((st) => (
-            <div key={st.order} className="flex gap-3">
-              <div className="step-number">
-                {st.order}
+            <div key={st.order} className="feature-row items-start">
+              <div className="feature-row__icon">
+                <div className="step-number">{st.order}</div>
               </div>
-              <div>
-                <p className="font-medium text-graphite text-sm">{st.title}</p>
-                <p className="text-sm text-graphite-muted mt-1">{st.description}</p>
+              <div className="feature-row__content text-safe">
+                <p className="feature-row__title font-medium">{st.title}</p>
+                <p className="feature-row__description">{st.description}</p>
               </div>
             </div>
           ))}

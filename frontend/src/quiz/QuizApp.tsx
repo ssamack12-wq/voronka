@@ -269,8 +269,8 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
         <section className="flex flex-col gap-6 flex-1 justify-center py-4">
           <div className="text-center">
             <p className="badge-eyebrow mb-3">Проверка знаний</p>
-            <h1 className="text-section-title text-graphite">Насколько вы готовы к сделке?</h1>
-            <p className="text-base text-graphite-muted mt-4 leading-relaxed">
+            <h1 className="text-section-title text-graphite text-safe">Насколько вы готовы к сделке?</h1>
+            <p className="text-body text-graphite-muted mt-4 leading-relaxed text-safe">
               Короткий тест по рискам и типичным ошибкам. В конце можно оставить контакты для разбора
               с экспертом.
             </p>
@@ -301,9 +301,9 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
                   {currentQuestion.type === 'test' && 'Проверка знаний'}
                   {currentQuestion.type === 'scenario' && 'Проверка действий в ситуации'}
                 </p>
-                <h2 className="text-lg font-medium text-graphite leading-relaxed">{currentQuestion.question}</h2>
+                <h2 className="text-h2 text-graphite leading-snug text-safe">{currentQuestion.question}</h2>
                 {currentQuestion.isCritical && (
-                  <p className="mt-2 text-xs font-medium text-risk">Важно: повышенный риск.</p>
+                  <p className="mt-2 text-small font-medium text-risk text-safe">Важно: повышенный риск.</p>
                 )}
               </div>
               <div className="flex flex-col gap-2">
@@ -324,8 +324,8 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
 
       {renderedStage === 'break' && showBreakScreen && (
         <section className="card-premium flex flex-col gap-4">
-          <h2 className="text-lg font-medium text-graphite">Небольшая пауза</h2>
-          <p className="text-base text-graphite-muted leading-relaxed">Вы прошли часть этапов. Шагов: {breakStepsPassed}.</p>
+          <h2 className="text-h2 text-graphite text-safe">Небольшая пауза</h2>
+          <p className="text-body text-graphite-muted leading-relaxed text-safe">Вы прошли часть этапов. Шагов: {breakStepsPassed}.</p>
           <button onClick={handleContinueAfterBreak} className="btn-primary w-full">
             Продолжить самому
           </button>
@@ -338,14 +338,14 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
       {renderedStage === 'result' && (
         <section className="flex flex-col gap-4">
           <div className="card-premium">
-            <h2 className="text-lg font-medium text-graphite mb-3">Ваш результат</h2>
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-medium text-graphite">{readiness}%</span>
-              <span className="text-desc text-graphite-muted">готовности</span>
+            <h2 className="text-h2 text-graphite mb-3 text-safe">Ваш результат</h2>
+            <div className="flex items-baseline gap-2 min-w-0 flex-wrap">
+              <span className="text-h1 text-graphite text-safe">{readiness}%</span>
+              <span className="text-desc text-graphite-muted text-safe">готовности</span>
             </div>
-            {!isPerfectScore && <p className="mt-4 font-medium text-graphite">{readinessText}</p>}
+            {!isPerfectScore && <p className="mt-4 font-medium text-body text-graphite text-safe">{readinessText}</p>}
             {!isPerfectScore && (
-              <div className="mt-4 space-y-2 text-sm">
+              <div className="mt-4 space-y-2 text-small">
                 <CategoryBadge label="Юридические" level={getRiskLevelText(categoryScores.legal)} />
                 <CategoryBadge label="Финансовые" level={getRiskLevelText(categoryScores.financial)} />
                 <CategoryBadge label="Процесс" level={getRiskLevelText(categoryScores.process)} />
@@ -364,7 +364,7 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
       {renderedStage === 'form' && (
         <section ref={formRef} className="flex flex-col gap-4 flex-1">
           <div className="card-premium">
-            <h3 className="text-lg font-medium text-graphite mb-4">Оставить заявку</h3>
+            <h3 className="text-h2 text-graphite mb-4 text-safe">Оставить заявку</h3>
             <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
               <input
                 type="text"
@@ -410,9 +410,9 @@ const CategoryBadge: React.FC<{ label: string; level: string }> = ({ label, leve
   if (level === 'Средний') color = 'bg-yellow-100 text-yellow-800';
   if (level === 'Высокий') color = 'bg-red-100 text-red-800';
   return (
-    <div className="flex justify-between text-xs">
-      <span>{label}</span>
-      <span className={`px-2 py-1 rounded-full ${color}`}>{level}</span>
+    <div className="flex justify-between gap-3 text-small min-w-0">
+      <span className="text-safe">{label}</span>
+      <span className={`px-2 py-1 rounded-full shrink-0 ${color}`}>{level}</span>
     </div>
   );
 };

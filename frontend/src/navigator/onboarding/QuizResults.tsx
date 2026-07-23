@@ -9,11 +9,14 @@ import { countUnknownAnswers, quizRiskLevelLabel } from '../engine/quizRiskScore
 import { Header } from '../components/Header';
 import {
   Card,
+  CardContent,
+  FeatureRow,
   PageShell,
   PrimaryButton,
   RiskBadge,
   SecondaryButton,
   SectionTitle,
+  StatFeatureRow,
   TextButton
 } from '../components/ui';
 import type { PlanTier, QuizAnswers } from '../types';
@@ -62,67 +65,63 @@ export const QuizResults: React.FC = () => {
   return (
     <PageShell className="pb-6 overflow-y-auto" noPadding>
       <Header logo onBack={() => navigate('/app/onboarding/quiz')} title="Результат" />
-      <div className="px-4 space-y-5 pb-4">
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
+      <div className="page-content space-y-5 pb-4 min-w-0 max-w-full">
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="min-w-0">
           <p className="badge-eyebrow mb-2">Сценарий определён</p>
-          <h2 className="text-section-title text-graphite">{preview.displayTitle}</h2>
+          <h2 className="text-h2 text-graphite text-safe leading-tight">{preview.displayTitle}</h2>
           <div className="flex flex-wrap items-center gap-3 mt-3">
-            <span className="text-sm text-graphite-muted">
+            <span className="text-sm text-graphite-muted text-safe">
               Сложность: <strong className="text-graphite">{resolved.complexity}/10</strong>
             </span>
             <RiskBadge level={resolved.quizRiskLevel === 'high' ? 'high' : resolved.quizRiskLevel === 'medium' ? 'medium' : 'low'} compact />
-            <span className="text-xs text-graphite-muted">
+            <span className="text-xs text-graphite-muted text-safe">
               Риск: {quizRiskLevelLabel(resolved.quizRiskLevel)}
             </span>
           </div>
         </motion.div>
 
         {unknownCount > 0 && (
-          <Card className="p-4 bg-accent-soft/40">
-            <p className="text-sm font-medium text-graphite leading-snug">
+          <Card tone="accent">
+            <p className="text-body font-medium text-graphite text-safe leading-snug">
               Несколько параметров сделки не определены.
             </p>
-            <p className="text-xs text-graphite-muted mt-2 leading-relaxed">
+            <p className="text-small text-graphite-muted mt-2 text-safe leading-relaxed">
               Мы подготовили расширенный сценарий сделки, чтобы вы не пропустили важные проверки.
             </p>
           </Card>
         )}
 
         {unknownCount >= 2 && (
-          <Card className="p-4">
-            <div className="flex gap-3">
-              <Shield className="w-6 h-6 text-accent shrink-0" />
-              <div>
-                <p className="font-medium text-sm text-graphite">Рекомендуем использовать тариф Safe</p>
-                <p className="text-xs text-graphite-muted mt-1 leading-relaxed">
-                  В нём доступны дополнительные проверки и рекомендации по рискам.
-                </p>
-                <SecondaryButton
-                  className="mt-3 !py-2.5 text-sm"
-                  onClick={() => {
-                    if (user) navigate('/app/subscription/safe');
-                    else openAuthModal('/app/subscription/safe');
-                  }}
-                >
-                  {user ? 'Тариф «Безопасный»' : 'Войти и выбрать тариф'}
-                </SecondaryButton>
-              </div>
-            </div>
+          <Card>
+            <FeatureRow
+              icon={<Shield className="w-6 h-6 text-accent" />}
+              title="Рекомендуем использовать тариф Safe"
+              description="В нём доступны дополнительные проверки и рекомендации по рискам."
+            />
+            <SecondaryButton
+              className="mt-3 !py-2.5 text-sm"
+              onClick={() => {
+                if (user) navigate('/app/subscription/safe');
+                else openAuthModal('/app/subscription/safe');
+              }}
+            >
+              {user ? 'Тариф «Безопасный»' : 'Войти и выбрать тариф'}
+            </SecondaryButton>
           </Card>
         )}
 
-        <Card className="p-5 bg-gradient-to-br from-accent-soft/70 to-white">
-          <p className="text-sm font-medium text-graphite mb-3">В вашем плане:</p>
-          <ul className="space-y-2.5">
-            <PreviewItem icon={Check} text={`${preview.stepsCount} этапов`} />
-            <PreviewItem icon={Shield} text={`${preview.checksCount} проверок`} />
-            <PreviewItem icon={FileText} text={`${preview.documentsCount} документов`} />
-            <PreviewItem icon={Calendar} text="календарь сделки" locked={!user} />
-            <PreviewItem icon={Sparkles} text="экстренные сценарии" locked={!user} />
-            <PreviewItem icon={Check} text="инструкции по каждому шагу" />
+        <Card className="bg-gradient-to-br from-accent-soft/70 to-white">
+          <p className="text-body font-medium text-graphite mb-3 text-safe">В вашем плане:</p>
+          <ul className="card-list">
+            <StatFeatureRow icon={<Check className="w-4 h-4 text-accent" />} text={`${preview.stepsCount} этапов`} />
+            <StatFeatureRow icon={<Shield className="w-4 h-4 text-accent" />} text={`${preview.checksCount} проверок`} />
+            <StatFeatureRow icon={<FileText className="w-4 h-4 text-accent" />} text={`${preview.documentsCount} документов`} />
+            <StatFeatureRow icon={<Calendar className="w-4 h-4 text-graphite-muted" />} text="календарь сделки" locked={!user} />
+            <StatFeatureRow icon={<Sparkles className="w-4 h-4 text-graphite-muted" />} text="экстренные сценарии" locked={!user} />
+            <StatFeatureRow icon={<Check className="w-4 h-4 text-accent" />} text="инструкции по каждому шагу" />
           </ul>
           {!user && (
-            <p className="text-xs text-graphite-muted mt-4 leading-relaxed">
+            <p className="text-small text-graphite-muted mt-4 text-safe leading-relaxed">
               Календарь, сохранение прогресса и полный список документов — после входа. Просмотр
               сценария доступен без регистрации.
             </p>
@@ -130,13 +129,13 @@ export const QuizResults: React.FC = () => {
         </Card>
 
         {resolved.detectedRisks.length > 0 && (
-          <Card className="p-4">
+          <Card>
             <SectionTitle>Обнаружены риски</SectionTitle>
-            <ul className="mt-3 space-y-1.5 text-sm text-graphite">
+            <ul className="card-list mt-3">
               {resolved.detectedRisks.map((r) => (
-                <li key={r} className="flex gap-2">
-                  <span className="text-risk">•</span>
-                  <span>{r}</span>
+                <li key={r} className="list-row list-row--nested">
+                  <span className="list-row__icon text-risk">•</span>
+                  <span className="list-row__content text-body text-graphite text-safe">{r}</span>
                 </li>
               ))}
             </ul>
@@ -144,14 +143,12 @@ export const QuizResults: React.FC = () => {
         )}
 
         {resolved.warnings.map((w) => (
-          <Card key={w.id} className="p-4 bg-warning-soft">
-            <div className="flex gap-3">
-              <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-medium text-sm text-amber-900">{w.title}</p>
-                <p className="text-xs text-amber-800 mt-1 leading-relaxed">{w.body}</p>
-              </div>
-            </div>
+          <Card key={w.id} tone="warning">
+            <FeatureRow
+              icon={<AlertTriangle className="w-5 h-5 text-amber-700 mt-0.5" />}
+              title={<span className="font-medium text-amber-900">{w.title}</span>}
+              description={<span className="text-amber-800">{w.body}</span>}
+            />
           </Card>
         ))}
 
@@ -173,25 +170,21 @@ export const QuizResults: React.FC = () => {
         </div>
 
         {resolved.quizRiskLevel === 'high' && unknownCount < 2 && (
-          <Card className="p-4">
-            <div className="flex gap-3">
-              <Shield className="w-6 h-6 text-accent shrink-0" />
-              <div>
-                <p className="font-medium text-sm text-graphite">Рекомендуем тариф «Безопасный»</p>
-                <p className="text-xs text-graphite-muted mt-1 leading-relaxed">
-                  Полные инструкции, разбор рисков и предупреждения — после оплаты в профиле.
-                </p>
-                <SecondaryButton
-                  className="mt-3 !py-2.5 text-sm"
-                  onClick={() => {
-                    if (user) navigate('/app/subscription/safe');
-                    else openAuthModal('/app/subscription/safe');
-                  }}
-                >
-                  {user ? 'Тариф «Безопасный»' : 'Войти и выбрать тариф'}
-                </SecondaryButton>
-              </div>
-            </div>
+          <Card>
+            <FeatureRow
+              icon={<Shield className="w-6 h-6 text-accent" />}
+              title="Рекомендуем тариф «Безопасный»"
+              description="Полные инструкции, разбор рисков и предупреждения — после оплаты в профиле."
+            />
+            <SecondaryButton
+              className="mt-3 !py-2.5 text-sm"
+              onClick={() => {
+                if (user) navigate('/app/subscription/safe');
+                else openAuthModal('/app/subscription/safe');
+              }}
+            >
+              {user ? 'Тариф «Безопасный»' : 'Войти и выбрать тариф'}
+            </SecondaryButton>
           </Card>
         )}
 
@@ -202,21 +195,3 @@ export const QuizResults: React.FC = () => {
     </PageShell>
   );
 };
-
-const PreviewItem: React.FC<{
-  icon: React.FC<{ className?: string }>;
-  text: string;
-  locked?: boolean;
-}> = ({ icon: Icon, text, locked }) => (
-  <li className={`checklist-card flex items-center gap-3 !py-3 !shadow-none ${locked ? 'opacity-70' : ''}`}>
-    <span className={`check-icon ${locked ? 'check-icon--pending' : 'check-icon--done'} shrink-0`}>
-      {!locked && (
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      )}
-    </span>
-    <Icon className={`w-4 h-4 shrink-0 ${locked ? 'text-graphite-muted' : 'text-accent'}`} />
-    <span className={`text-sm ${locked ? 'text-graphite-muted' : 'text-graphite'}`}>{text}</span>
-  </li>
-);

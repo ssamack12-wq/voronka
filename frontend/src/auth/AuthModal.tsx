@@ -110,7 +110,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open }) => {
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
           >
             <div
-              className="modal-sheet-bottom px-5 pt-5 pb-8 relative w-full pointer-events-auto"
+              className="modal-sheet-bottom relative w-full pointer-events-auto min-w-0 max-w-full overflow-x-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <button type="button" onClick={closeAuthModal} className="close-btn absolute top-4 right-4" aria-label="Закрыть">

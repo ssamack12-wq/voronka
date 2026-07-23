@@ -13,7 +13,16 @@ import { riskColorClasses, riskLabel } from '../engine/riskScoring';
 import { EmergencyScenariosPanel } from '../components/EmergencyScenariosPanel';
 import { OppositePartyCard } from '../components/OppositePartyCard';
 import { Header } from '../components/Header';
-import { Card, CheckIcon, GhostButton, PageShell, PrimaryButton, SectionTitle } from '../components/ui';
+import {
+  Card,
+  CheckIcon,
+  FeatureRow,
+  GhostButton,
+  ListRow,
+  PageShell,
+  PrimaryButton,
+  SectionTitle
+} from '../components/ui';
 import { readStepScroll, saveStepScroll } from '../hooks/navigationPersistence';
 import { useScrollRestore } from '../hooks/useScrollRestore';
 import { useNavigator } from '../store/NavigatorContext';
@@ -100,10 +109,10 @@ export const StepDetail: React.FC = () => {
         onBookmark={() => toggleFavorite(favoriteId)}
       />
       <PageShell ref={scrollRef} className="overflow-y-auto pb-8">
-        <p className="text-sm text-graphite-muted leading-relaxed mb-2">
+        <p className="text-body text-graphite-muted leading-relaxed mb-2 text-safe">
           {step.shortDescription}
         </p>
-        <p className="text-sm text-graphite leading-relaxed mb-4">{step.detailedDescription}</p>
+        <p className="text-body text-graphite leading-relaxed mb-4 text-safe">{step.detailedDescription}</p>
 
         {checklistPct > 0 && checklistPct < 100 && (
           <div className="mb-4">
@@ -120,20 +129,20 @@ export const StepDetail: React.FC = () => {
           </div>
         )}
 
-        <div className="flex gap-4 mb-5">
-          <div className="flex items-center gap-2 text-sm text-graphite-muted">
-            <Clock className="w-4 h-4" />
-            <span>Время: {step.estimatedTime}</span>
+        <div className="flex flex-wrap gap-x-4 gap-y-2 mb-5">
+          <div className="flex items-center gap-2 text-body text-graphite-muted min-w-0">
+            <Clock className="w-4 h-4 shrink-0" />
+            <span className="text-safe">Время: {step.estimatedTime}</span>
           </div>
-          <div className={`flex items-center gap-2 text-sm ${riskC.text}`}>
-            <Flag className="w-4 h-4" />
-            <span>Риск: {riskLabel(step.riskLevel)}</span>
+          <div className={`flex items-center gap-2 text-body min-w-0 ${riskC.text}`}>
+            <Flag className="w-4 h-4 shrink-0" />
+            <span className="text-safe">Риск: {riskLabel(step.riskLevel)}</span>
           </div>
         </div>
 
         {step.warnings.length > 0 && (
-          <Card className="p-5 mb-5 bg-warning-soft">
-            <ul className="text-xs text-amber-900 space-y-1">
+          <Card tone="warning" className="mb-5">
+            <ul className="text-desc text-amber-900 space-y-1 text-safe">
               {step.warnings.map((w) => (
                 <li key={w}>• {w}</li>
               ))}
@@ -146,40 +155,40 @@ export const StepDetail: React.FC = () => {
           {step.checklist.map((item) => {
             const checked = stepProgress?.checklist[item.id] ?? false;
             return (
-              <Card key={item.id} className="p-6">
-                <div className="flex gap-4">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (!canGuestMarkSteps(user)) {
-                        void useAuthStore.getState().requestAccess(`/app/deal/step/${step.id}`);
-                        return;
-                      }
-                      toggleChecklistItem(step.id, item.id);
-                    }}
-                    className="shrink-0"
-                    aria-label={checked ? 'Отметить невыполненным' : 'Отметить выполненным'}
-                  >
-                    <CheckIcon checked={checked} />
-                  </button>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <p
-                        className={`font-medium text-base leading-relaxed ${checked ? 'text-graphite-muted line-through' : 'text-graphite'}`}
+              <Card key={item.id}>
+                <FeatureRow
+                  icon={
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!canGuestMarkSteps(user)) {
+                          void useAuthStore.getState().requestAccess(`/app/deal/step/${step.id}`);
+                          return;
+                        }
+                        toggleChecklistItem(step.id, item.id);
+                      }}
+                      className="shrink-0"
+                      aria-label={checked ? 'Отметить невыполненным' : 'Отметить выполненным'}
+                    >
+                      <CheckIcon checked={checked} />
+                    </button>
+                  }
+                  title={
+                    <span className="flex items-start justify-between gap-2 w-full min-w-0">
+                      <span
+                        className={`text-safe flex-1 min-w-0 ${checked ? 'text-graphite-muted line-through' : ''}`}
                       >
                         {item.title}
-                      </p>
+                      </span>
                       {item.mandatory && (
                         <span className="text-[10px] font-medium text-risk uppercase shrink-0">
                           Обязательно
                         </span>
                       )}
-                    </div>
-                    {item.description && (
-                      <p className="text-desc text-graphite-muted mt-2 leading-relaxed">{item.description}</p>
-                    )}
-                  </div>
-                </div>
+                    </span>
+                  }
+                  description={item.description}
+                />
               </Card>
             );
           })}
@@ -189,19 +198,21 @@ export const StepDetail: React.FC = () => {
           <button
             type="button"
             onClick={() => setSelectedTutorialId(primaryTutorialId)}
-            className="mt-4 card-premium-interactive w-full text-left bg-accent-soft/40 hover:bg-accent-soft/60 !border-0"
+            className="mt-4 card-premium-interactive w-full text-left bg-accent-soft/40 hover:bg-accent-soft/60 !border-0 min-w-0"
           >
-            <p className="text-sm font-medium text-accent flex items-center gap-2">
-              <BookOpen className="w-4 h-4" />
-              Открыть подробную инструкцию
-            </p>
-            <p className="text-xs text-graphite-muted mt-1">
+            <div className="feature-row__content text-safe">
+              <p className="text-body font-medium text-accent flex items-center gap-2 text-safe">
+                <BookOpen className="w-4 h-4 shrink-0" />
+                Открыть подробную инструкцию
+              </p>
+              <p className="text-small text-graphite-muted mt-1 text-safe">
               {tutorial?.subtasks?.length
                 ? `${tutorial.subtasks.length} подзадач с пошаговыми действиями и ссылками${
                     tutorialSubtaskPct > 0 ? ` · ${tutorialSubtaskPct}%` : ''
                   }`
                 : 'Пошаговая инструкция с ответами и ссылками'}
-            </p>
+              </p>
+            </div>
           </button>
         )}
 
@@ -214,15 +225,17 @@ export const StepDetail: React.FC = () => {
         <button
           type="button"
           onClick={handleEmergencyClick}
-          className="mt-4 card-premium-interactive w-full text-left"
+          className="mt-4 card-premium-interactive w-full text-left min-w-0"
         >
-          <p className="text-sm font-medium text-graphite flex items-center gap-2">
-            <HelpCircle className="w-4 h-4 text-accent" />
-            Что делать если…
-          </p>
-          <p className="text-xs text-graphite-muted mt-1">
-            Экстренные сценарии и пошаговые действия
-          </p>
+          <div className="feature-row__content text-safe">
+            <p className="text-body font-medium text-graphite flex items-center gap-2 text-safe">
+              <HelpCircle className="w-4 h-4 text-accent shrink-0" />
+              Что делать если…
+            </p>
+            <p className="text-small text-graphite-muted mt-1 text-safe">
+              Экстренные сценарии и пошаговые действия
+            </p>
+          </div>
         </button>
 
         <div className="mt-6 space-y-3">

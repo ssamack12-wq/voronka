@@ -19,36 +19,37 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
 
   return (
     <div
-      className={`rounded-card shadow-soft transition-colors ${
-        completed ? 'bg-accent-soft/30' : 'bg-white'
+      className={`card-premium overflow-hidden transition-colors ${
+        completed ? 'bg-accent-soft/30' : ''
       }`}
     >
-      <div className="flex items-center gap-4 p-6">
-        <button
-          type="button"
-          onClick={onToggle}
-          className="shrink-0"
-          aria-label={completed ? 'Отметить невыполненным' : 'Отметить выполненным'}
-        >
-          <CheckIcon checked={completed} />
-        </button>
+      <div className="feature-row card-inner !py-5">
+        <div className="feature-row__icon">
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-label={completed ? 'Отметить невыполненным' : 'Отметить выполненным'}
+          >
+            <CheckIcon checked={completed} />
+          </button>
+        </div>
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="flex-1 min-w-0 text-left flex items-center gap-2"
+          className="feature-row__content text-left min-w-0 flex items-start gap-2"
         >
           <div className="flex-1 min-w-0">
             <p
-              className={`text-base font-medium leading-relaxed ${completed ? 'text-graphite-muted line-through' : 'text-graphite'}`}
+              className={`feature-row__title leading-relaxed text-safe ${completed ? 'text-graphite-muted line-through' : ''}`}
             >
               {subtask.title}
             </p>
-            <p className="text-desc text-graphite-muted mt-1">
+            <p className="feature-row__description text-safe">
               {subtask.estimatedTime} · {subtask.difficulty}
             </p>
           </div>
           <ChevronDown
-            className={`w-5 h-5 text-graphite-muted shrink-0 transition-transform ${expanded ? 'rotate-180' : ''}`}
+            className={`w-5 h-5 text-graphite-muted feature-row__trailing transition-transform ${expanded ? 'rotate-180' : ''}`}
           />
         </button>
       </div>
@@ -61,7 +62,7 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-6 pb-6 space-y-5 pt-2">
+            <div className="card-inner pt-0 space-y-5">
               <Section title="Зачем это нужно" content={subtask.purpose} />
 
               {subtask.requiredData.length > 0 && (
@@ -71,9 +72,9 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
                   </h4>
                   <ul className="text-base text-graphite space-y-2 leading-relaxed">
                     {subtask.requiredData.map((item) => (
-                      <li key={item} className="flex gap-2">
+                      <li key={item} className="feature-row !gap-2">
                         <span className="text-accent shrink-0">•</span>
-                        {item}
+                        <span className="feature-row__content text-safe">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -89,11 +90,13 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
                     const action = subtask.stepActions?.find((a) => a.afterStep === stepIndex);
                     return (
                       <div key={stepIndex}>
-                        <div className="flex gap-4 py-3">
-                          <div className="step-number">
-                            {stepIndex + 1}
+                        <div className="feature-row py-3">
+                          <div className="feature-row__icon">
+                            <div className="step-number">
+                              {stepIndex + 1}
+                            </div>
                           </div>
-                          <p className="text-base text-graphite leading-relaxed pt-0.5">{stepText}</p>
+                          <p className="feature-row__content text-base text-graphite leading-relaxed pt-0.5 text-safe">{stepText}</p>
                         </div>
                         {action && (
                           <a
@@ -115,39 +118,39 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
                 </div>
               </section>
 
-              <section className="p-5 rounded-card bg-green-50">
+              <section className="card-premium bg-green-50">
                 <h4 className="text-desc font-medium text-green-800 uppercase tracking-wide mb-3">
                   Нормальный результат
                 </h4>
                 <ul className="text-base text-green-900 space-y-2 leading-relaxed">
                   {subtask.expectedResult.map((item) => (
-                    <li key={item} className="flex gap-2">
+                    <li key={item} className="feature-row !gap-2">
                       <Check className="w-4 h-4 text-green-700 shrink-0 mt-0.5" />
-                      {item}
+                      <span className="feature-row__content text-safe">{item}</span>
                     </li>
                   ))}
                 </ul>
               </section>
 
-              <section className="p-5 rounded-card bg-red-50">
+              <section className="card-premium bg-red-50">
                 <h4 className="text-desc font-medium text-risk uppercase mb-3 flex items-center gap-1">
-                  <AlertTriangle className="w-3.5 h-3.5" />
-                  Красные флаги
+                  <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                  <span className="text-safe">Красные флаги</span>
                 </h4>
                 <ul className="text-base text-risk space-y-2 leading-relaxed">
                   {subtask.redFlags.map((item) => (
-                    <li key={item}>🚩 {item}</li>
+                    <li key={item} className="text-safe">🚩 {item}</li>
                   ))}
                 </ul>
               </section>
 
-              <section className="p-5 rounded-card bg-amber-50">
+              <section className="card-premium bg-amber-50">
                 <h4 className="text-desc font-medium text-amber-900 uppercase mb-3">
                   Если найден риск
                 </h4>
                 <ul className="text-base text-amber-900 space-y-2 leading-relaxed">
                   {subtask.whatToDoIfRiskFound.map((item) => (
-                    <li key={item}>→ {item}</li>
+                    <li key={item} className="text-safe">→ {item}</li>
                   ))}
                 </ul>
               </section>
@@ -197,7 +200,7 @@ function Section({ title, content }: { title: string; content: string }) {
   return (
     <section>
       <h4 className="text-desc font-medium text-graphite-muted uppercase tracking-wide mb-2">{title}</h4>
-      <p className="text-base text-graphite leading-relaxed">{content}</p>
+      <p className="text-base text-graphite leading-relaxed text-safe">{content}</p>
     </section>
   );
 }
