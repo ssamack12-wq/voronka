@@ -37,17 +37,12 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ open, tutorialId
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
           >
-            <div className="bg-white rounded-t-3xl px-5 pt-5 pb-8 shadow-card max-h-[90vh] overflow-y-auto">
-              <button
-                type="button"
-                onClick={onClose}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center"
-                aria-label="Закрыть"
-              >
-                <X className="w-5 h-5 text-graphite-muted" />
+            <div className="modal-sheet-bottom px-5 pt-5 pb-8 max-h-[90vh] overflow-y-auto relative">
+              <button type="button" onClick={onClose} className="close-btn absolute top-4 right-4" aria-label="Закрыть">
+                <X className="w-5 h-5" />
               </button>
 
-              <div className="w-14 h-14 rounded-2xl bg-accent-soft flex items-center justify-center mb-4">
+              <div className="icon-box icon-box--lg mb-4">
                 <Crown className="w-7 h-7 text-accent" />
               </div>
 

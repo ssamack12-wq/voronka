@@ -13,7 +13,8 @@ import {
   PrimaryButton,
   RiskBadge,
   SecondaryButton,
-  SectionTitle
+  SectionTitle,
+  TextButton
 } from '../components/ui';
 import type { PlanTier, QuizAnswers } from '../types';
 import { useAuthStore } from '../../auth/store';
@@ -63,10 +64,8 @@ export const QuizResults: React.FC = () => {
       <Header logo onBack={() => navigate('/app/onboarding/quiz')} title="Результат" />
       <div className="px-4 space-y-5 pb-4">
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-          <p className="text-xs text-accent font-semibold uppercase tracking-wide mb-1">
-            Сценарий определён
-          </p>
-          <h2 className="text-xl font-semibold text-graphite leading-tight">{preview.displayTitle}</h2>
+          <p className="badge-eyebrow mb-2">Сценарий определён</p>
+          <h2 className="text-section-title text-graphite">{preview.displayTitle}</h2>
           <div className="flex flex-wrap items-center gap-3 mt-3">
             <span className="text-sm text-graphite-muted">
               Сложность: <strong className="text-graphite">{resolved.complexity}/10</strong>
@@ -79,8 +78,8 @@ export const QuizResults: React.FC = () => {
         </motion.div>
 
         {unknownCount > 0 && (
-          <Card className="p-4 border-accent/20 bg-accent-soft/40">
-            <p className="text-sm font-semibold text-graphite leading-snug">
+          <Card className="p-4 bg-accent-soft/40">
+            <p className="text-sm font-medium text-graphite leading-snug">
               Несколько параметров сделки не определены.
             </p>
             <p className="text-xs text-graphite-muted mt-2 leading-relaxed">
@@ -94,7 +93,7 @@ export const QuizResults: React.FC = () => {
             <div className="flex gap-3">
               <Shield className="w-6 h-6 text-accent shrink-0" />
               <div>
-                <p className="font-semibold text-sm text-graphite">Рекомендуем использовать тариф Safe</p>
+                <p className="font-medium text-sm text-graphite">Рекомендуем использовать тариф Safe</p>
                 <p className="text-xs text-graphite-muted mt-1 leading-relaxed">
                   В нём доступны дополнительные проверки и рекомендации по рискам.
                 </p>
@@ -112,8 +111,8 @@ export const QuizResults: React.FC = () => {
           </Card>
         )}
 
-        <Card className="p-5 bg-gradient-to-br from-accent-soft/70 to-white border-accent/15">
-          <p className="text-sm font-semibold text-graphite mb-3">В вашем плане:</p>
+        <Card className="p-5 bg-gradient-to-br from-accent-soft/70 to-white">
+          <p className="text-sm font-medium text-graphite mb-3">В вашем плане:</p>
           <ul className="space-y-2.5">
             <PreviewItem icon={Check} text={`${preview.stepsCount} этапов`} />
             <PreviewItem icon={Shield} text={`${preview.checksCount} проверок`} />
@@ -145,11 +144,11 @@ export const QuizResults: React.FC = () => {
         )}
 
         {resolved.warnings.map((w) => (
-          <Card key={w.id} className="p-4 border-amber-200 bg-amber-50/80">
+          <Card key={w.id} className="p-4 bg-warning-soft">
             <div className="flex gap-3">
               <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-sm text-amber-900">{w.title}</p>
+                <p className="font-medium text-sm text-amber-900">{w.title}</p>
                 <p className="text-xs text-amber-800 mt-1 leading-relaxed">{w.body}</p>
               </div>
             </div>
@@ -178,7 +177,7 @@ export const QuizResults: React.FC = () => {
             <div className="flex gap-3">
               <Shield className="w-6 h-6 text-accent shrink-0" />
               <div>
-                <p className="font-semibold text-sm text-graphite">Рекомендуем тариф «Безопасный»</p>
+                <p className="font-medium text-sm text-graphite">Рекомендуем тариф «Безопасный»</p>
                 <p className="text-xs text-graphite-muted mt-1 leading-relaxed">
                   Полные инструкции, разбор рисков и предупреждения — после оплаты в профиле.
                 </p>
@@ -196,13 +195,9 @@ export const QuizResults: React.FC = () => {
           </Card>
         )}
 
-        <button
-          type="button"
-          onClick={() => navigate('/app/onboarding/quiz')}
-          className="w-full py-3 text-sm text-graphite-muted"
-        >
+        <TextButton onClick={() => navigate('/app/onboarding/quiz')}>
           Изменить ответы
-        </button>
+        </TextButton>
       </div>
     </PageShell>
   );
@@ -213,8 +208,15 @@ const PreviewItem: React.FC<{
   text: string;
   locked?: boolean;
 }> = ({ icon: Icon, text, locked }) => (
-  <li className={`flex items-center gap-2.5 text-sm ${locked ? 'text-graphite-muted' : 'text-graphite'}`}>
+  <li className={`checklist-card flex items-center gap-3 !py-3 !shadow-none ${locked ? 'opacity-70' : ''}`}>
+    <span className={`check-icon ${locked ? 'check-icon--pending' : 'check-icon--done'} shrink-0`}>
+      {!locked && (
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
+    </span>
     <Icon className={`w-4 h-4 shrink-0 ${locked ? 'text-graphite-muted' : 'text-accent'}`} />
-    <span>{locked ? '🔒 ' : '✓ '}{text}</span>
+    <span className={`text-sm ${locked ? 'text-graphite-muted' : 'text-graphite'}`}>{text}</span>
   </li>
 );

@@ -119,13 +119,13 @@ export const ProfileScreen: React.FC = () => {
     <PageShell noPadding className="overflow-y-auto overflow-x-hidden pb-4 min-w-0">
       <Header logo showMenu onMenu={() => setDrawerOpen(true)} title="Профиль" />
       <div className="px-4 space-y-4 min-w-0 max-w-full">
-        <Card className={`p-4 ${effectivePlan !== 'base' ? 'bg-accent-soft border-accent/20' : ''}`}>
+        <Card className={`p-4 ${effectivePlan !== 'base' ? 'bg-accent-soft' : ''}`}>
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 rounded-card bg-white shadow-soft flex items-center justify-center shrink-0">
               <span className="text-xl text-graphite-muted">👤</span>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="font-semibold text-graphite truncate">{user?.email ?? 'Гость'}</p>
+              <p className="font-medium text-graphite truncate">{user?.email ?? 'Гость'}</p>
               <p className="text-xs text-graphite-muted">
                 Тариф: {planLabel(effectivePlan)}
                 {user && ` · ${premiumStatusLabel(subscriptionStatus)}`}
@@ -152,19 +152,17 @@ export const ProfileScreen: React.FC = () => {
               key={id}
               type="button"
               onClick={() => navigate(`/app/subscription/${id}`)}
-              className={`w-full text-left rounded-2xl border p-4 transition-colors active:scale-[0.99] min-w-0 ${
-                active
-                  ? 'border-accent/35 bg-accent-soft/35'
-                  : 'border-gray-100 bg-white shadow-soft'
+              className={`card-premium-interactive w-full text-left !py-4 min-w-0 ${
+                active ? 'bg-accent-soft/35' : ''
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
                 <PlanTierIcon planId={id} className="w-6 h-6 text-accent shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="font-semibold text-sm text-graphite">{plan.name}</p>
+                    <p className="font-medium text-sm text-graphite">{plan.name}</p>
                     {active && (
-                      <span className="text-[10px] font-bold text-accent uppercase">Активен</span>
+                      <span className="text-[10px] font-medium text-accent uppercase">Активен</span>
                     )}
                   </div>
                   <p className="text-xs text-graphite-muted mt-0.5 truncate">{plan.tagline}</p>
@@ -245,16 +243,12 @@ export const ProfileScreen: React.FC = () => {
           <div className="space-y-2">
             <GhostButton onClick={resetDeal}>Начать новую сделку</GhostButton>
             {confirmDelete ? (
-              <Card className="p-4 border-risk/20 bg-red-50/50">
+              <Card className="p-4 bg-red-50/50">
                 <p className="text-sm text-graphite mb-3">
                   Удалить текущую сделку «{progress.displayTitle ?? 'Сделка'}»?
                 </p>
                 <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setConfirmDelete(false)}
-                    className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium"
-                  >
+                  <button type="button" onClick={() => setConfirmDelete(false)} className="btn-secondary flex-1 !min-h-0 !py-2.5 !text-sm">
                     Отмена
                   </button>
                   <button
@@ -263,7 +257,7 @@ export const ProfileScreen: React.FC = () => {
                       deleteActiveDeal();
                       setConfirmDelete(false);
                     }}
-                    className="flex-1 py-2.5 rounded-xl bg-risk text-white text-sm font-semibold"
+                    className="btn-danger flex-1 !min-h-0 !py-2.5 !text-sm"
                   >
                     Удалить
                   </button>

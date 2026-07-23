@@ -5,7 +5,7 @@ import { buildDealTimeline, getTodaySummary } from '../data/timeline';
 import { Header } from '../components/Header';
 import { canAccessDealCalendar, resolveEffectivePlan } from '../engine/planAccess';
 import { canGuestUseCalendar } from '../engine/guestAccess';
-import { Card, EmptyState, PageShell, PrimaryButton, SectionTitle } from '../components/ui';
+import { Card, EmptyState, PageShell, PrimaryButton, SecondaryButton, SectionTitle } from '../components/ui';
 import { useNavigator } from '../store/NavigatorContext';
 import { SafeFeaturePaywall } from './SafeFeaturePaywall';
 
@@ -103,14 +103,14 @@ export const CalendarScreen: React.FC = () => {
                           <Check className="w-4 h-4 text-white stroke-[3]" />
                         </div>
                       ) : (
-                        <div className="w-7 h-7 rounded-full border-2 border-gray-200 flex items-center justify-center text-xs font-semibold text-graphite-muted">
+                        <div className="w-7 h-7 rounded-full border-2 border-black/[0.08] flex items-center justify-center text-desc font-medium text-graphite-muted">
                           {entry.dayNumber}
                         </div>
                       )}
                       {!isLast && (
                         <div
                           className={`w-0.5 flex-1 min-h-[24px] mt-1 ${
-                            entry.isDone ? 'bg-green-200' : 'bg-gray-100'
+                            entry.isDone ? 'bg-green-200' : 'bg-black/[0.04]'
                           }`}
                         />
                       )}
@@ -155,20 +155,18 @@ export const CalendarScreen: React.FC = () => {
                       </dl>
                       {!entry.isDone && step && (
                         <div className="mt-3 flex flex-col gap-2">
-                          <button
-                            type="button"
+                          <SecondaryButton
                             onClick={() => openStep(entry.stepId)}
-                            className="w-full py-2 rounded-xl border border-gray-200 text-xs font-medium text-graphite"
+                            className="!min-h-[40px] !text-desc"
                           >
                             Открыть шаг
-                          </button>
-                          <button
-                            type="button"
+                          </SecondaryButton>
+                          <PrimaryButton
                             onClick={() => completeStep(entry.stepId)}
-                            className="w-full py-2 rounded-xl bg-accent text-white text-xs font-semibold"
+                            className="!min-h-[40px] !text-desc"
                           >
                             Отметить выполненным
-                          </button>
+                          </PrimaryButton>
                         </div>
                       )}
                     </Card>

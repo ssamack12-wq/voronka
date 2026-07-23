@@ -18,28 +18,28 @@ export const GuideLayout: React.FC<GuideLayoutProps> = ({ children, breadcrumbs,
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white flex justify-center w-full">
-      <div className="w-full max-w-guide px-4 sm:px-6 py-4 sm:py-8 flex flex-col min-h-screen pb-24 sm:pb-8">
-        <header className="flex items-center justify-between mb-6 shrink-0">
+    <div className="min-h-screen bg-surface flex justify-center w-full">
+      <div className="w-full max-w-guide px-4 sm:px-6 py-6 sm:py-10 flex flex-col min-h-screen pb-24 sm:pb-10">
+        <header className="flex items-center justify-between mb-8 shrink-0">
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-sm font-semibold text-graphite hover:text-accent transition-colors"
+            className="flex items-center gap-2 text-base font-medium text-graphite hover:text-accent transition-colors"
           >
-            <span className="w-8 h-8 rounded-xl bg-accent-soft flex items-center justify-center text-accent">
+            <span className="w-8 h-8 rounded-btn bg-accent-soft flex items-center justify-center text-accent">
               ⌂
             </span>
             <span className="hidden sm:inline">Навигатор сделки</span>
           </button>
-          <LoginButton redirectPath="/app/onboarding" showProfileWhenAuthed className="!text-sm" />
+          <LoginButton redirectPath="/app/onboarding" showProfileWhenAuthed className="!text-base" />
         </header>
 
-        <nav aria-label="Хлебные крошки" className="flex flex-wrap items-center gap-1 text-xs text-graphite-muted mb-6">
+        <nav aria-label="Хлебные крошки" className="flex flex-wrap items-center gap-1 text-desc text-graphite-muted mb-8">
           <Link to="/" className="hover:text-accent flex items-center gap-1">
             <Home className="w-3.5 h-3.5" />
             Главная
           </Link>
-          {breadcrumbs.map((item, i) => (
+          {breadcrumbs.map((item) => (
             <React.Fragment key={item.label}>
               <ChevronRight className="w-3.5 h-3.5 shrink-0" />
               {item.href ? (
@@ -55,7 +55,7 @@ export const GuideLayout: React.FC<GuideLayoutProps> = ({ children, breadcrumbs,
 
         <main className="flex-1">{children}</main>
 
-        <footer className="mt-12 pt-6 border-t border-gray-100 text-xs text-graphite-muted space-y-2">
+        <footer className="mt-16 pt-8 text-desc text-graphite-muted space-y-3">
           <p>
             <Link to="/guide" className="text-accent font-medium hover:underline">
               Все руководства
@@ -74,7 +74,7 @@ export const GuideLayout: React.FC<GuideLayoutProps> = ({ children, breadcrumbs,
       </div>
 
       {stickyCta && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 safe-bottom px-4 py-3">
+        <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden bg-white/90 backdrop-blur-xl safe-bottom px-4 py-3">
           {stickyCta}
         </div>
       )}

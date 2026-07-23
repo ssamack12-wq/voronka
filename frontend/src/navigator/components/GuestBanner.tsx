@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../auth/store';
-import { Card } from './ui';
+import { Card, PrimaryButton, SecondaryButton } from './ui';
 
 interface GuestBannerProps {
   message?: string;
@@ -16,23 +16,15 @@ export const GuestBanner: React.FC<GuestBannerProps> = ({
   if (user) return null;
 
   return (
-    <Card className="p-4 bg-accent-soft/40 border-accent/15 mb-4">
-      <p className="text-sm text-graphite leading-relaxed">{message}</p>
-      <div className="flex flex-wrap gap-2 mt-3">
-        <button
-          type="button"
-          onClick={() => openAuthModal('/app/deal')}
-          className="px-4 py-2 rounded-xl bg-accent text-white text-sm font-semibold"
-        >
+    <Card className="p-5 bg-accent-soft/40 mb-4">
+      <p className="text-base text-graphite leading-relaxed">{message}</p>
+      <div className="flex flex-col sm:flex-row gap-3 mt-4">
+        <PrimaryButton className="!min-h-[44px] text-sm" onClick={() => openAuthModal('/app/deal')}>
           Войти и сохранить прогресс
-        </button>
-        <button
-          type="button"
-          onClick={() => navigate('/app/onboarding')}
-          className="px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-graphite"
-        >
+        </PrimaryButton>
+        <SecondaryButton className="!min-h-[44px] text-sm" onClick={() => navigate('/app/onboarding')}>
           Новый квиз
-        </button>
+        </SecondaryButton>
       </div>
     </Card>
   );

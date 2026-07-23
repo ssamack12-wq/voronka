@@ -21,7 +21,7 @@ export const CookieBanner: React.FC = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3">
-      <div className="max-w-lg mx-auto bg-graphite text-white rounded-2xl px-4 py-3 shadow-card flex flex-col sm:flex-row sm:items-center gap-3">
+      <div className="max-w-lg mx-auto bg-graphite text-white rounded-card px-4 py-3 shadow-card flex flex-col sm:flex-row sm:items-center gap-3">
         <p className="flex-1 text-xs sm:text-sm text-white/90 leading-relaxed">
           Мы используем файлы cookie и сервис Яндекс.Метрика для сбора технических данных и
           улучшения работы сайта.
@@ -29,7 +29,7 @@ export const CookieBanner: React.FC = () => {
         <button
           type="button"
           onClick={handleAccept}
-          className="shrink-0 w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white text-graphite text-sm font-semibold active:scale-[0.98] transition-transform"
+          className="shrink-0 w-full sm:w-auto btn-secondary !min-h-[44px] !text-graphite"
         >
           Хорошо
         </button>

@@ -19,8 +19,7 @@ type SubmitStatus = 'idle' | 'loading' | 'success' | 'error';
 type Stage = 'quiz' | 'break' | 'result' | 'form';
 
 const TOTAL_STEPS = questions.length;
-const BACK_BUTTON_CLASS =
-  'w-full py-3 rounded-xl border border-gray-300 text-sm text-gray-700 font-medium active:scale-[0.98] transition-transform';
+const BACK_BUTTON_CLASS = 'btn-secondary w-full';
 const STAGE_TRANSITION_MS = 240;
 
 function formatPhone(value: string): string {
@@ -256,7 +255,7 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
           <button
             type="button"
             onClick={onBackToLanding}
-            className="text-sm text-gray-500 hover:text-gray-800"
+            className="text-desc text-graphite-muted hover:text-graphite"
           >
             ← На главную
           </button>
@@ -269,22 +268,14 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
       {renderedStage === 'quiz' && currentStep === 0 && (
         <section className="flex flex-col gap-6 flex-1 justify-center py-4">
           <div className="text-center">
-            <p className="text-xs font-semibold text-accent uppercase tracking-wide mb-2">
-              Проверка знаний
-            </p>
-            <h1 className="text-2xl font-semibold text-black leading-tight">
-              Насколько вы готовы к сделке?
-            </h1>
-            <p className="text-sm text-gray-600 mt-3 leading-relaxed">
+            <p className="badge-eyebrow mb-3">Проверка знаний</p>
+            <h1 className="text-section-title text-graphite">Насколько вы готовы к сделке?</h1>
+            <p className="text-base text-graphite-muted mt-4 leading-relaxed">
               Короткий тест по рискам и типичным ошибкам. В конце можно оставить контакты для разбора
               с экспертом.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={handleStart}
-            className="w-full py-3.5 rounded-2xl bg-accent text-white font-semibold text-base"
-          >
+          <button type="button" onClick={handleStart} className="btn-primary w-full">
             Начать тест
           </button>
         </section>
@@ -293,24 +284,24 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
       {renderedStage === 'quiz' && currentStep > 0 && (
         <>
           <section className="flex flex-col gap-4">
-            <div className="flex items-center justify-between text-xs text-gray-600">
+            <div className="flex items-center justify-between text-desc text-graphite-muted">
               <span>
                 Шаг {currentStep} из {TOTAL_STEPS}
               </span>
             </div>
-            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-black/[0.04] rounded-full overflow-hidden">
               <div className="h-full bg-accent transition-all duration-300" style={{ width: `${progress}%` }} />
             </div>
           </section>
           {currentQuestion && !showBreakScreen && (
             <section className="flex flex-col gap-4 mt-6">
-              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                <p className="text-sm text-gray-500 mb-1">
+              <div className="card-premium">
+                <p className="text-desc text-graphite-muted mb-2">
                   {currentQuestion.type === 'simple' && 'Оценка вашей подготовки'}
                   {currentQuestion.type === 'test' && 'Проверка знаний'}
                   {currentQuestion.type === 'scenario' && 'Проверка действий в ситуации'}
                 </p>
-                <h2 className="text-lg font-semibold text-black">{currentQuestion.question}</h2>
+                <h2 className="text-lg font-medium text-graphite leading-relaxed">{currentQuestion.question}</h2>
                 {currentQuestion.isCritical && (
                   <p className="mt-2 text-xs font-medium text-risk">Важно: повышенный риск.</p>
                 )}
@@ -320,7 +311,7 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
                   <button
                     key={option.text}
                     onClick={() => handleOptionSelect(currentQuestion, index)}
-                    className="w-full text-left py-3 px-3 rounded-xl border border-gray-200 text-sm text-black active:scale-[0.98] transition-all hover:border-accent"
+                    className="option-card"
                   >
                     {option.text}
                   </button>
@@ -332,13 +323,13 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
       )}
 
       {renderedStage === 'break' && showBreakScreen && (
-        <section className="flex flex-col gap-4 bg-gray-50 rounded-xl p-4 border border-gray-100">
-          <h2 className="text-lg font-semibold text-black">Небольшая пауза</h2>
-          <p className="text-sm text-gray-700">Вы прошли часть этапов. Шагов: {breakStepsPassed}.</p>
-          <button onClick={handleContinueAfterBreak} className="w-full py-3 rounded-xl bg-accent text-white font-semibold">
+        <section className="card-premium flex flex-col gap-4">
+          <h2 className="text-lg font-medium text-graphite">Небольшая пауза</h2>
+          <p className="text-base text-graphite-muted leading-relaxed">Вы прошли часть этапов. Шагов: {breakStepsPassed}.</p>
+          <button onClick={handleContinueAfterBreak} className="btn-primary w-full">
             Продолжить самому
           </button>
-          <button onClick={handleGetHelpFromBreak} className="w-full py-3 rounded-xl border border-gray-300 text-sm">
+          <button onClick={handleGetHelpFromBreak} className="btn-secondary w-full">
             Разобрать с экспертом
           </button>
         </section>
@@ -346,13 +337,13 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
 
       {renderedStage === 'result' && (
         <section className="flex flex-col gap-4">
-          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-            <h2 className="text-lg font-semibold text-black mb-2">Ваш результат</h2>
+          <div className="card-premium">
+            <h2 className="text-lg font-medium text-graphite mb-3">Ваш результат</h2>
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-semibold">{readiness}%</span>
-              <span className="text-sm text-gray-600">готовности</span>
+              <span className="text-4xl font-medium text-graphite">{readiness}%</span>
+              <span className="text-desc text-graphite-muted">готовности</span>
             </div>
-            {!isPerfectScore && <p className="mt-3 font-semibold">{readinessText}</p>}
+            {!isPerfectScore && <p className="mt-4 font-medium text-graphite">{readinessText}</p>}
             {!isPerfectScore && (
               <div className="mt-4 space-y-2 text-sm">
                 <CategoryBadge label="Юридические" level={getRiskLevelText(categoryScores.legal)} />
@@ -364,7 +355,7 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
           <button type="button" onClick={restartQuiz} className={BACK_BUTTON_CLASS}>
             Пройти тест ещё раз
           </button>
-          <button onClick={goToFormFromResult} className="w-full py-3 rounded-xl bg-accent text-white font-semibold">
+          <button onClick={goToFormFromResult} className="btn-primary w-full">
             Разобрать мою ситуацию
           </button>
         </section>
@@ -372,27 +363,27 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
 
       {renderedStage === 'form' && (
         <section ref={formRef} className="flex flex-col gap-4 flex-1">
-          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-            <h3 className="text-lg font-semibold mb-2">Оставить заявку</h3>
+          <div className="card-premium">
+            <h3 className="text-lg font-medium text-graphite mb-4">Оставить заявку</h3>
             <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
               <input
                 type="text"
                 value={formData.phone}
                 onChange={(e) => handleFormChange('phone', e.target.value)}
                 placeholder="+7 или email"
-                className="w-full rounded-xl border px-3 py-2 text-sm"
+                className="input-field"
               />
               <input
                 type="text"
                 value={formData.city}
                 onChange={(e) => handleFormChange('city', e.target.value)}
                 placeholder="Город"
-                className="w-full rounded-xl border px-3 py-2 text-sm"
+                className="input-field"
               />
               <select
                 value={formData.type}
                 onChange={(e) => handleFormChange('type', e.target.value)}
-                className="w-full rounded-xl border px-3 py-2 text-sm"
+                className="input-field"
               >
                 <option value="">Тип сделки</option>
                 <option value="buy">Покупка</option>
@@ -400,11 +391,7 @@ export const QuizApp: React.FC<QuizAppProps> = ({ onBackToLanding }) => {
               </select>
               {submitError && <p className="text-xs text-risk">{submitError}</p>}
               {submitStatus === 'success' && <p className="text-xs text-green-600">Заявка отправлена.</p>}
-              <button
-                type="submit"
-                disabled={submitStatus === 'loading'}
-                className="w-full py-3 rounded-xl bg-accent text-white font-semibold disabled:opacity-60"
-              >
+              <button type="submit" disabled={submitStatus === 'loading'} className="btn-primary w-full">
                 {submitStatus === 'loading' ? 'Отправка...' : 'Отправить'}
               </button>
             </form>

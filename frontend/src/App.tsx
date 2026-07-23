@@ -17,7 +17,7 @@ const AppShell: React.FC<{ children: React.ReactNode; wide?: boolean }> = ({
   children,
   wide = false
 }) => (
-  <div className="min-h-screen bg-white flex justify-center w-full">
+  <div className="min-h-screen bg-surface flex justify-center w-full">
     <PageTransition wide={wide}>{children}</PageTransition>
   </div>
 );
@@ -63,7 +63,7 @@ const App: React.FC = () => (
         path="/app/*"
         element={
           <ProtectedRoute>
-            <div className="min-h-screen bg-surface sm:bg-white flex justify-center w-full">
+            <div className="min-h-screen bg-surface flex justify-center w-full">
               <NavigatorApp />
             </div>
           </ProtectedRoute>

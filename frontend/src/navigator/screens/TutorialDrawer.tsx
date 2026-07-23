@@ -54,13 +54,13 @@ export const TutorialDrawer: React.FC<TutorialDrawerProps> = ({
             onClick={handleBack}
           />
           <motion.aside
-            className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-card flex flex-col md:rounded-l-3xl"
+            className="fixed inset-y-0 right-0 z-50 w-full max-w-md drawer-panel flex flex-col md:rounded-l-[var(--radius-card)]"
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           >
-            <div className="flex items-center justify-between p-4 border-b border-gray-100 shrink-0">
+            <div className="drawer-header shrink-0">
               <div className="pr-4 min-w-0">
                 <h2 className="text-lg font-semibold text-graphite truncate">{tutorial.title}</h2>
                 {subtasks.length > 0 && (
@@ -76,12 +76,7 @@ export const TutorialDrawer: React.FC<TutorialDrawerProps> = ({
                   </p>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={handleBack}
-                className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center shrink-0 hover:bg-gray-100 active:scale-95 transition-transform"
-                aria-label="Назад"
-              >
+              <button type="button" onClick={handleBack} className="close-btn shrink-0" aria-label="Назад">
                 <ArrowLeft className="w-5 h-5" />
               </button>
             </div>
@@ -94,9 +89,9 @@ export const TutorialDrawer: React.FC<TutorialDrawerProps> = ({
                     {doneCount}/{subtasks.length}
                   </span>
                 </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="progress-track">
                   <motion.div
-                    className="h-full bg-accent rounded-full"
+                    className="progress-fill"
                     initial={false}
                     animate={{ width: `${pct}%` }}
                     transition={{ duration: 0.3 }}
@@ -106,8 +101,8 @@ export const TutorialDrawer: React.FC<TutorialDrawerProps> = ({
             )}
 
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              <section className="p-3 rounded-2xl bg-accent-soft/30 border border-accent/10">
-                <p className="text-sm text-graphite leading-relaxed">{tutorial.summary}</p>
+              <section className="banner-info">
+                <p className="text-base text-graphite leading-relaxed">{tutorial.summary}</p>
               </section>
 
               {subtasks.length > 0 ? (
@@ -145,7 +140,7 @@ export const TutorialDrawer: React.FC<TutorialDrawerProps> = ({
                       href={link.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center gap-2 text-sm text-accent font-medium py-2 rounded-lg hover:bg-accent-soft/60 px-2 -mx-2 transition-colors"
+                      className="flex items-center gap-2 text-base text-accent font-medium py-2 rounded-btn hover:bg-accent-soft/60 px-2 -mx-2 transition-colors"
                     >
                       {link.label}
                       <ExternalLink className="w-4 h-4" />
@@ -154,16 +149,16 @@ export const TutorialDrawer: React.FC<TutorialDrawerProps> = ({
                 </section>
               )}
 
-              <section className="p-3 rounded-2xl bg-warning-soft border border-amber-100">
-                <h3 className="text-xs font-semibold text-amber-900 mb-1">Важно</h3>
-                <p className="text-sm text-amber-900">
+              <section className="banner-warning">
+                <h3 className="text-desc font-medium mb-1">Важно</h3>
+                <p>
                   Сохраняйте все документы и переписку. При сомнениях привлеките юриста до подписания
                   договоров и передачи денег.
                 </p>
               </section>
             </div>
 
-            <div className="p-4 border-t border-gray-100 shrink-0">
+            <div className="p-4 border-t border-black/[0.06] shrink-0">
               <SecondaryButton onClick={openLeadModal}>Нужна помощь специалиста</SecondaryButton>
             </div>
           </motion.aside>
@@ -189,7 +184,7 @@ function LegacyTutorialContent({
         <div className="space-y-4">
           {tutorial.steps.map((st) => (
             <div key={st.order} className="flex gap-3">
-              <div className="w-8 h-8 rounded-lg bg-accent text-white flex items-center justify-center text-sm font-bold shrink-0">
+              <div className="step-number">
                 {st.order}
               </div>
               <div>

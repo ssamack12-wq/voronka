@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { KeyRound, Mail, X } from 'lucide-react';
+import { KeyRound, Mail } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { OpenEmailApps } from '../components/OpenEmailApps';
+import { PrimaryButton } from '../navigator/components/ui';
 import {
   DOMAIN_RESTRICTION_ERROR,
   EMAIL_INFO_HINT,
@@ -109,19 +110,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open }) => {
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
           >
             <div
-              className="bg-white rounded-t-3xl sm:rounded-3xl px-5 pt-5 pb-8 shadow-card relative w-full pointer-events-auto"
+              className="modal-sheet-bottom px-5 pt-5 pb-8 relative w-full pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                type="button"
-                onClick={closeAuthModal}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                aria-label="Закрыть"
-              >
-                <X className="w-5 h-5 text-graphite-muted" />
+              <button type="button" onClick={closeAuthModal} className="close-btn absolute top-4 right-4" aria-label="Закрыть">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                  <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+                </svg>
               </button>
 
-              <div className="w-12 h-12 rounded-2xl bg-accent-soft flex items-center justify-center mb-4">
+              <div className="icon-box icon-box--md mb-4">
                 {loginPending ? (
                   <KeyRound className="w-6 h-6 text-accent" />
                 ) : (
@@ -131,8 +129,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open }) => {
 
               {!loginPending ? (
                 <>
-                  <h2 className="text-xl font-semibold text-graphite">Продолжить сделку</h2>
-                  <p className="text-sm text-graphite-muted mt-2 leading-relaxed">
+                  <h2 className="text-section-title text-xl">Продолжить сделку</h2>
+                  <p className="text-desc text-graphite-muted mt-2 leading-relaxed">
                     Введите email — отправим 4-значный код и ссылку для входа.
                   </p>
                   <form onSubmit={(e) => void handleEmailSubmit(e)} className="mt-5 space-y-3">
@@ -143,11 +141,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open }) => {
                       onChange={(e) => handleEmailChange(e.target.value)}
                       onBlur={handleEmailBlur}
                       placeholder="example@yandex.ru"
-                      className="w-full rounded-2xl border border-gray-200 px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30"
+                      className="input-field"
                       autoComplete="email"
                       disabled={submitting}
                     />
-                    <div className="rounded-xl bg-surface border border-gray-100 px-4 py-3 text-xs text-graphite-muted leading-relaxed">
+                    <div className="info-box">
                       {infoLines.map((line) => (
                         <p key={line} className={line.startsWith('•') ? 'pl-1' : undefined}>
                           {line}
@@ -155,16 +153,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open }) => {
                       ))}
                     </div>
                     {(domainError || error) && (
-                      <p className="text-sm text-risk whitespace-pre-line">{domainError ?? error}</p>
+                      <p className="text-desc text-risk whitespace-pre-line">{domainError ?? error}</p>
                     )}
-                    <button
-                      type="submit"
-                      disabled={!canSubmitEmail}
-                      className="w-full py-3.5 rounded-2xl bg-accent text-white font-semibold text-[15px] active:scale-[0.98] transition-transform disabled:opacity-60"
-                    >
+                    <PrimaryButton type="submit" disabled={!canSubmitEmail}>
                       {submitting ? 'Отправка…' : 'Продолжить'}
-                    </button>
-                    <p className="text-xs text-graphite-muted text-center leading-relaxed">
+                    </PrimaryButton>
+                    <p className="text-desc text-graphite-muted text-center leading-relaxed">
                       Продолжая, вы соглашаетесь с{' '}
                       <a
                         href={TERMS_OF_SERVICE_URL}
@@ -179,8 +173,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open }) => {
                 </>
               ) : (
                 <>
-                  <h2 className="text-xl font-semibold text-graphite">Введите код</h2>
-                  <p className="text-sm text-graphite-muted mt-2 leading-relaxed">
+                  <h2 className="text-section-title text-xl">Введите код</h2>
+                  <p className="text-desc text-graphite-muted mt-2 leading-relaxed">
                     Мы отправили 4-значный код и ссылку на{' '}
                     <span className="font-medium text-graphite">{pendingEmail}</span>
                   </p>
@@ -195,32 +189,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open }) => {
                       onChange={(e) => handleCodeChange(e.target.value)}
                       placeholder="0000"
                       maxLength={OTP_LENGTH}
-                      className="w-full rounded-2xl border border-gray-200 px-4 py-3.5 text-center text-2xl font-semibold tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-accent/30"
+                      className="input-field text-center text-2xl font-medium tracking-[0.5em]"
                       disabled={submitting}
                     />
-                    {error && <p className="text-sm text-risk">{error}</p>}
-                    <button
-                      type="submit"
-                      disabled={submitting || code.length !== OTP_LENGTH}
-                      className="w-full py-3.5 rounded-2xl bg-accent text-white font-semibold text-[15px] active:scale-[0.98] transition-transform disabled:opacity-60"
-                    >
+                    {error && <p className="text-desc text-risk">{error}</p>}
+                    <PrimaryButton type="submit" disabled={submitting || code.length !== OTP_LENGTH}>
                       {submitting ? 'Проверка…' : 'Войти по коду'}
-                    </button>
+                    </PrimaryButton>
                   </form>
 
                   <OpenEmailApps email={pendingEmail} className="mt-4" />
 
-                  <p className="text-xs text-graphite-muted mt-3 leading-relaxed">
+                  <p className="text-desc text-graphite-muted mt-3 leading-relaxed">
                     Или перейдите по ссылке из письма. Код и ссылка действуют 15 минут. Проверьте
                     «Спам».
                   </p>
 
                   {(devCode || devLink) && (
-                    <div className="mt-3 rounded-xl bg-surface border border-gray-100 p-3 text-xs text-graphite-muted space-y-1">
-                      <p className="font-semibold text-graphite">Локальная разработка (без Resend)</p>
+                    <div className="mt-3 info-box space-y-1">
+                      <p className="font-medium text-graphite">Локальная разработка (без Resend)</p>
                       {devCode && (
                         <p>
-                          Код: <span className="font-mono font-semibold text-accent">{devCode}</span>
+                          Код: <span className="font-mono font-medium text-accent">{devCode}</span>
                         </p>
                       )}
                       {devLink && (
@@ -235,7 +225,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open }) => {
 
                   <button
                     type="button"
-                    className="mt-4 text-sm text-accent font-medium"
+                    className="mt-4 text-base text-accent font-medium"
                     onClick={() => {
                       resetLoginFlow();
                       setCode('');

@@ -69,11 +69,11 @@ async function resolvePaymentContext(
 
 const StatusIcon: React.FC<{ status: PaymentUiStatus }> = ({ status }) => {
   const base =
-    'w-20 h-20 rounded-[1.75rem] flex items-center justify-center shadow-card border';
+    'w-20 h-20 rounded-card flex items-center justify-center shadow-card';
 
   if (status === 'loading') {
     return (
-      <div className={`${base} bg-white border-gray-100`}>
+      <div className={`${base} bg-white`}>
         <Loader2 className="w-10 h-10 text-accent animate-spin" />
       </div>
     );
@@ -84,7 +84,7 @@ const StatusIcon: React.FC<{ status: PaymentUiStatus }> = ({ status }) => {
         initial={{ scale: 0.85, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 320, damping: 22 }}
-        className={`${base} bg-gradient-to-br from-emerald-50 to-white border-emerald-200/80`}
+        className={`${base} bg-gradient-to-br from-emerald-50 to-white`}
       >
         <CheckCircle2 className="w-10 h-10 text-emerald-600" strokeWidth={2.2} />
       </motion.div>
@@ -92,13 +92,13 @@ const StatusIcon: React.FC<{ status: PaymentUiStatus }> = ({ status }) => {
   }
   if (status === 'pending') {
     return (
-      <div className={`${base} bg-gradient-to-br from-amber-50 to-white border-amber-200/80`}>
+      <div className={`${base} bg-gradient-to-br from-amber-50 to-white`}>
         <Clock3 className="w-10 h-10 text-amber-600" strokeWidth={2.2} />
       </div>
     );
   }
   return (
-    <div className={`${base} bg-gradient-to-br from-red-50 to-white border-red-200/80`}>
+    <div className={`${base} bg-gradient-to-br from-red-50 to-white`}>
       <XCircle className="w-10 h-10 text-risk" strokeWidth={2.2} />
     </div>
   );
@@ -200,7 +200,7 @@ export const PaymentReturnScreen: React.FC = () => {
               <StatusIcon status={status} />
             </div>
 
-            <h1 className="text-2xl font-semibold text-graphite tracking-tight">{title}</h1>
+            <h1 className="text-section-title text-2xl">{title}</h1>
             {subtitle && (
               <p className="mt-3 text-sm text-graphite-muted leading-relaxed max-w-[20rem]">
                 {subtitle}
@@ -212,7 +212,7 @@ export const PaymentReturnScreen: React.FC = () => {
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.12 }}
-                className="mt-5 w-full rounded-2xl border border-accent/20 bg-gradient-to-r from-accent-soft/80 to-white px-4 py-3 flex items-center gap-3 text-left"
+                className="mt-5 w-full card-premium bg-gradient-to-r from-accent-soft/80 to-white px-4 py-3 flex items-center gap-3 text-left"
               >
                 <Sparkles className="w-5 h-5 text-accent shrink-0" />
                 <p className="text-xs text-graphite leading-snug">

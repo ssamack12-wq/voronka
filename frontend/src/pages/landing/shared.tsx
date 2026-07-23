@@ -1,14 +1,30 @@
 import React from 'react';
 
+export const CARD_CLASS = 'card-premium-interactive';
+
 export const PrimaryCta: React.FC<{
   onClick: () => void;
   children?: React.ReactNode;
   className?: string;
-}> = ({ onClick, children = 'Получить мой план бесплатно', className = '' }) => (
+}> = ({ onClick, children = 'Создать план сделки', className = '' }) => (
   <button
     type="button"
     onClick={onClick}
-    className={`w-full sm:w-auto sm:min-w-[280px] px-8 py-4 rounded-2xl bg-accent text-white font-semibold text-base active:scale-[0.98] transition-all shadow-soft hover:shadow-card hover:bg-accent/95 ${className}`}
+    className={`btn-primary w-full sm:w-auto sm:min-w-[280px] ${className}`}
+  >
+    {children}
+  </button>
+);
+
+export const SecondaryCta: React.FC<{
+  onClick: () => void;
+  children?: React.ReactNode;
+  className?: string;
+}> = ({ onClick, children = 'Посмотреть пример', className = '' }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`btn-secondary w-full sm:w-auto sm:min-w-[200px] ${className}`}
   >
     {children}
   </button>
@@ -20,15 +36,9 @@ export const SectionHeading: React.FC<{
   subtitle?: string;
 }> = ({ eyebrow, title, subtitle }) => (
   <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
-    {eyebrow && (
-      <p className="text-xs font-semibold text-accent uppercase tracking-wider mb-3">{eyebrow}</p>
-    )}
-    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-graphite tracking-tight leading-tight">
-      {title}
-    </h2>
-    {subtitle && (
-      <p className="text-sm sm:text-base text-graphite-muted mt-3 leading-relaxed">{subtitle}</p>
-    )}
+    {eyebrow && <p className="badge-eyebrow mb-4">{eyebrow}</p>}
+    <h2 className="text-section-title text-graphite">{title}</h2>
+    {subtitle && <p className="text-subtitle-lg mt-4 max-w-xl mx-auto">{subtitle}</p>}
   </div>
 );
 

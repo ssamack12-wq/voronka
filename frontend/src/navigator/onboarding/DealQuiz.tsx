@@ -88,25 +88,20 @@ const HintSheet: React.FC<{ hint: string; open: boolean; onClose: () => void }> 
           transition={{ type: 'spring', damping: 28, stiffness: 320 }}
         >
           <div
-            className="bg-white rounded-t-3xl sm:rounded-3xl px-5 pt-5 pb-8 shadow-card w-full pointer-events-auto"
+            className="modal-sheet-bottom px-5 pt-5 pb-8 w-full pointer-events-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3 mb-3">
-              <p className="text-sm font-semibold text-graphite">Пояснение</p>
-              <button
-                type="button"
-                onClick={onClose}
-                className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center hover:bg-gray-100 transition-colors shrink-0"
-                aria-label="Закрыть"
-              >
-                <X className="w-4 h-4 text-graphite-muted" />
+              <p className="text-base font-medium text-graphite">Пояснение</p>
+              <button type="button" onClick={onClose} className="close-btn shrink-0" aria-label="Закрыть">
+                <X className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-sm text-graphite-muted leading-relaxed whitespace-pre-line">{hint}</p>
+            <p className="text-desc text-graphite-muted leading-relaxed whitespace-pre-line">{hint}</p>
             <button
               type="button"
               onClick={onClose}
-              className="w-full mt-5 py-3 rounded-2xl bg-accent text-white font-semibold text-sm active:scale-[0.98] transition-transform"
+              className="btn-primary w-full mt-5"
             >
               Понятно
             </button>
@@ -178,9 +173,9 @@ export const DealQuiz: React.FC = () => {
   if (!current) return null;
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 bg-white">
-      <div className="px-4 pt-3 pb-2 shrink-0">
-        <div className="flex items-center justify-between text-xs text-graphite-muted mb-2">
+    <div className="flex flex-col flex-1 min-h-0 bg-surface">
+      <div className="px-4 pt-4 pb-3 shrink-0">
+        <div className="flex items-center justify-between text-desc text-graphite-muted mb-3">
           <button type="button" onClick={handleBack} className="font-medium text-graphite">
             ← Назад
           </button>
@@ -188,7 +183,7 @@ export const DealQuiz: React.FC = () => {
             {stepIndex + 1} / {questions.length}
           </span>
         </div>
-        <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-2 bg-black/[0.04] rounded-full overflow-hidden">
           <motion.div
             className="h-full bg-accent rounded-full"
             initial={false}
@@ -208,35 +203,31 @@ export const DealQuiz: React.FC = () => {
           className="flex-1 flex flex-col px-4 py-6 min-h-0"
         >
           <div className="flex-1 flex flex-col justify-center max-w-lg mx-auto w-full">
-            <p className="text-xs font-medium text-accent uppercase tracking-wide mb-3">Ваш ответ</p>
-            <div className="flex items-start gap-2 mb-2">
-              <h2 className="text-xl sm:text-2xl font-semibold text-graphite leading-snug flex-1">
+            <p className="badge-eyebrow mb-4">Ваш ответ</p>
+            <div className="flex items-start gap-3 mb-3">
+              <h2 className="text-section-title text-graphite leading-snug flex-1 !text-[1.375rem] sm:!text-[1.625rem]">
                 {current.question}
               </h2>
               <button
                 type="button"
                 onClick={() => setHintOpen(true)}
-                className="w-9 h-9 shrink-0 rounded-full border border-gray-200 bg-white flex items-center justify-center text-accent hover:border-accent/40 hover:bg-accent-soft/30 transition-colors"
+                className="w-10 h-10 shrink-0 rounded-btn bg-white shadow-soft flex items-center justify-center text-accent hover:shadow-card-hover hover:scale-[1.02] transition-all"
                 aria-label="Пояснение к вопросу"
               >
                 <Info className="w-4 h-4" />
               </button>
             </div>
             {current.subtitle && (
-              <p className="text-sm text-graphite-muted leading-relaxed mb-6">{current.subtitle}</p>
+              <p className="text-base text-graphite-muted leading-relaxed mb-8">{current.subtitle}</p>
             )}
-            {!current.subtitle && <div className="mb-6" />}
+            {!current.subtitle && <div className="mb-8" />}
             <div className="flex flex-col gap-3">
               {current.options.map((opt) => (
                 <button
                   key={opt.id}
                   type="button"
                   onClick={() => handleSelect(opt.id)}
-                  className={`w-full text-left py-4 px-5 rounded-2xl border-2 bg-white text-[15px] font-medium active:scale-[0.98] transition-all hover:border-accent/40 hover:bg-accent-soft/30 ${
-                    opt.id === 'unknown'
-                      ? 'border-gray-100 text-graphite-muted'
-                      : 'border-gray-100 text-graphite'
-                  }`}
+                  className={`option-card ${opt.id === 'unknown' ? 'option-card--muted' : ''}`}
                 >
                   {opt.label}
                 </button>

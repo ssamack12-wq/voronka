@@ -82,25 +82,20 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
             onClick={onClose}
           />
           <motion.aside
-            className="fixed inset-y-0 left-0 z-[56] w-[min(320px,88vw)] bg-white shadow-card flex flex-col safe-bottom"
+            className="fixed inset-y-0 left-0 z-[56] w-[min(320px,88vw)] drawer-panel flex flex-col safe-bottom"
             initial={{ x: '-100%' }}
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', damping: 32, stiffness: 320 }}
           >
-            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+            <div className="drawer-header">
               <div>
                 <p className="font-semibold text-graphite">Навигатор сделки</p>
-                <p className="text-xs text-graphite-muted truncate max-w-[200px]">
+                <p className="text-desc text-graphite-muted truncate max-w-[200px]">
                   {user?.email ?? 'Гость — вход необязателен'}
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={onClose}
-                className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center"
-                aria-label="Закрыть меню"
-              >
+              <button type="button" onClick={onClose} className="close-btn" aria-label="Закрыть меню">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -113,7 +108,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
                     onClose();
                     openAuthModal('/app/deal');
                   }}
-                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-accent bg-accent-soft/50 hover:bg-accent-soft transition-colors mb-2"
+                  className="nav-item nav-item--accent mb-2"
                 >
                   <LogIn className="w-5 h-5 shrink-0" />
                   Войти
@@ -125,7 +120,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
                   key={label}
                   type="button"
                   onClick={() => (action ? (action(), onClose()) : path && go(path))}
-                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-graphite hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                  className="nav-item"
                 >
                   <Icon className="w-5 h-5 text-accent shrink-0" />
                   {label}
@@ -139,7 +134,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
                   onClick={() =>
                     needsAuth && !user ? void requireAuth(path) : go(path)
                   }
-                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-graphite hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                  className="nav-item"
                 >
                   <Icon className="w-5 h-5 text-accent shrink-0" />
                   {label}
@@ -154,12 +149,12 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
                   key={label}
                   type="button"
                   onClick={() => go(path)}
-                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-graphite hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                  className="nav-item"
                 >
                   <Icon className="w-5 h-5 text-accent shrink-0" />
                   {label}
                   {label.startsWith('Тариф') && plan !== 'base' && (
-                    <span className="ml-auto text-[10px] font-bold text-accent uppercase">
+                    <span className="ml-auto text-[10px] font-medium text-accent uppercase">
                       {planLabel(plan)}
                     </span>
                   )}
@@ -167,7 +162,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
               ))}
             </nav>
 
-            <div className="p-3 border-t border-gray-100 space-y-2">
+            <div className="p-3 border-t border-black/[0.06] space-y-2">
               {progress && (
                 <button
                   type="button"
@@ -189,7 +184,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ open, onClose }) => 
                     onClose();
                     navigate('/');
                   }}
-                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-risk hover:bg-red-50"
+                  className="nav-item nav-item--danger"
                 >
                   <LogOut className="w-5 h-5 shrink-0" />
                   Выйти

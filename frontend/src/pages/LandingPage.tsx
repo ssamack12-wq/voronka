@@ -18,6 +18,10 @@ export const LandingPage: React.FC = () => {
     navigate('/app/onboarding');
   }, [navigate]);
 
+  const handlePreview = useCallback(() => {
+    document.getElementById('app-preview')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
   const topGuides = [...GUIDE_META]
     .sort((a, b) => (b.searchVolume ?? 0) - (a.searchVolume ?? 0))
     .slice(0, 4);
@@ -28,7 +32,7 @@ export const LandingPage: React.FC = () => {
         <LoginButton redirectPath="/app/onboarding" showProfileWhenAuthed />
       </header>
 
-      <HeroSection onStart={handleStart} />
+      <HeroSection onStart={handleStart} onPreview={handlePreview} />
       <BenefitsSection onStart={handleStart} />
       <HowItWorksSection />
       <DealTypesSection />

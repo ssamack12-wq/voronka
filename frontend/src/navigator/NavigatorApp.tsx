@@ -88,7 +88,7 @@ const NavigatorShell: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-white w-full max-w-lg mx-auto overflow-x-hidden shadow-sm md:shadow-card md:my-4 md:rounded-3xl md:border md:border-gray-100 md:min-h-[640px] md:max-h-[900px] md:overflow-hidden relative">
+    <div className="flex flex-col min-h-screen bg-surface w-full max-w-lg mx-auto overflow-x-hidden md:shadow-card md:my-4 md:rounded-card md:min-h-[640px] md:max-h-[900px] md:overflow-hidden relative">
       <div
         className={`flex-1 flex flex-col min-h-0 min-w-0 overflow-x-hidden overflow-y-hidden ${hideBottomNav ? '' : 'pb-[calc(4.5rem+env(safe-area-inset-bottom))]'}`}
       >

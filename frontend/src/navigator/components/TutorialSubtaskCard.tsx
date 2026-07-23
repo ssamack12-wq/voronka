@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertTriangle, Check, ChevronDown, ExternalLink } from 'lucide-react';
 import React, { useState } from 'react';
+import { CheckIcon } from './ui';
 import type { TutorialSubtask } from '../types';
 
 interface TutorialSubtaskCardProps {
@@ -18,20 +19,18 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
 
   return (
     <div
-      className={`rounded-2xl border transition-colors ${
-        completed ? 'border-accent/30 bg-accent-soft/20' : 'border-gray-100 bg-white'
+      className={`rounded-card shadow-soft transition-colors ${
+        completed ? 'bg-accent-soft/30' : 'bg-white'
       }`}
     >
-      <div className="flex items-center gap-3 p-4">
+      <div className="flex items-center gap-4 p-6">
         <button
           type="button"
           onClick={onToggle}
-          className={`w-6 h-6 rounded-lg border-2 shrink-0 flex items-center justify-center transition-colors ${
-            completed ? 'bg-accent border-accent text-white' : 'border-gray-200 hover:border-accent/50'
-          }`}
+          className="shrink-0"
           aria-label={completed ? 'Отметить невыполненным' : 'Отметить выполненным'}
         >
-          {completed && <Check className="w-3.5 h-3.5" />}
+          <CheckIcon checked={completed} />
         </button>
         <button
           type="button"
@@ -39,10 +38,12 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
           className="flex-1 min-w-0 text-left flex items-center gap-2"
         >
           <div className="flex-1 min-w-0">
-            <p className={`text-sm font-medium ${completed ? 'text-graphite-muted line-through' : 'text-graphite'}`}>
+            <p
+              className={`text-base font-medium leading-relaxed ${completed ? 'text-graphite-muted line-through' : 'text-graphite'}`}
+            >
               {subtask.title}
             </p>
-            <p className="text-xs text-graphite-muted mt-0.5">
+            <p className="text-desc text-graphite-muted mt-1">
               {subtask.estimatedTime} · {subtask.difficulty}
             </p>
           </div>
@@ -60,22 +61,27 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 space-y-4 border-t border-gray-50 pt-4">
+            <div className="px-6 pb-6 space-y-5 pt-2">
               <Section title="Зачем это нужно" content={subtask.purpose} />
 
               {subtask.requiredData.length > 0 && (
                 <section>
-                  <h4 className="text-xs font-semibold text-graphite-muted uppercase mb-2">Что понадобится</h4>
-                  <ul className="text-sm text-graphite space-y-1">
+                  <h4 className="text-desc font-medium text-graphite-muted uppercase tracking-wide mb-3">
+                    Что понадобится
+                  </h4>
+                  <ul className="text-base text-graphite space-y-2 leading-relaxed">
                     {subtask.requiredData.map((item) => (
-                      <li key={item}>• {item}</li>
+                      <li key={item} className="flex gap-2">
+                        <span className="text-accent shrink-0">•</span>
+                        {item}
+                      </li>
                     ))}
                   </ul>
                 </section>
               )}
 
               <section>
-                <h4 className="text-xs font-semibold text-graphite-muted uppercase mb-3">
+                <h4 className="text-desc font-medium text-graphite-muted uppercase tracking-wide mb-4">
                   Пошаговая инструкция
                 </h4>
                 <div className="space-y-0">
@@ -83,25 +89,25 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
                     const action = subtask.stepActions?.find((a) => a.afterStep === stepIndex);
                     return (
                       <div key={stepIndex}>
-                        <div className="flex gap-3 py-2">
-                          <div className="w-7 h-7 rounded-lg bg-accent/10 text-accent flex items-center justify-center text-xs font-bold shrink-0">
+                        <div className="flex gap-4 py-3">
+                          <div className="step-number">
                             {stepIndex + 1}
                           </div>
-                          <p className="text-sm text-graphite leading-relaxed pt-1">{stepText}</p>
+                          <p className="text-base text-graphite leading-relaxed pt-0.5">{stepText}</p>
                         </div>
                         {action && (
                           <a
                             href={action.url}
                             target="_blank"
                             rel="noreferrer"
-                            className="ml-10 mb-2 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors"
+                            className="ml-12 mb-2 inline-flex items-center gap-2 px-4 py-2.5 rounded-btn bg-accent text-white text-desc font-medium hover:scale-[1.02] transition-transform"
                           >
                             {action.label}
                             <ExternalLink className="w-3.5 h-3.5" />
                           </a>
                         )}
                         {stepIndex < subtask.steps.length - 1 && (
-                          <div className="ml-3.5 h-3 border-l-2 border-dashed border-gray-200" />
+                          <div className="ml-4 h-4 border-l-2 border-dashed border-black/[0.06]" />
                         )}
                       </div>
                     );
@@ -109,32 +115,37 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
                 </div>
               </section>
 
-              <section className="p-3 rounded-xl bg-green-50 border border-green-100">
-                <h4 className="text-xs font-semibold text-green-800 uppercase mb-2">Нормальный результат</h4>
-                <ul className="text-sm text-green-900 space-y-1">
+              <section className="p-5 rounded-card bg-green-50">
+                <h4 className="text-desc font-medium text-green-800 uppercase tracking-wide mb-3">
+                  Нормальный результат
+                </h4>
+                <ul className="text-base text-green-900 space-y-2 leading-relaxed">
                   {subtask.expectedResult.map((item) => (
-                    <li key={item}>✓ {item}</li>
+                    <li key={item} className="flex gap-2">
+                      <Check className="w-4 h-4 text-green-700 shrink-0 mt-0.5" />
+                      {item}
+                    </li>
                   ))}
                 </ul>
               </section>
 
-              <section className="p-3 rounded-xl bg-red-50 border border-red-100">
-                <h4 className="text-xs font-semibold text-risk uppercase mb-2 flex items-center gap-1">
+              <section className="p-5 rounded-card bg-red-50">
+                <h4 className="text-desc font-medium text-risk uppercase mb-3 flex items-center gap-1">
                   <AlertTriangle className="w-3.5 h-3.5" />
                   Красные флаги
                 </h4>
-                <ul className="text-sm text-risk space-y-1">
+                <ul className="text-base text-risk space-y-2 leading-relaxed">
                   {subtask.redFlags.map((item) => (
                     <li key={item}>🚩 {item}</li>
                   ))}
                 </ul>
               </section>
 
-              <section className="p-3 rounded-xl bg-amber-50 border border-amber-100">
-                <h4 className="text-xs font-semibold text-amber-900 uppercase mb-2">
+              <section className="p-5 rounded-card bg-amber-50">
+                <h4 className="text-desc font-medium text-amber-900 uppercase mb-3">
                   Если найден риск
                 </h4>
-                <ul className="text-sm text-amber-900 space-y-1">
+                <ul className="text-base text-amber-900 space-y-2 leading-relaxed">
                   {subtask.whatToDoIfRiskFound.map((item) => (
                     <li key={item}>→ {item}</li>
                   ))}
@@ -143,7 +154,7 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
 
               {subtask.links && subtask.links.length > 0 && (
                 <section>
-                  <h4 className="text-xs font-semibold text-graphite-muted uppercase mb-2">
+                  <h4 className="text-desc font-medium text-graphite-muted uppercase mb-3">
                     Полезные ссылки
                   </h4>
                   <div className="flex flex-wrap gap-2">
@@ -153,7 +164,7 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
                         href={link.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 text-xs font-medium text-accent hover:bg-accent-soft/60 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-btn bg-surface text-desc font-medium text-accent hover:bg-accent-soft/60 transition-colors"
                       >
                         {link.label}
                         <ExternalLink className="w-3 h-3" />
@@ -166,10 +177,10 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
               <button
                 type="button"
                 onClick={onToggle}
-                className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                className={`w-full min-h-btn-h rounded-btn text-base font-medium transition-all ${
                   completed
-                    ? 'bg-gray-100 text-graphite-muted'
-                    : 'bg-accent text-white hover:bg-accent/90'
+                    ? 'bg-surface text-graphite-muted'
+                    : 'bg-accent text-white hover:scale-[1.02] shadow-btn'
                 }`}
               >
                 {completed ? 'Выполнено ✓' : 'Отметить выполненным'}
@@ -185,8 +196,8 @@ export const TutorialSubtaskCard: React.FC<TutorialSubtaskCardProps> = ({
 function Section({ title, content }: { title: string; content: string }) {
   return (
     <section>
-      <h4 className="text-xs font-semibold text-graphite-muted uppercase mb-1">{title}</h4>
-      <p className="text-sm text-graphite leading-relaxed">{content}</p>
+      <h4 className="text-desc font-medium text-graphite-muted uppercase tracking-wide mb-2">{title}</h4>
+      <p className="text-base text-graphite leading-relaxed">{content}</p>
     </section>
   );
 }

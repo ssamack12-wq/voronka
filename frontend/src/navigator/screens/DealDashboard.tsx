@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, ArrowRight, Check, Circle, CircleDot } from 'lucide-react';
+import { AlertTriangle, ArrowRight } from 'lucide-react';
 import {
   calculateDealProgress,
   getCurrentStepIndex,
@@ -8,12 +8,15 @@ import {
 import { Header } from '../components/Header';
 import {
   Card,
+  DangerButton,
   EmptyState,
   PageShell,
   PrimaryButton,
   ProgressBar,
   RiskCard,
-  SectionTitle
+  SecondaryButton,
+  SectionTitle,
+  StepStatusIcon
 } from '../components/ui';
 import { canAccessFullRiskEngine, resolveEffectivePlan } from '../engine/planAccess';
 import { LoginButton } from '../../components/LoginButton';
@@ -94,12 +97,12 @@ export const DealDashboard: React.FC = () => {
         </div>
 
         {deal.warnings.map((w) => (
-          <Card key={w.id} className="p-3 border-amber-200 bg-amber-50/90">
-            <div className="flex gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+          <Card key={w.id} className="p-5 bg-warning-soft">
+            <div className="flex gap-3">
+              <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-semibold text-amber-900">{w.title}</p>
-                <p className="text-xs text-amber-800 mt-0.5">{w.body}</p>
+                <p className="text-base font-semibold text-amber-900">{w.title}</p>
+                <p className="text-desc text-amber-800 mt-1 leading-relaxed">{w.body}</p>
               </div>
             </div>
           </Card>
@@ -129,17 +132,17 @@ export const DealDashboard: React.FC = () => {
           </p>
         )}
 
-        <Card className="p-4 overflow-hidden">
-          <p className="text-xs font-medium text-graphite-muted uppercase tracking-wide mb-3">
+        <Card className="p-6 overflow-hidden">
+          <p className="text-desc font-medium text-graphite-muted uppercase tracking-wide mb-4">
             Следующий шаг
           </p>
-          <div className="flex gap-3">
-            <div className="w-10 h-10 rounded-xl bg-accent text-white flex items-center justify-center font-bold text-lg shrink-0">
+          <div className="flex gap-4">
+            <div className="w-11 h-11 rounded-btn bg-accent text-white flex items-center justify-center font-semibold text-lg shrink-0">
               {stepNumber}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-graphite">{nextStep.title}</p>
-              <p className="text-sm text-graphite-muted mt-1 line-clamp-2">
+              <p className="font-semibold text-base text-graphite leading-snug">{nextStep.title}</p>
+              <p className="text-desc text-graphite-muted mt-2 line-clamp-2 leading-relaxed">
                 {nextStep.shortDescription}
               </p>
             </div>
@@ -153,76 +156,59 @@ export const DealDashboard: React.FC = () => {
         </Card>
 
         <SectionTitle>Ваш план сделки</SectionTitle>
-        <div className="flex flex-col gap-2 pt-2">
+        <div className="flex flex-col gap-3 pt-1">
           {!isDealCompleted && percent === 100 && (
             <PrimaryButton onClick={completeDeal}>Завершить сделку</PrimaryButton>
           )}
           {isDealCompleted && (
-            <Card className="p-4 bg-green-50 border-green-100">
-              <p className="text-sm font-semibold text-green-800">Сделка завершена</p>
-              <p className="text-xs text-green-700 mt-1">
+            <Card className="p-5 bg-green-50">
+              <p className="text-base font-semibold text-green-800">Сделка завершена</p>
+              <p className="text-desc text-green-700 mt-2 leading-relaxed">
                 Все этапы пройдены. Вы можете начать новую сделку из раздела «Мои сделки».
               </p>
             </Card>
           )}
-          <button
-            type="button"
-            onClick={openLeadModal}
-            className="w-full py-3 rounded-2xl border border-gray-200 text-sm font-medium text-graphite"
-          >
-            Получить консультацию
-          </button>
+          <SecondaryButton onClick={openLeadModal}>Получить консультацию</SecondaryButton>
           {confirmDelete ? (
-            <Card className="p-4 border-risk/20 bg-red-50/50">
-              <p className="text-sm text-graphite mb-3">
+            <Card className="p-5 bg-red-50/50">
+              <p className="text-base text-graphite mb-4 leading-relaxed">
                 Удалить эту сделку? Прогресс и чек-листы будут удалены без возможности восстановления.
               </p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setConfirmDelete(false)}
-                  className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-graphite"
-                >
+              <div className="flex gap-3">
+                <SecondaryButton className="!min-h-[44px]" onClick={() => setConfirmDelete(false)}>
                   Отмена
-                </button>
-                <button
-                  type="button"
+                </SecondaryButton>
+                <DangerButton
+                  className="!min-h-[44px]"
                   onClick={() => {
                     deleteActiveDeal();
                     setConfirmDelete(false);
                   }}
-                  className="flex-1 py-2.5 rounded-xl bg-risk text-white text-sm font-semibold"
                 >
                   Удалить
-                </button>
+                </DangerButton>
               </div>
             </Card>
           ) : (
-            <button
-              type="button"
-              onClick={() => setConfirmDelete(true)}
-              className="w-full py-3 rounded-2xl border border-red-100 text-sm font-medium text-risk"
-            >
+            <DangerButton outline onClick={() => setConfirmDelete(true)}>
               Удалить сделку
-            </button>
+            </DangerButton>
           )}
         </div>
 
-        <div className="relative pl-1">
+        <div className="space-y-3 pt-2">
           {deal.steps.map((step, index) => {
             const st = progress.steps[step.id]?.status ?? 'not_started';
             const isCurrent = index === currentIdx && st !== 'completed';
             const isDone = st === 'completed';
-            const isLast = index === deal.steps.length - 1;
 
             return (
-              <TimelineItem
+              <StepCard
                 key={step.id}
                 title={step.title}
                 phase={PHASE_LABELS[step.phase] ?? step.phase}
                 isDone={isDone}
                 isCurrent={isCurrent}
-                isLast={isLast}
                 onClick={() => openStep(step.id, scrollRef.current?.scrollTop ?? 0)}
               />
             );
@@ -233,52 +219,30 @@ export const DealDashboard: React.FC = () => {
   );
 };
 
-const TimelineItem: React.FC<{
+const StepCard: React.FC<{
   title: string;
   phase: string;
   isDone: boolean;
   isCurrent: boolean;
-  isLast: boolean;
   onClick: () => void;
-}> = ({ title, phase, isDone, isCurrent, isLast, onClick }) => (
-  <button type="button" onClick={onClick} className="flex gap-3 w-full text-left pb-4 group">
-    <div className="flex flex-col items-center shrink-0">
-      {isDone ? (
-        <div className="w-7 h-7 rounded-full bg-green-500 flex items-center justify-center">
-          <Check className="w-4 h-4 text-white stroke-[3]" />
-        </div>
-      ) : isCurrent ? (
-        <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center ring-4 ring-accent/20">
-          <CircleDot className="w-3.5 h-3.5 text-white fill-white" />
-        </div>
-      ) : (
-        <div className="w-7 h-7 rounded-full border-2 border-gray-200 flex items-center justify-center bg-white">
-          <Circle className="w-3 h-3 text-gray-300" />
-        </div>
-      )}
-      {!isLast && (
-        <div
-          className={`w-0.5 flex-1 min-h-[24px] mt-1 ${
-            isDone ? 'bg-green-200' : 'bg-gray-100'
-          }`}
-        />
-      )}
-    </div>
-    <div
-      className={`flex-1 pt-0.5 pb-1 rounded-xl transition-colors ${
-        isCurrent ? 'bg-accent-soft/60 -mx-2 px-2' : 'group-hover:bg-gray-50 -mx-2 px-2'
-      }`}
-    >
+}> = ({ title, phase, isDone, isCurrent, onClick }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`step-card w-full text-left flex gap-4 items-start ${
+      isCurrent ? 'step-card--current' : ''
+    }`}
+  >
+    <StepStatusIcon status={isDone ? 'done' : isCurrent ? 'current' : 'pending'} />
+    <div className="flex-1 min-w-0 pt-0.5">
       <p
-        className={`text-sm font-medium leading-snug ${
-          isCurrent ? 'text-accent' : isDone ? 'text-graphite-muted' : 'text-graphite'
+        className={`text-base font-medium leading-snug ${
+          isCurrent ? 'text-accent' : isDone ? 'text-graphite-muted line-through' : 'text-graphite'
         }`}
       >
         {title}
       </p>
-      {isCurrent && (
-        <p className="text-[11px] text-graphite-muted mt-0.5">{phase}</p>
-      )}
+      <p className="text-desc text-graphite-muted mt-1.5">{phase}</p>
     </div>
   </button>
 );

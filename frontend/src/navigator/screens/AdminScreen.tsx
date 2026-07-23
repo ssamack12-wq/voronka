@@ -8,8 +8,10 @@ import { premiumStatusLabel } from '../engine/planAccess';
 import { Header } from '../components/Header';
 import {
   Card,
+  DangerButton,
   GhostButton,
   PageShell,
+  PrimaryButton,
   SecondaryButton,
   SectionTitle
 } from '../components/ui';
@@ -143,17 +145,13 @@ export const AdminScreen: React.FC = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Email или UUID пользователя"
-                className="w-full min-w-0 box-border pl-9 pr-3 py-3 rounded-xl border border-gray-200 text-sm"
+                className="input-field !pl-9"
               />
             </div>
           </label>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2.5 rounded-xl bg-accent text-white text-sm font-semibold disabled:opacity-40"
-          >
+          <PrimaryButton type="submit" disabled={loading} className="!min-h-[44px] !text-desc">
             {loading ? 'Поиск…' : 'Найти'}
-          </button>
+          </PrimaryButton>
         </form>
 
         {error && <p className="text-sm text-risk break-words">{error}</p>}
@@ -204,7 +202,7 @@ export const AdminScreen: React.FC = () => {
                   value={u.premiumStatus}
                   disabled={busyId === u.id}
                   onChange={(e) => void updateStatus(u, e.target.value as PremiumStatus)}
-                  className="w-full max-w-full box-border py-2.5 px-3 rounded-xl border border-gray-200 text-sm bg-white"
+                  className="input-field !py-2.5"
                 >
                   {STATUS_OPTIONS.map((s) => (
                     <option key={s} value={s}>
@@ -218,14 +216,13 @@ export const AdminScreen: React.FC = () => {
                     <GhostButton className="flex-1 min-w-0" onClick={() => setConfirmDeleteId(null)}>
                       Отмена
                     </GhostButton>
-                    <button
-                      type="button"
+                    <DangerButton
+                      className="flex-1 min-w-0 !min-h-[44px] !text-desc"
                       disabled={busyId === u.id}
                       onClick={() => void removeUser(u)}
-                      className="flex-1 min-w-0 py-2.5 rounded-xl bg-risk text-white text-sm font-semibold"
                     >
                       Подтвердить
-                    </button>
+                    </DangerButton>
                   </div>
                 ) : (
                   <button

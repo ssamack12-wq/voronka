@@ -3,7 +3,7 @@ import { AppPreview } from './AppPreview';
 import { FadeIn, SectionHeading } from './shared';
 
 export const WhatsInsideSection: React.FC = () => (
-  <section className="py-16 sm:py-20 lg:py-24 border-t border-gray-100 overflow-hidden">
+  <section id="app-preview" className="py-16 sm:py-20 lg:py-24 overflow-hidden scroll-mt-8">
     <FadeIn>
       <SectionHeading
         eyebrow="Интерфейс"

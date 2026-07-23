@@ -47,7 +47,7 @@ export const MyDealsScreen: React.FC = () => {
                         {isDone ? (
                           <CheckCircle2 className="w-5 h-5" />
                         ) : (
-                          <span className="text-sm font-bold">{item.percent}%</span>
+                          <span className="text-sm font-semibold">{item.percent}%</span>
                         )}
                       </div>
                       <div className="flex-1 min-w-0">

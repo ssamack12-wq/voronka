@@ -25,7 +25,7 @@ const ScenarioCard: React.FC<{ scenario: EmergencyScenario }> = ({ scenario }) =
   return (
     <motion.div
       layout
-      className="rounded-[20px] bg-white shadow-soft border border-gray-100/80 overflow-hidden"
+      className="card-premium overflow-hidden !p-0"
     >
       <button
         type="button"
@@ -56,17 +56,13 @@ const ScenarioCard: React.FC<{ scenario: EmergencyScenario }> = ({ scenario }) =
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 space-y-4 border-t border-gray-50">
+            <div className="px-4 pb-4 space-y-4 pt-3">
               <section>
-                <p className="text-xs font-semibold text-graphite-muted uppercase tracking-wide mb-1">
-                  Проблема
-                </p>
+                <p className="badge-eyebrow !text-graphite-muted !bg-surface mb-1">Проблема</p>
                 <p className="text-sm text-graphite leading-relaxed">{scenario.problem}</p>
               </section>
               <section>
-                <p className="text-xs font-semibold text-graphite-muted uppercase tracking-wide mb-2">
-                  Что делать прямо сейчас
-                </p>
+                <p className="badge-eyebrow !text-graphite-muted !bg-surface mb-2">Что делать прямо сейчас</p>
                 <ol className="text-sm text-graphite space-y-1.5 list-decimal list-inside">
                   {scenario.actionsNow.map((a) => (
                     <li key={a} className="leading-relaxed">
@@ -76,9 +72,7 @@ const ScenarioCard: React.FC<{ scenario: EmergencyScenario }> = ({ scenario }) =
                 </ol>
               </section>
               <section>
-                <p className="text-xs font-semibold text-graphite-muted uppercase tracking-wide mb-2">
-                  Чего НЕ делать
-                </p>
+                <p className="badge-eyebrow !text-graphite-muted !bg-surface mb-2">Чего НЕ делать</p>
                 <ul className="text-sm text-graphite space-y-1">
                   {scenario.dontDo.map((d) => (
                     <li key={d} className="flex gap-2">
@@ -89,9 +83,7 @@ const ScenarioCard: React.FC<{ scenario: EmergencyScenario }> = ({ scenario }) =
                 </ul>
               </section>
               <section>
-                <p className="text-xs font-semibold text-graphite-muted uppercase tracking-wide mb-1">
-                  Уровень риска
-                </p>
+                <p className="badge-eyebrow !text-graphite-muted !bg-surface mb-1">Уровень риска</p>
                 <span
                   className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${riskBadgeClass[scenario.riskLevel]}`}
                 >
@@ -99,9 +91,7 @@ const ScenarioCard: React.FC<{ scenario: EmergencyScenario }> = ({ scenario }) =
                 </span>
               </section>
               <section>
-                <p className="text-xs font-semibold text-graphite-muted uppercase tracking-wide mb-1">
-                  Когда обращаться к специалисту
-                </p>
+                <p className="badge-eyebrow !text-graphite-muted !bg-surface mb-1">Когда обращаться к специалисту</p>
                 <p className="text-sm text-graphite leading-relaxed">{scenario.specialistWhen}</p>
               </section>
             </div>
@@ -137,18 +127,13 @@ export const EmergencyScenariosPanel: React.FC<EmergencyScenariosPanelProps> = (
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           >
-            <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 pt-4 pb-3 safe-top">
+            <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md px-4 pt-4 pb-3 safe-top shadow-soft">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <AlertCircle className="w-5 h-5 text-accent" />
-                  <h2 className="text-lg font-semibold text-graphite">Что делать если…</h2>
+                  <h2 className="text-lg font-medium text-graphite">Что делать если…</h2>
                 </div>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center"
-                  aria-label="Закрыть"
-                >
+                <button type="button" onClick={onClose} className="close-btn" aria-label="Закрыть">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -159,7 +144,7 @@ export const EmergencyScenariosPanel: React.FC<EmergencyScenariosPanelProps> = (
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Поиск по ситуациям…"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-gray-200 text-sm text-graphite placeholder:text-graphite-muted focus:outline-none focus:ring-2 focus:ring-accent/30"
+                  className="input-field !pl-10"
                 />
               </div>
             </div>

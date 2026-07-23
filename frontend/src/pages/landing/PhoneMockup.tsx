@@ -40,7 +40,7 @@ export const PhoneMockup: React.FC = () => (
               <p className="text-xs font-medium text-graphite-muted">Прогресс сделки</p>
               <p className="text-xs font-semibold text-accent tabular-nums">31%</p>
             </div>
-            <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+            <div className="h-2 rounded-full bg-black/[0.04] overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: '31%' }}
@@ -59,12 +59,12 @@ export const PhoneMockup: React.FC = () => (
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.35, delay: 0.6 + i * 0.1 }}
-                className="flex items-center gap-2.5 rounded-xl border border-gray-100 bg-surface px-3 py-2.5"
+                className="flex items-center gap-2.5 rounded-btn shadow-soft bg-surface px-3 py-2.5"
               >
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-white">
+                <span className="check-icon check-icon--done !w-5 !h-5">
                   <Check className="h-3 w-3" strokeWidth={3} />
                 </span>
-                <span className="text-[13px] text-graphite">{item}</span>
+                <span className="text-desc text-graphite">{item}</span>
               </motion.li>
             ))}
           </ul>
@@ -73,9 +73,9 @@ export const PhoneMockup: React.FC = () => (
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 1.2, duration: 0.4 }}
-            className="mt-4 rounded-xl bg-warning-soft border border-amber-100 px-3 py-2.5"
+            className="mt-4 banner-warning !text-[11px] !py-2.5"
           >
-            <p className="text-[11px] text-amber-900 font-medium leading-snug">
+            <p className="font-medium leading-snug">
               ⚠ Риск: проверьте доверенность, если продавец не присутствует
             </p>
           </motion.div>

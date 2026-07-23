@@ -21,8 +21,8 @@ export const LoginButton: React.FC<LoginButtonProps> = ({
 
   const base =
     variant === 'primary'
-      ? 'w-full py-3 rounded-2xl border border-gray-200 text-sm font-semibold text-graphite flex items-center justify-center gap-2'
-      : 'text-sm font-semibold text-accent flex items-center gap-1.5';
+      ? 'min-h-btn-h px-6 rounded-btn border border-black/[0.06] text-base font-medium text-graphite flex items-center justify-center gap-2 hover:scale-[1.02] hover:bg-surface transition-all'
+      : 'text-base font-medium text-accent flex items-center gap-1.5 hover:opacity-80 transition-opacity';
 
   if (user && showProfileWhenAuthed) {
     return (

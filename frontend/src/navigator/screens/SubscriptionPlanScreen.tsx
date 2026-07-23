@@ -51,29 +51,27 @@ export const SubscriptionPlanScreen: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`rounded-3xl border bg-gradient-to-br p-5 shadow-soft ${plan.accent}`}
+          className={`rounded-card bg-gradient-to-br p-5 shadow-soft ${plan.accent}`}
         >
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-white/90 border border-white flex items-center justify-center shadow-sm shrink-0">
+            <div className="w-14 h-14 rounded-card bg-white/90 flex items-center justify-center shadow-soft shrink-0">
               <PlanTierIcon planId={plan.id} className="w-7 h-7 text-accent" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-accent uppercase tracking-wide">
-                Тариф
-              </p>
-              <h1 className="text-2xl font-semibold text-graphite mt-0.5">{plan.name}</h1>
+              <p className="badge-eyebrow mb-1">Тариф</p>
+              <h1 className="text-2xl font-medium text-graphite mt-0.5">{plan.name}</h1>
               <p className="text-sm text-graphite-muted mt-1">{plan.tagline}</p>
             </div>
           </div>
           <div className="mt-5 flex items-end justify-between gap-3">
             <div>
-              <p className="text-3xl font-bold text-graphite tracking-tight">{plan.priceLabel}</p>
+              <p className="text-3xl font-medium text-graphite tracking-tight">{plan.priceLabel}</p>
               {plan.priceNote && (
                 <p className="text-xs text-graphite-muted mt-1">{plan.priceNote}</p>
               )}
             </div>
             {isActive && (
-              <span className="shrink-0 px-3 py-1.5 rounded-full bg-accent text-white text-xs font-bold">
+              <span className="shrink-0 px-3 py-1.5 rounded-full bg-accent text-white text-xs font-medium">
                 Ваш тариф
               </span>
             )}
@@ -81,7 +79,7 @@ export const SubscriptionPlanScreen: React.FC = () => {
         </motion.div>
 
         {plan.highlights.map((h) => (
-          <Card key={h} className="p-4 border-accent/15 bg-accent-soft/25">
+          <Card key={h} className="p-4 bg-accent-soft/25">
             <div className="flex gap-2">
               <Sparkles className="w-5 h-5 text-accent shrink-0" />
               <p className="text-sm text-graphite leading-relaxed">{h}</p>
@@ -90,13 +88,10 @@ export const SubscriptionPlanScreen: React.FC = () => {
         ))}
 
         <div>
-          <h2 className="text-sm font-semibold text-graphite mb-3">Что входит</h2>
+          <h2 className="text-sm font-medium text-graphite mb-3">Что входит</h2>
           <ul className="space-y-2.5">
             {plan.features.map((f) => (
-              <li
-                key={f}
-                className="flex items-start gap-3 rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-soft"
-              >
+              <li key={f} className="checklist-card flex items-start gap-3 !py-3">
                 <Check className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                 <span className="text-sm text-graphite leading-snug">{f}</span>
               </li>
@@ -144,7 +139,7 @@ export const SubscriptionPlanScreen: React.FC = () => {
         </div>
 
         <div>
-          <h2 className="text-sm font-semibold text-graphite-muted mb-2">Другие тарифы</h2>
+          <h2 className="text-sm font-medium text-graphite-muted mb-2">Другие тарифы</h2>
           <div className="space-y-2">
             {otherPlans.map((id) => {
               const other = SUBSCRIPTION_PLANS[id];
@@ -153,7 +148,7 @@ export const SubscriptionPlanScreen: React.FC = () => {
                   key={id}
                   type="button"
                   onClick={() => navigate(`/app/subscription/${id}`)}
-                  className="w-full flex items-center gap-3 p-4 rounded-2xl border border-gray-100 bg-white text-left active:scale-[0.99] transition-transform"
+                  className="card-premium-interactive w-full flex items-center gap-3 !py-4 text-left active:scale-[0.99]"
                 >
                   <PlanTierIcon planId={other.id} className="w-5 h-5 text-accent shrink-0" />
                   <div className="flex-1 min-w-0">

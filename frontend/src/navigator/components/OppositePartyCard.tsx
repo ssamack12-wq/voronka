@@ -19,19 +19,19 @@ export const OppositePartyCard: React.FC<OppositePartyCardProps> = ({
   const block = getOppositePartyBlock(stepId, phase, category);
 
   return (
-    <div className="mt-5 rounded-2xl border border-gray-100 bg-surface/60 overflow-hidden">
+    <div className="mt-5 card-premium overflow-hidden !p-0">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center gap-3 p-4 text-left"
+        className="w-full flex items-center gap-4 p-6 text-left hover:bg-surface/50 transition-colors"
         aria-expanded={open}
       >
-        <div className="w-10 h-10 rounded-xl bg-accent-soft flex items-center justify-center shrink-0">
+        <div className="w-11 h-11 rounded-btn bg-accent-soft flex items-center justify-center shrink-0">
           <Users className="w-5 h-5 text-accent" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-graphite">Что происходит у другой стороны</p>
-          <p className="text-xs text-graphite-muted mt-0.5 line-clamp-1">{block.title}</p>
+          <p className="text-base font-medium text-graphite">Что происходит у другой стороны</p>
+          <p className="text-desc text-graphite-muted mt-1 line-clamp-1">{block.title}</p>
         </div>
         <ChevronDown
           className={`w-5 h-5 text-graphite-muted shrink-0 transition-transform duration-200 ${
@@ -48,13 +48,23 @@ export const OppositePartyCard: React.FC<OppositePartyCardProps> = ({
             transition={{ duration: 0.22, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 pt-0 border-t border-gray-100/80">
-              <p className="text-xs font-medium text-graphite-muted mb-2">{block.title}</p>
-              <ul className="text-sm text-graphite space-y-1.5">
+            <div className="px-6 pb-6 pt-0">
+              <p className="text-desc font-medium text-graphite-muted mb-3">{block.title}</p>
+              <ul className="space-y-2.5">
                 {block.actions.map((action) => (
-                  <li key={action} className="flex gap-2">
-                    <span className="text-accent shrink-0">•</span>
-                    <span>{action}</span>
+                  <li key={action} className="checklist-card flex gap-3 !py-3 !px-4">
+                    <span className="check-icon check-icon--done shrink-0 !w-6 !h-6" aria-hidden>
+                      <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                        <path
+                          d="M2 6L5 9L10 3"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
+                    <span className="text-base text-graphite leading-relaxed">{action}</span>
                   </li>
                 ))}
               </ul>

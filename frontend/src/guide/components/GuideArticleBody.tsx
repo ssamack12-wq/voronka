@@ -20,11 +20,9 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
   return (
     <article>
       <header className="mb-8">
-        <p className="text-xs font-semibold text-accent uppercase tracking-wider mb-2">Руководство</p>
-        <h1 className="text-2xl sm:text-3xl font-semibold text-graphite leading-tight tracking-tight">
-          {article.title}
-        </h1>
-        <div className="text-sm text-graphite-muted mt-3 leading-relaxed space-y-3">
+        <p className="badge-eyebrow mb-3">Руководство</p>
+        <h1 className="text-section-title text-graphite">{article.title}</h1>
+        <div className="text-base text-graphite-muted mt-4 leading-relaxed space-y-4">
           {article.lead.map((p, i) => (
             <p key={i}>{p}</p>
           ))}
@@ -33,7 +31,7 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
 
       <nav
         aria-label="Содержание"
-        className="mb-8 p-4 sm:p-5 rounded-2xl bg-surface border border-gray-100"
+        className="mb-8 p-6 rounded-card bg-white shadow-soft"
       >
         <p className="text-xs font-semibold text-graphite-muted uppercase tracking-wide mb-3">
           Содержание страницы
@@ -58,11 +56,21 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
           <h2 className="text-lg sm:text-xl font-semibold text-graphite mb-4">
             Кому подойдёт это руководство
           </h2>
-          <ul className="space-y-2 pl-1">
+          <ul className="space-y-3">
             {article.audience.map((item, i) => (
-              <li key={i} className="flex gap-2 text-sm sm:text-base text-graphite leading-relaxed">
-                <span className="text-accent shrink-0 mt-1">✓</span>
-                <span>{item}</span>
+              <li key={i} className="checklist-card flex gap-4">
+                <span className="check-icon check-icon--done shrink-0 mt-0.5" aria-hidden>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M2 6L5 9L10 3"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+                <span className="text-base text-graphite leading-relaxed">{item}</span>
               </li>
             ))}
           </ul>
@@ -77,11 +85,21 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
               <p key={pi}>{p}</p>
             ))}
             {section.list && (
-              <ul className="space-y-2 pl-1">
+              <ul className="space-y-3">
                 {section.list.map((item, li) => (
-                  <li key={li} className="flex gap-2">
-                    <span className="text-accent shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
-                    <span>{item}</span>
+                  <li key={li} className="checklist-card flex gap-4">
+                    <span className="check-icon check-icon--done shrink-0 mt-0.5" aria-hidden>
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path
+                          d="M2 6L5 9L10 3"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
+                    <span className="text-base text-graphite leading-relaxed">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -94,11 +112,21 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
                     <p key={pi}>{p}</p>
                   ))}
                   {sub.list && (
-                    <ul className="space-y-2 pl-1">
+                    <ul className="space-y-3">
                       {sub.list.map((item, li) => (
-                        <li key={li} className="flex gap-2">
-                          <span className="text-accent shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
-                          <span>{item}</span>
+                        <li key={li} className="checklist-card flex gap-4">
+                          <span className="check-icon check-icon--done shrink-0 mt-0.5" aria-hidden>
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                              <path
+                                d="M2 6L5 9L10 3"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </span>
+                          <span className="text-base text-graphite leading-relaxed">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -113,11 +141,13 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
       {article.nextSteps.length > 0 && (
         <section id="next-steps" className="mb-8 scroll-mt-6">
           <h2 className="text-lg sm:text-xl font-semibold text-graphite mb-4">Что делать дальше</h2>
-          <ol className="space-y-2 pl-1">
+          <ol className="space-y-3">
             {article.nextSteps.map((step, i) => (
-              <li key={i} className="flex gap-3 text-sm sm:text-base text-graphite leading-relaxed">
-                <span className="text-accent font-semibold shrink-0">{i + 1}.</span>
-                <span>{step}</span>
+              <li key={i} className="step-card flex gap-4 items-start">
+                <span className="w-8 h-8 rounded-btn bg-accent/10 text-accent flex items-center justify-center text-sm font-semibold shrink-0">
+                  {i + 1}
+                </span>
+                <span className="text-base text-graphite leading-relaxed pt-1">{step}</span>
               </li>
             ))}
           </ol>
@@ -131,13 +161,13 @@ export const GuideArticleBody: React.FC<GuideArticleBodyProps> = ({ article }) =
             {article.faq.map((item) => (
               <details
                 key={item.question}
-                className="group rounded-2xl border border-gray-100 bg-white p-4 shadow-soft"
+                className="group rounded-card bg-white p-5 shadow-soft"
               >
-                <summary className="font-medium text-sm text-graphite cursor-pointer list-none flex justify-between gap-2">
+                <summary className="font-medium text-base text-graphite cursor-pointer list-none flex justify-between gap-3 leading-snug">
                   {item.question}
-                  <span className="text-graphite-muted group-open:rotate-45 transition-transform">+</span>
+                  <span className="text-graphite-muted group-open:rotate-45 transition-transform text-xl leading-none">+</span>
                 </summary>
-                <p className="text-sm text-graphite-muted mt-3 leading-relaxed">{item.answer}</p>
+                <p className="text-desc text-graphite-muted mt-4 leading-relaxed">{item.answer}</p>
               </details>
             ))}
           </div>

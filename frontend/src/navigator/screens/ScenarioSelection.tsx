@@ -38,15 +38,13 @@ export const ScenarioSelection: React.FC = () => {
           ← Вернуться к квизу
         </button>
 
-        <div className="flex gap-2 mb-4 p-1 bg-surface rounded-2xl border border-gray-100">
+        <div className="segment-control mb-4">
           {(['buy', 'sell'] as const).map((cat) => (
             <button
               key={cat}
               type="button"
               onClick={() => setCategory(cat)}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                category === cat ? 'bg-white text-accent shadow-soft' : 'text-graphite-muted'
-              }`}
+              className={`segment-control__item ${category === cat ? 'segment-control__item--active' : ''}`}
             >
               {cat === 'buy' ? 'Покупка' : 'Продажа'}
             </button>
@@ -94,7 +92,7 @@ const ScenarioCard: React.FC<{
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-graphite text-[15px] leading-snug">{scenario.title}</p>
+          <p className="font-medium text-graphite text-[15px] leading-snug">{scenario.title}</p>
           <p className="text-xs text-graphite-muted mt-1 line-clamp-2">{scenario.description}</p>
           <div className="flex flex-wrap items-center gap-2 mt-2">
             <RiskBadge level={scenario.baseRisk} compact />

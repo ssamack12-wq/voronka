@@ -3,7 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { submitConsultation } from '../../auth/api';
 import { useAuthStore } from '../../auth/store';
 import { Header } from '../components/Header';
-import { Card, GhostButton, PageShell, PrimaryButton } from '../components/ui';
+import {
+  Card,
+  Chip,
+  GhostButton,
+  InputField,
+  PageShell,
+  PrimaryButton,
+  TextAreaField
+} from '../components/ui';
 import { useNavigator } from '../store/NavigatorContext';
 
 const NEED_TYPES = [
@@ -54,71 +62,61 @@ export const LeadScreen: React.FC = () => {
     <div className="flex flex-col flex-1 min-h-0">
       <Header title="Помощь специалиста" onBack={goBack} />
       <PageShell className="flex-1 overflow-y-auto pb-8">
-        <Card className="p-4 mb-4">
-          <p className="text-sm text-graphite leading-relaxed">
+        <Card className="p-5 mb-5">
+          <p className="text-base text-graphite leading-relaxed">
             Юрист или риелтор поможет проверить объект, подготовить документы, провести расчёты и
             сопроводить сделку.
           </p>
         </Card>
 
         {deal && (
-          <p className="text-xs text-graphite-muted mb-4">
+          <p className="text-desc text-graphite-muted mb-5">
             Сценарий: {deal.scenario.title}
             {selectedStepId ? ` · шаг: ${selectedStepId}` : ''}
           </p>
         )}
 
         {sent ? (
-          <div className="text-center py-8">
+          <div className="text-center py-10">
             <p className="text-lg font-semibold text-graphite mb-2">Заявка отправлена</p>
-            <p className="text-sm text-graphite-muted">
+            <p className="text-base text-graphite-muted leading-relaxed">
               Специалист свяжется с вами в ближайшее время.
             </p>
           </div>
         ) : (
-          <form className="space-y-3" onSubmit={handleSubmit}>
-            <p className="text-sm font-medium text-graphite">Что вам нужно?</p>
-            <div className="flex flex-wrap gap-2">
-              {NEED_TYPES.map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setNeedType(t)}
-                  className={`px-3 py-2 rounded-xl text-xs font-medium border transition-colors ${
-                    needType === t
-                      ? 'border-accent bg-accent-soft text-accent'
-                      : 'border-gray-200 text-graphite-muted'
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            <div>
+              <p className="text-base font-medium text-graphite mb-3">Что вам нужно?</p>
+              <div className="flex flex-wrap gap-2">
+                {NEED_TYPES.map((t) => (
+                  <Chip key={t} selected={needType === t} onClick={() => setNeedType(t)}>
+                    {t}
+                  </Chip>
+                ))}
+              </div>
             </div>
-            <input
+            <InputField
               type="tel"
               placeholder="Ваш телефон"
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30"
             />
-            <input
+            <InputField
               type="email"
               placeholder="Ваш email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30"
             />
-            <textarea
+            <TextAreaField
               placeholder="Опишите ситуацию"
               rows={4}
               required
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 resize-none"
             />
-            {error && <p className="text-sm text-risk">{error}</p>}
+            {error && <p className="text-desc text-risk">{error}</p>}
             <PrimaryButton
               disabled={loading || !message.trim() || !phone.trim() || !email.trim()}
             >
@@ -127,7 +125,7 @@ export const LeadScreen: React.FC = () => {
           </form>
         )}
 
-        <div className="mt-4">
+        <div className="mt-5">
           <GhostButton onClick={goBack}>Назад</GhostButton>
         </div>
       </PageShell>

@@ -17,7 +17,7 @@ export const GuideArticlePage: React.FC = () => {
   const stickyCta = (
     <Link
       to="/app/onboarding"
-      className="flex items-center justify-center w-full py-3 rounded-2xl bg-accent text-white text-sm font-semibold shadow-soft"
+      className="flex items-center justify-center w-full min-h-btn-h rounded-btn bg-accent text-white text-base font-medium shadow-btn hover:scale-[1.02] transition-transform"
     >
       {article.ctaButton}
     </Link>
